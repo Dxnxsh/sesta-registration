@@ -1,0 +1,889 @@
+[
+    {
+        "embedding": "Admin Login Page: The Admin login page allows administrators to access the School Registration System securely. To log in, the user must click the 'Admin' tab if not already selected, enter their Username in the 'Username' field, enter their Password in the 'Password' field, and then click the 'Login' button. If credentials are correct, they are redirected to the Admin Homepage. If credentials are incorrect, a pop-up error message appears stating 'Oops… (ERROR FACED)'. Additional links include 'Sign Up' for new registration and 'Forgot Password' for password recovery. Users can switch between Student, Teacher, and Admin login types using the top tabs. FAQ: Q: What happens if I forget my password? A: Click 'Forgot Password' and follow the email instructions to reset it. Q: Can I switch back to student login from admin login? A: Yes, by clicking the 'Student' tab at the top. Q: What error message appears if login fails? A: 'Oops… (ERROR FACED)' appears in a pop-up window.",
+        "metadata": {
+            "module_name": "Admin Login Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Username field",
+                "Password field",
+                "Login button",
+                "Sign Up link",
+                "Forgot Password link",
+                "Navigation Tabs (Student, Teacher, Admin)"
+            ],
+            "figure_reference": "Figure 1.1",
+            "tags": [
+                "authentication",
+                "login",
+                "error-handling",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Homepage: After a successful login, the administrator is redirected to the Admin Homepage. The homepage serves as the central dashboard. It features a navigation bar and tiles for quick access to various system modules including Student Management, Class Management, Billing Management, Report Generation, and System Settings. The page also displays key statistics such as the total number of registered students, total teachers, and recent registration activities. Administrators can click on any navigation link or tile to enter a specific management module. FAQ: Q: What modules can an admin access from the homepage? A: Student Management, Class Management, Billing Management, Reports, and Settings. Q: Can I see student registration numbers directly? A: Yes, key metrics are visible on the homepage dashboard.",
+        "metadata": {
+            "module_name": "Admin Homepage",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Navigation Bar (Student Management, Class Management, Billing Management, Report Generation, System Settings)",
+                "Dashboard Tiles",
+                "Overview Metrics (Registered Students, Teachers, Activity)"
+            ],
+            "figure_reference": "Figure 1.2",
+            "tags": [
+                "dashboard",
+                "navigation",
+                "admin",
+                "overview"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Class Edit Page: This page allows administrators to search for and edit existing class information. The admin can enter a class code or name in the search bar to locate the class. The page displays editable fields including Class Code, Class Name, Level (e.g., Form 1), Block (e.g., Block A), Floor, Category (e.g., English, Science), and Teacher ID. After making necessary edits, the admin must click the 'Save' button to apply changes. FAQ: Q: Can I reassign a teacher to a different class? A: Yes, select a different Teacher ID from the dropdown. Q: Do I need the full class name to search? A: No, partial names can also be used for search.",
+        "metadata": {
+            "module_name": "Admin Class Edit Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Search Bar",
+                "Class Code field",
+                "Class Name field",
+                "Level dropdown",
+                "Block dropdown",
+                "Floor dropdown",
+                "Category dropdown",
+                "Teacher ID dropdown",
+                "Save Button"
+            ],
+            "figure_reference": "Figure 1.3",
+            "tags": [
+                "class-management",
+                "edit-class",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Add New Class Page: This page enables administrators to create a new class in the system. The admin must fill in the required fields: Class Code, Class Name, Level (e.g., Form 1, Form 2), Block (e.g., A, B), Floor (specific floor), Category (subject category like English or Math), and assign a Teacher ID from a dropdown list. After completing the form, clicking 'Save' will create the new class and store the information. Clicking 'Reset' clears all fields in the form. FAQ: Q: What happens if I click Reset? A: All fields will be cleared, and you must re-enter the data. Q: Can I assign a teacher while creating the class? A: Yes, use the Teacher ID dropdown.",
+        "metadata": {
+            "module_name": "Admin Add New Class Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Class Code field",
+                "Class Name field",
+                "Level dropdown",
+                "Block dropdown",
+                "Floor dropdown",
+                "Category dropdown",
+                "Teacher ID dropdown",
+                "Save button",
+                "Reset button"
+            ],
+            "figure_reference": "Figure 1.4",
+            "tags": [
+                "class-management",
+                "add-class",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Class Page: This page allows administrators to view a complete list of all classes in the system. Each class listing displays Class Code, Class Name, Level, Block, assigned Teacher ID, Teacher Name, and Teacher Contact. Admins can navigate between classes using 'Next' and 'Previous' buttons. FAQ: Q: What happens when I click Next? A: You move to view the next class record. Q: Can I see teacher contact information linked to each class? A: Yes, it is displayed alongside each class.",
+        "metadata": {
+            "module_name": "Admin View Class Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Class List Table",
+                "Class Code column",
+                "Class Name column",
+                "Level column",
+                "Block column",
+                "Teacher ID column",
+                "Teacher Name column",
+                "Teacher Contact column",
+                "Next button",
+                "Previous button"
+            ],
+            "figure_reference": "Figure 1.5",
+            "tags": [
+                "class-management",
+                "view-class",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Update Class Page: This page allows administrators to modify existing class information. Admins can update the Level, Block, Floor, Category, and assigned Teacher via dropdown menus. After editing, clicking the 'Save' button updates the class information in the system. FAQ: Q: Can I change the class category after creation? A: Yes, you can update the category from this page. Q: What should I do after editing the details? A: Click the 'Save' button to apply changes.",
+        "metadata": {
+            "module_name": "Admin Update Class Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Level dropdown",
+                "Block dropdown",
+                "Floor dropdown",
+                "Category dropdown",
+                "Teacher dropdown",
+                "Save button"
+            ],
+            "figure_reference": "Figure 1.6",
+            "tags": [
+                "class-management",
+                "update-class",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Add New Teacher Page: This page allows administrators to add a new teacher profile into the School Registration System. Admins must enter the teacher's IC Number, Name, Gender, Date of Birth, Address, Phone Number, Email Address, Employment Status, Username, and Password. After completing the form, clicking 'Update' will save the new teacher profile. The 'Delete' button can be used to discard entered information before saving. FAQ: Q: What happens if I click Delete before updating? A: The form will be cleared and the information won't be saved. Q: Can I set the teacher's initial login credentials here? A: Yes, you can set Username and Password during teacher creation.",
+        "metadata": {
+            "module_name": "Admin Add New Teacher Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "IC Number field",
+                "Name field",
+                "Gender dropdown",
+                "Date of Birth date picker",
+                "Address text area",
+                "Phone Number field",
+                "Email Address field",
+                "Status dropdown",
+                "Username field",
+                "Password field",
+                "Update button",
+                "Delete button"
+            ],
+            "figure_reference": "Figure 1.7",
+            "tags": [
+                "teacher-management",
+                "add-teacher",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Teacher Profile Page: This page allows administrators to view the complete details of a selected teacher profile. Information shown includes Teacher Name, Teacher ID, Date of Birth, Gender, Phone Number, Email Address, Status, and Address. This page is for viewing only, and no editing is allowed here. FAQ: Q: Can I edit teacher information from this page? A: No, this page is for viewing purposes only. Q: What details can I see about a teacher? A: You can see full personal details including email, phone number, and address.",
+        "metadata": {
+            "module_name": "Admin View Teacher Profile Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Name display",
+                "Teacher ID display",
+                "Date of Birth display",
+                "Gender display",
+                "Phone Number display",
+                "Email Address display",
+                "Status display",
+                "Address display"
+            ],
+            "figure_reference": "Figure 1.8",
+            "tags": [
+                "teacher-management",
+                "view-teacher",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Update Teacher Profile Page: This page allows administrators to modify existing teacher information. Admins can edit the Name, Date of Birth, Gender, Phone Number, Email Address, and Address fields. After making changes, clicking the 'Save' button updates the teacher's profile in the system. FAQ: Q: Can I change a teacher's email from this page? A: Yes, email address is editable. Q: What should I do after updating the information? A: Click the 'Save' button to apply and store the updates.",
+        "metadata": {
+            "module_name": "Admin Update Teacher Profile Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Name field",
+                "Date of Birth picker",
+                "Gender dropdown",
+                "Phone Number field",
+                "Email Address field",
+                "Address text area",
+                "Save button"
+            ],
+            "figure_reference": "Figure 1.10",
+            "tags": [
+                "teacher-management",
+                "update-teacher",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Student List Page: This page allows administrators to view a table of all students enrolled in the school. Each student record shows Student ID, Name, Gender, Date of Birth, Place of Birth, Religion, Race, Nationality, Address, Disease (if any), Disability (if any), Marital Status, and Password. Action buttons allow the admin to view, update, or delete each student profile. FAQ: Q: What information can I see at a glance? A: Basic biodata like name, birth details, religion, and disabilities. Q: What do the action buttons do? A: 'View' opens full profile, 'Update' allows editing, and 'Delete' removes the student record.",
+        "metadata": {
+            "module_name": "Admin View Student List Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Student List Table",
+                "Student ID column",
+                "Name column",
+                "Gender column",
+                "Date of Birth column",
+                "Place of Birth column",
+                "Religion column",
+                "Race column",
+                "Nationality column",
+                "Address column",
+                "Disease column",
+                "Disability column",
+                "Status column",
+                "Password column",
+                "View button",
+                "Update button",
+                "Delete button"
+            ],
+            "figure_reference": "Figure 1.11",
+            "tags": [
+                "student-management",
+                "view-student",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Student Profile Page: This page displays full details of an individual student selected from the student list. Student details include Name, Gender, IC Number, Date of Birth, Place of Birth, Religion, Race, Nationality, Marital Status, Address, Disease, Disability, Class, and Class Category. Parent or Guardian details like IC Number, Name, Gender, Phone Number, Job, and Monthly Income are also displayed. Navigation buttons 'Previous' and 'Next' allow moving between student profiles. FAQ: Q: Can I view parent information here? A: Yes, guardian details are included. Q: How can I move between profiles? A: Use the 'Previous' and 'Next' buttons.",
+        "metadata": {
+            "module_name": "Admin View Student Profile Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Student Full Details section",
+                "Parent/Guardian Information section",
+                "Previous button",
+                "Next button"
+            ],
+            "figure_reference": "Figure 1.12",
+            "tags": [
+                "student-management",
+                "view-student-profile",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin Update Student Profile Page: This page allows administrators to edit a student's profile information. Editable fields include Name, Gender, IC Number, Date of Birth, Place of Birth, Religion, Race, Nationality, Marital Status, Address, Disease, Disability, and Class. After making changes, clicking the 'Save' button updates the student's profile in the system. FAQ: Q: Can I change the student's class from here? A: Yes, you can update class assignment here. Q: What should I do after making edits? A: Click the 'Save' button to store changes.",
+        "metadata": {
+            "module_name": "Admin Update Student Profile Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Name field",
+                "Gender dropdown",
+                "IC Number field",
+                "Date of Birth picker",
+                "Place of Birth field",
+                "Religion dropdown",
+                "Race dropdown",
+                "Nationality dropdown",
+                "Status dropdown",
+                "Address text area",
+                "Disease field",
+                "Disability field",
+                "Class dropdown",
+                "Save button"
+            ],
+            "figure_reference": "Figure 1.13",
+            "tags": [
+                "student-management",
+                "update-student",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View System Summary Page: This page provides administrators with a high-level overview of the school system's key statistics. Metrics displayed include Total Students, Total Teachers, Total Classes, Total Paid Payments, and Total Unpaid Payments. FAQ: Q: Can I see payment statuses here? A: Yes, you can see the total number of paid and unpaid transactions. Q: Does this page show live numbers? A: Yes, the figures are updated based on the system database.",
+        "metadata": {
+            "module_name": "Admin View System Summary Page",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Total Student metric",
+                "Total Teacher metric",
+                "Total Class metric",
+                "Total Paid Payment metric",
+                "Total Unpaid Payment metric"
+            ],
+            "figure_reference": "Figure 1.14",
+            "tags": [
+                "dashboard",
+                "system-summary",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Full Report - Student: This page allows administrators to access detailed reports containing student-specific information. The full student report includes comprehensive student biodata, class assignments, and any health-related details like disease or disability if available. FAQ: Q: What information is included in the full student report? A: Full profile including class and health information. Q: Can I export this report? A: Exporting is not directly stated but can be assumed based on common functionality.",
+        "metadata": {
+            "module_name": "Admin View Full Report - Student",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Student Full Report Table"
+            ],
+            "figure_reference": "Figure 1.15",
+            "tags": [
+                "student-management",
+                "full-report",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Full Report - Parent: This page allows administrators to view detailed information about parents or guardians of the students. The report includes Parent IC Number, Name, Gender, Job, Contact Information, and Monthly Income. FAQ: Q: What does the parent report show? A: Full details about student guardians. Q: Are parent financial details included? A: Yes, monthly income is recorded.",
+        "metadata": {
+            "module_name": "Admin View Full Report - Parent",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Parent Full Report Table"
+            ],
+            "figure_reference": "Figure 1.16",
+            "tags": [
+                "parent-management",
+                "full-report",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Admin View Full Report - Teacher: This page provides administrators with detailed reports on teachers. The report shows full teacher biodata including employment status, contact information, and teaching assignments. FAQ: Q: What data does the teacher report contain? A: Teacher personal and professional information. Q: Can I see teacher class assignments here? A: Yes, assignments are part of the report if included.",
+        "metadata": {
+            "module_name": "Admin View Full Report - Teacher",
+            "user_type": "Admin",
+            "ui_elements": [
+                "Teacher Full Report Table"
+            ],
+            "figure_reference": "Figure 1.17",
+            "tags": [
+                "teacher-management",
+                "full-report",
+                "admin"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Login Page: This page allows students to log in to their accounts. Students must enter their 12-digit IC Number (without spaces or dashes) and their account password. Clicking the 'LOGIN' button submits the credentials for verification. If correct, students are redirected to their Student Home Page. Additional options include 'Forgot Password' to recover an account and 'Sign Up Now' for new users. Navigation links at the top allow switching between Student, Teacher, and Admin login pages. A WhatsApp widget is available for immediate support contact. FAQ: Q: What if I forget my password? A: Click 'Forgot Password' to reset it via email. Q: Can I switch to teacher login from here? A: Yes, use the Teacher link at the top. Q: How do I get help immediately? A: Use the WhatsApp widget available on the page.",
+        "metadata": {
+            "module_name": "Student Login Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "IC Number input field",
+                "Password input field",
+                "Login button",
+                "Sign Up Now link",
+                "Forgot Password link",
+                "Navigation Tabs (Student, Teacher, Admin)",
+                "WhatsApp widget"
+            ],
+            "figure_reference": "Figure 1",
+            "tags": [
+                "authentication",
+                "student-login",
+                "support"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Sign Up Page: This page enables new students to register for an account. Students must fill in their IC Number, Email, Password, and Re-enter Password fields. Passwords must match for successful registration. If registration is successful, IC, email, and password are stored securely, and automatic billing entries (School Fees, Dormitory Fees, PIBG Fees) are created with unpaid status. If passwords do not match, an error page is shown. A link to 'Sign In' is available for existing users. FAQ: Q: What happens if the passwords do not match? A: You will be redirected to an error page. Q: What fees are created automatically after registration? A: School Fees, Dormitory Fees, and PIBG Fees.",
+        "metadata": {
+            "module_name": "Student Sign Up Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "IC Number input field",
+                "Email input field",
+                "Password input field",
+                "Re-enter Password field",
+                "Sign Up button",
+                "Sign In link"
+            ],
+            "figure_reference": "Figure 2",
+            "tags": [
+                "registration",
+                "student-signup",
+                "account-creation"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Registration Form: After signing up, students are prompted to complete their profile through a detailed update form. Fields include Student Name, Gender, Marital Status, Date of Birth, Place of Birth, Religion, Race, Nationality, Address, Disease, Disability, and Class Level. Parent/Guardian information fields include Name, Gender, IC Number, Phone Number, Job, and Monthly Income. A 'Reset' button clears the form, and an 'Update' button saves the information. FAQ: Q: What happens if I click Reset? A: All form fields will be cleared. Q: Is it mandatory to fill in parent/guardian information? A: Yes, complete parent/guardian details are required.",
+        "metadata": {
+            "module_name": "Student Registration Form",
+            "user_type": "Student",
+            "ui_elements": [
+                "Student Information fields",
+                "Parent/Guardian Information fields",
+                "Reset button",
+                "Update button"
+            ],
+            "figure_reference": "Figure 3",
+            "tags": [
+                "profile-update",
+                "student-biodata",
+                "guardian-info"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Error Pop-Up: When incorrect login credentials are entered, an error pop-up appears stating 'Oops... (ERROR FACED)'. The user is prompted to verify their IC Number and Password carefully, ensuring correct spelling and capitalization. FAQ: Q: What does the error popup mean? A: It indicates incorrect IC Number or Password. Q: How can I fix the error? A: Double-check both fields for accuracy and retry.",
+        "metadata": {
+            "module_name": "Student Error Pop-Up",
+            "user_type": "Student",
+            "ui_elements": [
+                "Error Message pop-up"
+            ],
+            "figure_reference": "Figure 4",
+            "tags": [
+                "error-handling",
+                "login-issue",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Forgot Password Page: This page allows students to reset their forgotten password. Students must enter their registered email address and click the 'Reset Password' button. If the email exists in the system, a reset link will be sent to the student's inbox. If the email is invalid, an error message is displayed. Students can also click 'Back to Login' to return without resetting. FAQ: Q: How will I receive the reset link? A: Via the email address you provided. Q: What if I accidentally typed the wrong email? A: An error will display, and you must correct it.",
+        "metadata": {
+            "module_name": "Student Forgot Password Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "Email input field",
+                "Reset Password button",
+                "Back to Login button"
+            ],
+            "figure_reference": "Figure 5",
+            "tags": [
+                "password-reset",
+                "account-recovery",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Home Page: After logging in, students are directed to their personal dashboard. The page displays their IC Number, Full Name, Date of Birth, and Class Assignment. If no class is assigned yet, it will show 'Not Assigned'. The page includes quick links via icons to access Subject Outline, Billing, and Student Card sections. FAQ: Q: What information is visible on the Home Page? A: IC Number, Name, Date of Birth, and assigned Class. Q: What happens if I am not assigned to a class yet? A: The system will display 'Not Assigned'.",
+        "metadata": {
+            "module_name": "Student Home Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "Student IC display",
+                "Name display",
+                "Date of Birth display",
+                "Class display",
+                "Subject Outline icon",
+                "Billing icon",
+                "Student Card icon"
+            ],
+            "figure_reference": "Figure 6",
+            "tags": [
+                "student-dashboard",
+                "profile-overview",
+                "navigation"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Navigation Bar: Located on the left side of the student dashboard, this navigation menu allows quick access to different system sections. The available links include Home, Subject Outline, Billing, and Student Card. A Logout button is also present for secure session termination. FAQ: Q: How do I log out from the system? A: Click the Logout link in the navigation bar. Q: What does the 'Subject Outline' link do? A: It navigates you to the list of subjects available for your form level.",
+        "metadata": {
+            "module_name": "Student Navigation Bar",
+            "user_type": "Student",
+            "ui_elements": [
+                "Home link",
+                "Subject Outline link",
+                "Billing link",
+                "Student Card link",
+                "Logout link"
+            ],
+            "figure_reference": "Figure 7",
+            "tags": [
+                "navigation",
+                "student-dashboard",
+                "menu"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Subject Outline Page: This page lists the subjects offered at the school, categorized by Form 1 and Form 4 levels. Students can search for subjects using a search box. A 'Back' button allows returning to the Home Page. Subjects are displayed in two separate tables labeled 'Form 1 Subjects' and 'Form 4 Subjects'. FAQ: Q: How can I search for a subject? A: Enter the subject name or number in the search box. Q: How do I return to the Home Page? A: Click the 'Back' button at the top right.",
+        "metadata": {
+            "module_name": "Student Subject Outline Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "Subject Outline Header",
+                "Search Box",
+                "Form 1 Subjects Table",
+                "Form 4 Subjects Table",
+                "Back Button"
+            ],
+            "figure_reference": "Figure 8",
+            "tags": [
+                "subject-outline",
+                "course-list",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Billing Information Menu: This page allows students to view their billing records. It displays Name, IC Number, and a table of payment types such as School Fees and Dormitory Fees. Payment statuses are color-coded: Red for UNPAID, Orange for PENDING, and Green for PAID. Students can click 'Proceed Payment' to move to the payment confirmation process or use the 'Back' button to return to the dashboard. FAQ: Q: How do I know if my payment is pending? A: It will be shown in orange color with status 'PENDING'. Q: What happens when I click 'Proceed Payment'? A: You will move to the payment confirmation page.",
+        "metadata": {
+            "module_name": "Student Billing Information Menu",
+            "user_type": "Student",
+            "ui_elements": [
+                "Name display",
+                "IC Number display",
+                "Billing Table (School Fees, Dormitory Fees)",
+                "Payment Status Indicators",
+                "Proceed Payment button",
+                "Back button"
+            ],
+            "figure_reference": "Figure 9",
+            "tags": [
+                "billing",
+                "payment-status",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Billing Payment Confirmation Page: This page appears after the student clicks 'Proceed Payment'. It shows a detailed breakdown of payment including Name, IC Number, Address, and payment types like School Fees, Dormitory Fees, and PIBG Fees. For each unpaid item, a 'Confirm Payment' button is available. Students must confirm each fee separately. After confirming, they proceed to the payment receipt upload stage. FAQ: Q: Can I pay all fees at once? A: No, each fee must be confirmed individually. Q: What happens after I click 'Confirm Payment'? A: You are redirected to upload proof of payment.",
+        "metadata": {
+            "module_name": "Student Billing Payment Confirmation",
+            "user_type": "Student",
+            "ui_elements": [
+                "Name display",
+                "IC Number display",
+                "Address display",
+                "Payment Confirmation Buttons (for each fee)",
+                "Back button"
+            ],
+            "figure_reference": "Figure 10",
+            "tags": [
+                "billing",
+                "confirm-payment",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Billing Payment Warning Pop-Up: When a student clicks 'Confirm Payment', a pop-up appears asking for confirmation to proceed with the payment cautiously. It serves as a final warning before moving to the payment upload stage. FAQ: Q: What does the warning popup say? A: It advises caution before proceeding with payment. Q: Can I cancel at this stage? A: Yes, by closing the pop-up without confirming.",
+        "metadata": {
+            "module_name": "Student Billing Payment Warning Pop-Up",
+            "user_type": "Student",
+            "ui_elements": [
+                "Payment Warning pop-up"
+            ],
+            "figure_reference": "Figure 11",
+            "tags": [
+                "billing",
+                "warning-popup",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Payment Receipt Upload Page: After confirming a payment, students are directed to upload proof of payment. The page displays Receipt Number, Bill To (Student and Parent Names), Student Address, Transfer Recipient IC, Total Amount, and Discounted Total Amount if applicable. Students must upload an image file of the payment receipt using the 'Choose File' and 'Upload File' buttons. A 'Back' button is available to return to the previous page. FAQ: Q: What if I forget to upload proof? A: The admin will not be able to verify your payment until proof is uploaded. Q: Where do I find the Upload button? A: Below the Proof of Payment file selection area.",
+        "metadata": {
+            "module_name": "Student Payment Receipt Upload Page",
+            "user_type": "Student",
+            "ui_elements": [
+                "Receipt Number display",
+                "Bill To (Student and Parent Names) display",
+                "Student Address display",
+                "Transfer Recipient IC display",
+                "Total Amount display",
+                "Discounted Total Amount display",
+                "Proof of Payment file input",
+                "Upload File button",
+                "Back button"
+            ],
+            "figure_reference": "Figure 12",
+            "tags": [
+                "billing",
+                "upload-payment",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Payment Receipt Display Page: After uploading the payment proof, students can view the full payment receipt. It shows Receipt Number, Date, Day of payment, Billing Information (Student Name, Parent Name, Address), Payment Details (Item, Description, Amount), and Payment Summary (Selected Payment Method, Total Amount, Discounted Amount). Students can view the receipt as a PDF, download it, or email it to themselves. FAQ: Q: Can I download my payment receipt? A: Yes, there is a Download PDF button. Q: Can I email my receipt? A: Yes, use the Email button provided.",
+        "metadata": {
+            "module_name": "Student Payment Receipt Display",
+            "user_type": "Student",
+            "ui_elements": [
+                "Receipt Number display",
+                "Date and Day display",
+                "Billing Information table",
+                "Payment Details table",
+                "Selected Payment Method display",
+                "Total Amount display",
+                "Download PDF button",
+                "Email Receipt button"
+            ],
+            "figure_reference": "Figure 13",
+            "tags": [
+                "billing",
+                "payment-receipt",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Payment Success Pop-Up: After successfully submitting proof of payment, a pop-up message appears indicating 'Payment Successfully Done'. This informs the student that their proof has been uploaded and is awaiting admin verification. FAQ: Q: What does the success message mean? A: It confirms your payment proof has been uploaded. Q: Does it mean my payment is approved immediately? A: No, it still needs admin review for final approval.",
+        "metadata": {
+            "module_name": "Student Payment Success Pop-Up",
+            "user_type": "Student",
+            "ui_elements": [
+                "Payment Successfully Done pop-up"
+            ],
+            "figure_reference": "Figure 16",
+            "tags": [
+                "billing",
+                "payment-success",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Payment Status Update: After submitting a payment, the status of the payment changes from 'UNPAID' to 'PENDING'. This pending status indicates that the payment proof is uploaded but still requires admin verification before it is marked as 'PAID'. FAQ: Q: What does 'Pending' status mean? A: It means the proof is uploaded but not yet confirmed by admin. Q: When does my status change to PAID? A: After admin verifies and approves your uploaded receipt.",
+        "metadata": {
+            "module_name": "Student Payment Status Update",
+            "user_type": "Student",
+            "ui_elements": [
+                "Payment Status display (Pending after upload)"
+            ],
+            "figure_reference": "Figure 17",
+            "tags": [
+                "billing",
+                "payment-status",
+                "student"
+            ]
+        }
+    },
+    {
+        "embedding": "Student Card Display Page: This page presents the student's digital ID card. The card features a smooth hover animation — when hovering over it, the card flips to show the back side. The school logo is displayed prominently on both sides. The ID card dimensions are 350 pixels wide and 500 pixels high. FAQ: Q: What happens when I hover over the student card? A: It performs a flip animation to show the back side. Q: Where is the school logo located? A: At the top-left corner of both front and back sides.",
+        "metadata": {
+            "module_name": "Student Card Display",
+            "user_type": "Student",
+            "ui_elements": [
+                "Student ID Card",
+                "Hover Flip Animation",
+                "School Logo"
+            ],
+            "figure_reference": "Figure 18",
+            "tags": [
+                "student-card",
+                "profile",
+                "animation"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Login Page: This page allows teachers to log in to their accounts. Teachers must enter their Username and Password into the respective fields. After entering credentials, clicking the 'Login' button submits the information. If login is successful, they are redirected to the Teacher Home Page. Additional options include 'Forgot Password' for account recovery and 'Sign Up Now' for new teacher registration. Navigation links at the top allow switching between Student, Teacher, and Admin login pages. A WhatsApp widget is available for quick assistance. FAQ: Q: What if I forget my password? A: Click 'Forgot Password' and follow the recovery steps. Q: How do I register a new teacher account? A: Click 'Sign Up Now' and follow the teacher registration process.",
+        "metadata": {
+            "module_name": "Teacher Login Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Username input field",
+                "Password input field",
+                "Login button",
+                "Forgot Password link",
+                "Sign Up Now link",
+                "Navigation Tabs (Student, Teacher, Admin)",
+                "WhatsApp widget"
+            ],
+            "figure_reference": "Figure 19",
+            "tags": [
+                "authentication",
+                "teacher-login",
+                "support"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Verification Page: Before registering a teacher account, the teacher must verify their IC Number. On this page, teachers enter their 12-digit IC Number without spaces or dashes and click 'Verify'. If the IC Number is unique and not already registered, they proceed to registration. If the IC Number already exists, a pop-up notifies them. FAQ: Q: What if the IC Number is already registered? A: You will receive a notification that your account already exists. Q: What happens after successful verification? A: You are directed to the registration form.",
+        "metadata": {
+            "module_name": "Teacher Verification Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "IC Number input field",
+                "Verify button",
+                "Success/Failure pop-up"
+            ],
+            "figure_reference": "Figure 20",
+            "tags": [
+                "teacher-registration",
+                "verification",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Registration Page: After verifying IC Number, teachers complete their account registration by filling in Username and Password fields. Teachers then click the 'Register' button to create their account. FAQ: Q: What fields are required to register? A: Username and Password. Q: Can I register if my IC Number is not verified? A: No, IC verification must be completed first.",
+        "metadata": {
+            "module_name": "Teacher Registration Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Username input field",
+                "Password input field",
+                "Register button"
+            ],
+            "figure_reference": "Figure 23",
+            "tags": [
+                "teacher-registration",
+                "account-creation",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Personal Information Form: After account registration, teachers must complete their personal information form. Fields include Full Name, Gender, Marital Status, Date of Birth, Address, and Phone Number. A 'Save' button stores the details into the system, while a 'Reset' button clears the form. FAQ: Q: What happens if I click Reset? A: All entered information will be cleared. Q: What should I do after filling in my information? A: Click 'Save' to complete your profile.",
+        "metadata": {
+            "module_name": "Teacher Personal Information Form",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Name input field",
+                "Gender dropdown",
+                "Marital Status dropdown",
+                "Date of Birth picker",
+                "Address text area",
+                "Phone Number input field",
+                "Save button",
+                "Reset button"
+            ],
+            "figure_reference": "Figure 25",
+            "tags": [
+                "teacher-profile",
+                "personal-information",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Home Page: After successful login, teachers are directed to their dashboard. It displays Teacher IC, Full Name, Date of Birth, Email, and Phone Number. From the homepage, teachers can navigate to Assigned Classes, View Student List, and Student Billing sections using icon-based quick links. FAQ: Q: What information is displayed on the Home Page? A: Teacher personal information including IC, Name, DOB, Email, and Phone. Q: What can I access from the homepage? A: Assigned classes, student profiles, and billing information.",
+        "metadata": {
+            "module_name": "Teacher Home Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Teacher IC display",
+                "Name display",
+                "Date of Birth display",
+                "Email display",
+                "Phone Number display",
+                "Assigned Class icon",
+                "View Student List icon",
+                "Student Bills icon"
+            ],
+            "figure_reference": "Figure 27",
+            "tags": [
+                "teacher-dashboard",
+                "profile-overview",
+                "navigation"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Navigation Bar: Located on the left side of the teacher dashboard, this navigation menu allows quick access to Home, Assigned Classes, Student Profiles, and Student Billing sections. A Logout option is also available for ending the session securely. FAQ: Q: How can I logout from the system? A: Click the 'Logout' link in the navigation bar. Q: Where can I view students assigned to me? A: Click the 'View Student Profile' link.",
+        "metadata": {
+            "module_name": "Teacher Navigation Bar",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Home link",
+                "Assigned Class link",
+                "View Student Profile link",
+                "Student Bills link",
+                "Logout link"
+            ],
+            "figure_reference": "Figure 28",
+            "tags": [
+                "navigation",
+                "teacher-dashboard",
+                "menu"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Assigned Class View Page: This page displays the list of classes assigned to the logged-in teacher. Each record shows Class Code, Class Name, and Class Level. Teachers can view the list in a table format. FAQ: Q: What information is shown for each class? A: Class Code, Class Name, and Class Level. Q: Can I manage students from here? A: No, this page is only for viewing assigned classes.",
+        "metadata": {
+            "module_name": "Teacher Assigned Class View",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Class Code column",
+                "Class Name column",
+                "Class Level column",
+                "Class List Table"
+            ],
+            "figure_reference": "Figure 29",
+            "tags": [
+                "assigned-class",
+                "view-class",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher View Student List Page: This page allows teachers to view students enrolled in their assigned classes. Each student entry includes Student ID, Name, Class Code, and Class Name. Teachers can use a search box to quickly find a student. FAQ: Q: What fields are visible for each student? A: Student ID, Name, Class Code, and Class Name. Q: Can I search for a student? A: Yes, by typing in the search box.",
+        "metadata": {
+            "module_name": "Teacher View Student List Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Student ID column",
+                "Name column",
+                "Class Code column",
+                "Class Name column",
+                "Search Box"
+            ],
+            "figure_reference": "Figure 30",
+            "tags": [
+                "view-student",
+                "student-list",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher Manage Student Details Page: Teachers can update specific student information related to their academic records. Editable fields include the assigned Class, Class Code, and Category. After making changes, clicking the 'Save' button will update the student record. FAQ: Q: Can I change a student's assigned class? A: Yes, the Class dropdown allows reassignment. Q: What should I do after editing details? A: Click 'Save' to apply changes.",
+        "metadata": {
+            "module_name": "Teacher Manage Student Details Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Class dropdown",
+                "Class Code field",
+                "Category dropdown",
+                "Save button"
+            ],
+            "figure_reference": "Figure 31",
+            "tags": [
+                "student-management",
+                "edit-student",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher View Student Information Page: This page shows full profile information of a selected student. Information displayed includes Name, IC Number, Date of Birth, Address, Disease, Disability, Marital Status, Religion, Race, and Nationality. FAQ: Q: What student details can I view here? A: Full personal and background details like Disease, Address, Marital Status. Q: Can I edit student information on this page? A: No, this page is for viewing only.",
+        "metadata": {
+            "module_name": "Teacher View Student Information Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Student Full Profile Information"
+            ],
+            "figure_reference": "Figure 32",
+            "tags": [
+                "view-student",
+                "student-profile",
+                "teacher"
+            ]
+        }
+    },
+    {
+        "embedding": "Teacher View Billing Records Page: This page enables teachers to view payment records related to students. Each record shows Student Name, IC Number, Payment Type, Amount Paid, Total Amount, Payment Status, and Payment Date. FAQ: Q: What can I see for each payment? A: You can view payment type, status (Paid/Unpaid), amount paid, and dates. Q: Can I edit billing information? A: No, this page is for viewing only.",
+        "metadata": {
+            "module_name": "Teacher View Billing Records Page",
+            "user_type": "Teacher",
+            "ui_elements": [
+                "Student Name column",
+                "IC Number column",
+                "Payment Type column",
+                "Amount Paid column",
+                "Total Amount column",
+                "Payment Status column",
+                "Payment Date column"
+            ],
+            "figure_reference": "Figure 33",
+            "tags": [
+                "billing",
+                "view-payments",
+                "teacher"
+            ]
+        }
+    }
+]

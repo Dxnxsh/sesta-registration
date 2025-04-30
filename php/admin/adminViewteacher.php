@@ -1,0 +1,121 @@
+<?php
+session_start();
+include("../config.php");
+if (!isset($_SESSION['adminID'])) {
+  header("Location: ../login-logout/loginadmin.php");
+  exit();
+}
+
+if (isset($_GET['id'])) {
+  $stud_id = $_GET['id'];
+  $selectClassStudent = "SELECT * FROM teacher s
+  LEFT JOIN class c ON s.TEACHER_ID = c.TEACHER_ID
+  WHERE s.TEACHER_ID = '$stud_id'";
+  $queryClassStudent = mysqli_query($con, $selectClassStudent);
+
+  if (!$queryClassStudent) {
+    die('Error: ' . mysqli_error($con));
+  }
+
+  // Fetch and process the results
+  while ($row = mysqli_fetch_assoc($queryClassStudent)) {
+    // Process each row of data
+    // $row contains the combined data from both "teacher" and "class" tables
+    $studname = $row['TEACHER_NAME'];
+    $id = $row['TEACHER_ID'];
+    $cCode = $row['CLASS_CODE'];
+    $cName = $row['CLASS_NAME'];
+    $gender = $row['TEACHER_GENDER'];
+    $dob = $row['TEACHER_DOB'];
+    $pob = $row['TEACHER_PHONENUM'];
+    $email = $row['TEACHER_EMAIL'];
+    $address = $row['TEACHER_ADDRESS'];
+
+
+    
+  }
+
+}
+?>
+<?php include "../header/adminHeader.php" ?>
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>VIEW TEACHER</title>
+  <link href="../../css/AVS.css" rel="stylesheet" type="text/css">
+  <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+  <script>
+    function goBack() {
+        window.location.href = 'adminClass.php';
+    }
+  </script>
+</head>
+
+<body
+  style="background-image: url(../../image/admin.png); background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%">
+  <div class="container">
+    <h2><i class="bx bx-book"></i> VIEW TEACHER</h2>
+    <form id="form1" name="form1" method="post" class="item-mid">
+      <div class="table-wrapper">
+        <table width="50%" border="1" cellspacing="5" class="fl-table">
+          <tbody>
+          <tr>
+              <th>Name </th>
+              <td>
+              <?php echo (!empty($studname) ? $studname : 'Not available'); ?>
+              </td>
+            </tr>  
+          <tr>
+              <th>ID</th>
+              <td>
+              <?php echo (!empty($stud_id) ? $stud_id : 'Not available'); ?>
+              </td>
+            </tr>  
+          <tr>
+              <th>Gender </th>
+              <td>
+              <?php echo (!empty($gender) ? $gender : 'Not available'); ?>
+              </td>
+            </tr>
+            <tr>
+              <th> Class </th>
+              <td>
+              <?php echo (!empty($cCode) && !empty($cName) ? $cCode . ' - ' . $cName : 'Not available'); ?>
+      </td>
+            </tr>
+            <tr>
+              <th> Phone Number </th>
+              <td>
+              <?php echo (!empty($pob) ? $pob : 'Not available'); ?>
+</td>
+            </tr>
+            <tr>
+              <th>Date of Birth</th>
+              <td>
+              <?php echo (!empty($dob) ? $dob : 'Not available'); ?>
+              </td>
+            </tr>
+            <tr>
+              <th>E-mail</th>
+              <td>
+              <?php echo (!empty($email) ? $email : 'Not available'); ?>
+             </td>
+            </tr>
+            <tr>
+              <th> Address</th>
+              <td>
+              <input type="text" id="address" name="address" value="<?php echo (!empty($address) ? $address : 'Not available'); ?>" disabled><br>
+  </td>
+            </tr>
+          </tbody>
+        </table>      
+      </div>
+      <br>
+      <a class='back-button' href='teacherList.php'>Go Back</a>
+  </form>
+</body>
+
+</html>
+<?php include "../header/footer.php" ?>

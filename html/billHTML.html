@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Billing Page</title>
+  <style>
+    body {
+      font-family: 'lato', sans-serif;
+      margin: 0;
+      background: url(file:///C:/Users/W.Adam/Downloads/test/img/backgroundbirugelap.png) no-repeat center center fixed;
+      background-size: cover;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .logo {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .logo img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    h2 {
+      font-size: 26px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      color: #333;
+    }
+
+    th {
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background-color: #233858;
+      color: #fff;
+    }
+
+    td {
+      background-color: #ffffff;
+    }
+
+    .responsive-table {
+      display: none;
+    }
+
+    .responsive-table .col {
+      position: relative;
+    }
+
+    .responsive-table .col:not(:last-child) {
+      border-right: 1px solid #ddd;
+    }
+
+    @media all and (max-width: 767px) {
+      .container {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      table {
+        display: none;
+      }
+
+      .responsive-table {
+        display: block;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .responsive-table li {
+        border-radius: 3px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .responsive-table .col {
+        flex-basis: 32%;
+        display: flex;
+        padding: 10px 0;
+        position: relative;
+      }
+
+      .responsive-table .col:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 1px;
+        background-color: #ddd;
+      }
+
+      .responsive-table .col:last-child:after {
+        content: none;
+      }
+
+      .responsive-table .col:before {
+        color: #233858;
+        padding-right: 10px;
+        content: attr(data-label);
+        flex-basis: 50%;
+        text-align: right;
+      }
+    }
+
+    /* Update the following styles */
+    .payment-type-row,
+    .amount-row,
+    .status-row {
+      background-color: #233858;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <img src="C:\Users\W.Adam\Downloads\test\img\logoSESTA3.png" alt="Logo">
+    </div>
+    <h2>BILLING</h2>
+    <table>
+      <tr>
+        <th>NAME</th>
+        <td>MUHAMMAD NAIMUDIN BIN ACAPMUDIN</td>
+      </tr>
+      <tr>
+        <th>STUDENT IC</th>
+        <td>060125021233</td>
+      </tr>
+      <tr class="payment-type-row">
+        <th colspan="2">PAYMENT TYPE</th>
+        <th style="text-align: right;">AMOUNT (RM)</th>
+        <th style="text-align: right;">STATUS</th>
+      </tr>
+      <tr class="amount-row">
+        <td colspan="2">SCHOOL FEES</td>
+        <td style="text-align: right;">200.00</td>
+        <td style="text-align: right;">Belum Dibayar</td>
+      </tr>
+      <tr class="amount-row">
+        <td colspan="2">DORMITORY FEES</td>
+        <td style="text-align: right;">210.00</td>
+        <td style="text-align: right;">Belum Dibayar</td>
+      </tr>
+      <tr class="amount-row">
+        <td colspan="2">PIBG FEES</td>
+        <td style="text-align: right;">100.00</td>
+        <td style="text-align: right;">Belum Dibayar</td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: center;"><button>Proceed Payment</button></td>
+      </tr>
+    </table>
+
+    <ul class="responsive-table">
+      <li>
+        <div class="col col-1" data-label="NAME">MUHAMMAD NAIMUDIN BIN ACAPMUDIN</div>
+        <div class="col col-2" data-label="STUDENT IC">060125021233</div>
+      </li>
+      <li class="payment-type-row">
+        <div class="col col-1" data-label="PAYMENT TYPE">SCHOOL FEES</div>
+        <div class="col col-2" data-label="AMOUNT (RM)">200.00</div>
+        <div class="col col-3" data-label="STATUS">Belum Dibayar</div>
+      </li>
+      <li class="payment-type-row">
+        <div class="col col-1" data-label="PAYMENT TYPE">DORMITORY FEES</div>
+        <div class="col col-2" data-label="AMOUNT (RM)">210.00</div>
+        <div class="col col-3" data-label="STATUS">Belum Dibayar</div>
+      </li>
+      <li class="payment-type-row">
+        <div class="col col-1" data-label="PAYMENT TYPE">PIBG FEES</div>
+        <div class="col col-2" data-label="AMOUNT (RM)">100.00</div>
+        <div class="col col-3" data-label="STATUS">Belum Dibayar</div>
+      </li>
+      <li class="payment-type-row">
+        <div class="col col-1" data-label="PAYMENT TYPE">-</div>
+        <div class="col col-2" data-label="AMOUNT (RM)">-</div>
+        <div class="col col-3" data-label="STATUS">-</div>
+        <div class="col col-4" style="text-align: center;"><button>Proceed Payment</button></div>
+      </li>
+    </ul>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+    font-family: "Arial", sans-serif;
+    background-image: url("../image/teacher.png");
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+.container {
+    width: 60%;
+    margin: 20px auto 50px;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h2 {
+	font-size: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(90deg, hsla(189, 100%, 35%, 1) 0%, hsla(172, 50%, 48%, 1) 50%, hsla(102, 63%, 60%, 1) 100%);
+	color: #fff;
+	padding: 10px 20px;
+	border-radius: 5px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-top: 10px;
+}
+i {
+	margin-right: 10px;
+}
+form {
+            margin: 10px;
+     }
+table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+			background-color:  #f4f4f4;
+      }
+
+        table, th, td {
+            border: 1px solid #333;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+input[type="text"]{
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 4px;
+}
+textarea {
+            width: 100%;
+            padding: 37px 8px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 4px;
+}
+.item-mid{
+	text-align: center;
+}
+select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background-color: #fff; 
+    color: #333; 
+    appearance: none; 
+}
+
+select:hover,
+select:focus {
+    border-color: #4CAF50; 
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+button {
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.back-button {
+    background-color: #4285f4;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+.back-button:hover {
+    background-color: #357ae8;
+}
+.update-button {
+    text-align: center;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+	background-image: linear-gradient(to right, #4AC29A 0%, #BDFFF3  51%, #4AC29A  100%);
+    margin: 10px;
+    padding: 13px 35px;
+	transition: 0.5s;
+	background-size: 200% auto;
+	box-shadow: 0 0 20px #eee;
+	border-radius: 10px;
+	color: #fff;
+}
+.update-button:hover{
+	opacity: 0.9;
+	animation: buttonHover 0.3s ease;
+	background-position: right center;
+            color: #000;
+            text-decoration: none;
+}
+button:hover {
+    opacity: 0.9;
+	animation: buttonHover 0.3s ease;
+}
+@keyframes buttonHover {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+.table-wrapper {
+  margin: 20px;
+}
+
+.fl-table {
+  	width: 100%;
+  	margin-top: 20px;
+	background-color: #ffffff;
+  	border-collapse: separate;
+    border-spacing: 10px;
+	border: none;
+}
+
+.fl-table th, .fl-table td {
+  	border: 1px solid #dddddd;
+  	padding: 8px;
+  	text-align: left;
+	border-collapse: separate;
+	border-spacing: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+.fl-table tr{
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border: 2px solid #ddd;
+    border-radius: 10px;
+}
+.fl-table th {
+  	background-color: #00ff87;
+	color: white;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+                 

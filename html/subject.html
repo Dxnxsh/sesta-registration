@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject Outline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    background-image: url('../image/bg11.jpeg');
+    background-size: cover;
+    background-position: center;
+  }
+  .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container:hover::before {
+      opacity: 1;
+    }
+  
+  h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to right, #000428 0%, #004e92  51%, #000428  100%);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 50px;
+  }
+  
+  i {
+    margin-right: 10px;
+  }
+  
+  table#form1-table,
+  table#form4-table {
+    width: 70%;
+    margin: 20px auto;
+    border-collapse: separate;
+    border-spacing: 10px; /* Adjust the spacing as needed */
+  }
+  table {
+      border-collapse: separate;
+      border-spacing: 10px; /* Adjust the spacing between cells */
+      width: 100%;
+    }
+
+    th, td {
+      padding: 20px;
+      text-align: left;
+      color: #333;
+      border-radius: 0; /* Remove border-radius for squared corners */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow to each cell */
+    }
+
+    th {
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background-image: linear-gradient(to right, #000428 0%, #004e92  51%, #000428  100%);
+      color: #fff;
+    }
+
+    td {
+      background-color: #ffffff;
+    }
+
+    /* Add border to each table row */
+    tr {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+    }
+
+    /* Add shadow to each table row */
+    tr {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Remove border and shadow for specific cells */
+    th:nth-child(1),
+    th:nth-child(2),
+    td:nth-child(1),
+    td:nth-child(2) {
+      border-right: 1px solid #ddd;
+    }
+
+  #subject-table th:first-child {
+    background-color: #000;
+    color: white;
+  }
+  
+  #subject-outline-header {
+    text-align: center;
+    color: rgb(255, 255, 255);
+    position: relative;
+    z-index: 2; /* Set a higher z-index to keep it on top */
+  }
+  
+  #search-box-container {
+    width: 70%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .search {
+    width: 60%;
+    position: relative;
+    display: flex;
+  }
+  
+  .searchTerm {
+    width: 80%;
+    border: 3px solid #000000;
+    border-right: none;
+    padding: 5px;
+    height: 20px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: black; /* Set the text color to black */
+  }
+  
+  .searchButton {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #000000;
+    background-image: linear-gradient(to right, #36D1DC 0%, #5B86E5 51%, #36D1DC 100%);
+    text-align: center;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  
+  .searchButton i {
+    line-height: 30px;
+  }
+  
+  /* Header Styles */
+  .header {
+    position: relative;
+    text-align: center;
+    color: black; /* Set text color to black */
+    padding: 20px;
+    margin-bottom: 50px; /* Add margin for the waves */
+  }
+  
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 24px;
+    }
+  
+    #search-box-container {
+      width: 90%;
+    }
+  
+    .searchTerm {
+      width: 20%;
+    }
+  
+    .searchButton {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  /* Button styling */
+    .proceed-payment-button {
+      all: unset;
+      width: 50px;
+      height: 30px;
+      font-size: 16px;
+      color: #f0f0f0;
+      cursor: pointer;
+      z-index: 1;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      position: relative;
+      margin: 20px; /* Center the button horizontally within its container */
+    }
+
+    .proceed-payment-button::after,
+    .proceed-payment-button::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: -99999;
+      transition: all .4s;
+    }
+
+    .proceed-payment-button::before {
+      transform: translate(0%, 0%);
+      width: 100%;
+      height: 100%;
+      background: #233858;
+      border-radius: 10px;
+      background-image: linear-gradient(to right, #36D1DC 0%, #5B86E5 51%, #36D1DC 100%);
+    }
+
+    .proceed-payment-button::after {
+      transform: translate(10px, 10px);
+      width: 35px;
+      height: 35px;
+      background: #ffffff15;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 50px;
+    }
+
+    .proceed-payment-button:hover::before {
+      transform: translate(5%, 20%);
+      width: 110%;
+      height: 110%;
+    }
+
+    .proceed-payment-button:hover::after {
+      border-radius: 10px;
+      transform: translate(0, 0);
+      width: 100%;
+      height: 100%;
+    }
+
+    .proceed-payment-button:active::after {
+      transition: 0s;
+      transform: translate(0, 5%);
+    }
+
+    i {
+      margin-right: 10px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center; /* Center the buttons horizontally */
+      align-items: center; /* Center the buttons vertically */
+    }
+
+  
+  
+  </style>
+  
+</head>
+
+<body>
+  <div class="container">
+  <div class="header">
+    <div class="inner-header">
+      <h2 id="subject-outline-header"><i class="fas fa-book"></i>SUBJECT OUTLINE</h2>
+    </div>
+  </div>
+
+  <div id="search-box-container">
+    <div class="button-container">
+  <button type="button" class="proceed-payment-button" onclick="window.location.href = '../php/student/student_home.php';">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+  </div>
+    <div class="search">
+          
+      <input type="text" class="searchTerm" id="search-box" onkeyup="searchSubjects()" placeholder="Search for subjects">
+      <button type="submit" class="searchButton">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <table id="form1-table">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Form 1 Subjects</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>1</b></td>
+        <td>BAHASA MELAYU</td>
+      </tr>
+      <tr>
+        <td><b>2</b></td>
+        <td>ENGLISH LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>3</b></td>
+        <td>MATHEMATICS</td>
+      </tr>
+      <tr>
+        <td><b>4</b></td>
+        <td>SCIENCES</td>
+      </tr>
+      <tr>
+        <td><b>5</b></td>
+        <td>DESIGN & TECHNOLOGY</td>
+      </tr>
+      <tr>
+        <td><b>6</b></td>
+        <td>ISLAMIC STUDIES</td>
+      </tr>
+      <tr>
+        <td><b>7</b></td>
+        <td>HISTORY</td>
+      </tr>
+      <tr>
+        <td><b>8</b></td>
+        <td>GEOGRAPHY</td>
+      </tr>
+      <tr>
+        <td><b>9</b></td>
+        <td>BASIC SCIENCE COMPUTER</td>
+      </tr>
+      <tr>
+        <td><b>10</b></td>
+        <td>JAPANESE LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>11</b></td>
+        <td>CHINESE LANGUAGE (MANDARIN)</td>
+      </tr>
+      <tr>
+        <td><b>12</b></td>
+        <td>FRENCH LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>13</b></td>
+        <td>MUSICAL ARTS EDUCATION</td>
+      </tr>
+      <tr>
+        <td><b>14</b></td>
+        <td>ARABIC LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>15</b></td>
+        <td>PHYSICAL & HEALTH EDUCATION</td>
+      </tr>
+      <tr>
+        <td><b>16</b></td>
+        <td>VISUAL ARTS EDUCATION</td>
+      </tr>
+      <tr>
+        <td><b>17</b></td>
+        <td>COMPUTER PROGRAMMING</td>
+      </tr>
+      <tr>
+        <td><b>18</b></td>
+        <td>PHILOSOPHY</td>
+      </tr>
+      <tr>
+        <td><b>19</b></td>
+        <td>PSYCHOLOGY</td>
+      </tr>
+      <tr>
+        <td><b>20</b></td>
+        <td>ASTRONOMY</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <!-- Form 4 Subjects Table -->
+  <table id="form4-table">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Form 4 Subjects</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>1</b></td>
+        <td>BAHASA MELAYU</td>
+      </tr>
+      <tr>
+        <td><b>2</b></td>
+        <td>ENGLISH LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>3</b></td>
+        <td>MATHEMATICS</td>
+      </tr>
+      <tr>
+        <td><b>4</b></td>
+        <td>HISTORY</td>
+      </tr>
+      <tr>
+        <td><b>5</b></td>
+        <td>ISLAMIC STUDIES</td>
+      </tr>
+      <tr>
+        <td><b></b>6</td>
+        <td>ADDITIONAL MATHEMATICS</td>
+      </tr>
+      <tr>
+        <td><b>7</b></td>
+        <td>PHYSICAL & HEALTH EDUCATION</td>
+      </tr>
+      <tr>
+        <td><b>8</b></td>
+        <td>BIOLOGY</td>
+      </tr>
+      <tr>
+        <td><b>9</b></td>
+        <td>PHYSICS</td>
+      </tr>
+      <tr>
+        <td><b>10</b></td>
+        <td>CHEMISTRY</td>
+      </tr>
+      <tr>
+        <td><b>11</b></td>
+        <td>MORAL EDUCATION</td>
+      </tr>
+      <tr>
+        <td><b>12</b></td>
+        <td>JAPANESE LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>13</b></td>
+        <td>ARABIC LANGUAGE</td>
+      </tr>
+      <tr>
+        <td><b>14</b></td>
+        <td>CHINESE LANGUAGE (MANDARIN)</td>
+      </tr>
+      <tr>
+        <td><b>15</b></td>
+        <td>ADDITIONAL SCIENCE</td>
+      </tr>
+      <tr>
+        <td><b>16</b></td>
+        <td>ENGLISH LITERATURE</td>
+      </tr>
+      <tr>
+        <td><b>17</b></td>
+        <td>ACCOUNTING</td>
+      </tr>
+      <tr>
+        <td><b>18</b></td>
+        <td>ECONOMICS</td>
+      </tr>
+      <tr>
+        <td><b>19</b></td>
+        <td>STATISTICS</td>
+      </tr>
+      <tr>
+        <td><b>20</b></td>
+        <td>GRAPHIC DESIGN</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  <script>
+    function searchSubjects() {
+      var input, filter, table1, table2, tr1, tr2, td1, td2, i, txtValue1, txtValue2;
+      input = document.getElementById("search-box");
+      filter = input.value.toUpperCase().trim();
+      
+      // Form 1 Subjects Table
+      table1 = document.getElementById("form1-table");
+      tr1 = table1.getElementsByTagName("tr");
+  
+      // Form 4 Subjects Table
+      table2 = document.getElementById("form4-table");
+      tr2 = table2.getElementsByTagName("tr");
+  
+      // Loop through Form 1 Subjects Table
+      for (i = 0; i < tr1.length; i++) {
+        td1 = tr1[i].getElementsByTagName("td")[1]; // Form 1 subjects
+        if (td1) {
+          txtValue1 = td1.textContent || td1.innerText;
+  
+          // Check if the search term matches Form 1 subjects
+          var form1Match = txtValue1.toUpperCase().includes(filter);
+  
+          // Set the display property based on the search result
+          tr1[i].style.display = form1Match ? "" : "none";
+        }
+      }
+  
+      // Loop through Form 4 Subjects Table
+      for (i = 0; i < tr2.length; i++) {
+        td2 = tr2[i].getElementsByTagName("td")[1]; // Form 4 subjects
+        if (td2) {
+          txtValue2 = td2.textContent || td2.innerText;
+  
+          // Check if the search term matches Form 4 subjects
+          var form4Match = txtValue2.toUpperCase().includes(filter);
+  
+          // Set the display property based on the search result
+          tr2[i].style.display = form4Match ? "" : "none";
+        }
+      }
+    }
+  </script>
+
+</body>
+
+</html>
