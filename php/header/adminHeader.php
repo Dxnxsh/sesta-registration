@@ -1,12 +1,23 @@
-<?php  
+<?php
 include(__DIR__ . '/../config.php');
 $id = $_SESSION['adminID'];
 $query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$id");
 while ($result = mysqli_fetch_assoc($query)) {
   $res_Name = $result['ADMIN_USERNAME'];
-}?>
+}
+function loadAsset($type, $path)
+{
+  $base_url = "http://localhost/Sesta-registration";
+  if ($type === 'css') {
+    echo '<link href="' . $base_url . $path . '" rel="stylesheet">';
+  } elseif ($type === 'js') {
+    echo '<script src="' . $base_url . $path . '"></script>';
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -124,5 +135,15 @@ while ($result = mysqli_fetch_assoc($query)) {
       });
     </script>
   </header>
-    </body>
-    </html>
+  <div style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
+  </div>
+  <div id="root"></div>
+  <?php
+  loadAsset('css', '/chatbox/index-vXR3yhj7.css');
+  loadAsset('js', '/chatbox/index-Dsumbowl.js');
+  ?>
+</body>
+
+</html>

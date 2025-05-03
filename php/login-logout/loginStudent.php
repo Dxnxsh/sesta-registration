@@ -22,16 +22,6 @@ if (!isset($_SESSION['captcha_text'])) {
 
 <body
     style="background-image: url(../../image/bg11.jpeg); background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%">
-    <?php
-    // Include the function definition
-    function showWhatsappWidget()
-    {
-    ?>
-        <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-        <div class="elfsight-app-752aad43-5ef5-4b28-9ef5-3f858f07f183" data-elfsight-app-lazy style="right: 50px;"></div>
-    <?php
-    }
-    ?>
     <script type="module" src="..\..\chatbox\index-Dsumbowl.js"></script>
     <link rel="stylesheet" href="..\..\chatbox\index-vXR3yhj7.css">
     <div class="wrapper">
