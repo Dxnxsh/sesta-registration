@@ -4,7 +4,7 @@ session_start();
 
 include("config.php");
 if (!isset($_SESSION['validTc'])) {
-    header("Location: LoginTeacher.php");
+    header("Location: login.php");
 }
 require_once('../Connections/registersekolah.php');
 ?>

@@ -16,7 +16,7 @@
             text: "Wrong Username or Password!",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../loginadmin.php';
+            window.location.href = '../login.php';
         });
     </script>
 </body>

@@ -116,7 +116,7 @@ $output .= '<p><a href="' . $base_url . '/Sesta-registration/php/login-logout/re
 
 						<button class="btn btn-primary" type="submit" id="reset">Reset Password</button>
                         
-                        <a href="LoginStudent.php" class="btn btn-secondary">Back to Login</a>
+                        <a href="login.php" class="btn btn-secondary">Back to Login</a>
                         
 					  </form>
 					</div>

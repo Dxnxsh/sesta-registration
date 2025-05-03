@@ -69,7 +69,7 @@ session_start();
                     <input type="submit" class="btn" name="submit" value="Verify" required>
                 </div>
                 <div class="links">
-                    Already a member? <a href="loginTeacher.php">Sign In</a>
+                    Already a member? <a href="login.php">Sign In</a>
                 </div>
             </form>
         </div>

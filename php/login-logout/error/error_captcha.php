@@ -16,7 +16,7 @@
             text: "Wrong captcha!",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../LoginStudent.php';
+            window.location.href = '../login.php';
         });
     </script>
 </body>

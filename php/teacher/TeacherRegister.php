@@ -4,7 +4,7 @@ session_start();
 include("../config.php");
 
 if (!isset($_SESSION['validTC'])) {
-	header("Location: ../login-logout/loginTeacherb.php");
+	header("Location: ../login-logout/loginb.php");
 	exit();
 }
 

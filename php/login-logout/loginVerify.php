@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
             header("Location: $redirectSuccess");
         }
     } else {
-        /* header("Location: $redirectError"); */
+        header("Location: $redirectError");
     }
     exit();
 }

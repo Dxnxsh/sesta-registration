@@ -16,7 +16,7 @@
             text: "Account Registration Successful!",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../loginStudentb.php';
+            window.location.href = '../loginb.php';
         });
     </script>
 </body>

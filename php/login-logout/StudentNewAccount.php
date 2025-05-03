@@ -43,7 +43,7 @@
                     mysqli_query($con, "INSERT INTO `payment`(`PAYMENT_AMOUNT`, `PAYMENT_TYPE`, `PAYMENT_STATUS`, `STUDENT_ID`) VALUES('100', 'PIBG FEES', 'UNPAID', '$ic')") or die('Error: ' . mysqli_error($con));
 
 
-                    header("Location: loginStudentb.php");
+                    header("Location: loginb.php");
                     exit();
                 }
             }
@@ -75,7 +75,7 @@
 
                 <input type="submit" class="btn" name="submit" value="Register" required>
                 <div class="links">
-                    Already a member? <a href="LoginStudent.php">Sign In</a>
+                    Already a member? <a href="login.php">Sign In</a>
                 </div>
             </form>
         </div>

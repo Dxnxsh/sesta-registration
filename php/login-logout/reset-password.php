@@ -138,10 +138,10 @@
                         $studentRow = mysqli_fetch_assoc($studentQuery);
 
                         if (empty($studentRow['STUDENT_NAME']) || is_null($studentRow['STUDENT_NAME'])) {
-                            header("Location: loginstudentB.php"); // Redirect to loginstudentB.php
+                            header("Location: loginB.php"); // Redirect to loginB.php
                             exit();
                         } else {
-                            echo "<a href='loginStudent.php'><button class='btn'>Go Back</button>";
+                            echo "<a href='login.php'><button class='btn'>Go Back</button>";
                         }
                     }
                 }

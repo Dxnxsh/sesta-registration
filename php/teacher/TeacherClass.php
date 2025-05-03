@@ -2,11 +2,11 @@
 	session_start();
    include("../config.php");
    if(!isset($_SESSION['validTC'])){
-    header("Location: ../login-logout/LoginTeacher.php");
+    header("Location: ../login-logout/login.php");
    }
 
 if (!isset($_SESSION['validTC'])) {
-    header("Location: ../login-logout/LoginTeacher.php");
+    header("Location: ../login-logout/login.php");
     exit(); // Add exit to stop further script execution
 }
 

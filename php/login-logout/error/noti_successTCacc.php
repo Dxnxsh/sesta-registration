@@ -18,7 +18,7 @@
             text: "Proceed to account login",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../loginteacherB.php';
+            window.location.href = '../loginB.php';
         });
     </script>
 </body>

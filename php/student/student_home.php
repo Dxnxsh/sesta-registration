@@ -4,7 +4,7 @@
 
    include("../config.php");
    if(!isset($_SESSION['valid'])){
-    header("Location: ../login-logout/loginStudent.php");
+    header("Location: ../login-logout/login.php");
    }
 ?>
 <?php include "../header/studentHeader.php" ?>

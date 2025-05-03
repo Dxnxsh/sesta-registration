@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1'); 
 
 if (!isset($_SESSION['adminID'])) {
-    header("Location: ../login-logout/loginAdmin.php");
+    header("Location: ../login-logout/login.php");
     exit();
 }
 

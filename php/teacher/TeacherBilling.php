@@ -1,7 +1,7 @@
 <?php 
 	session_start();
    if(!isset($_SESSION['validTC'])){
-    header("Location: ../login-logout/LoginTeacher.php");
+    header("Location: ../login-logout/login.php");
    }
 ?>
 

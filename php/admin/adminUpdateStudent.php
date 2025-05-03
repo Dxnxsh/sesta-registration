@@ -2,7 +2,7 @@
 session_start();
 include("../config.php");
 if (!isset($_SESSION['adminID'])) {
-    header("Location: ../login-logout/loginadmin.php");
+    header("Location: ../login-logout/login.php");
     exit();
 }
 
