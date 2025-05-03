@@ -107,7 +107,7 @@ function loadAsset($type, $path)
 
           <div class="bottom-cotent">
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/login-logout/logoutAdmin.php" class="nav-link">
+              <a href="http://localhost/Sesta-registration/php/login-logout/logout.php" class="nav-link">
                 <i class="bx bx-log-out icon"></i>
                 <span class="link">Logout</span>
               </a>
