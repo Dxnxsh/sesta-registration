@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 // Ensure CAPTCHA text is generated and stored in the session
@@ -26,15 +26,14 @@ if (!isset($_SESSION['captcha_text'])) {
     // Include the function definition
     function showWhatsappWidget()
     {
-        ?>
-        <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-        <div class="elfsight-app-752aad43-5ef5-4b28-9ef5-3f858f07f183" data-elfsight-app-lazy></div>
-        <?php
-    }
-
-    // Call the function to display the WhatsApp widget
-    showWhatsappWidget();
     ?>
+        <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+        <div class="elfsight-app-752aad43-5ef5-4b28-9ef5-3f858f07f183" data-elfsight-app-lazy style="right: 50px;"></div>
+    <?php
+    }
+    ?>
+    <script type="module" src="..\..\chatbox\index-Dsumbowl.js"></script>
+    <link rel="stylesheet" href="..\..\chatbox\index-vXR3yhj7.css">
     <div class="wrapper">
         <div class="container">
             <div class="box form-box">
@@ -81,7 +80,7 @@ if (!isset($_SESSION['captcha_text'])) {
                 } else {
 
 
-                    ?>
+                ?>
                     <header>Login Student</header>
                     <form action="" method="post">
                         <div class="field input">
@@ -118,8 +117,8 @@ if (!isset($_SESSION['captcha_text'])) {
                     <div class="links">
                         Don't have account? <a href=" StudentNewAccount.php">Sign Up Now</a>
                     </div>
-                </div>
-            <?php } ?>
+            </div>
+        <?php } ?>
         </div>
     </div>
     <div class="home-content">
@@ -128,6 +127,11 @@ if (!isset($_SESSION['captcha_text'])) {
         <h3>SCHOOL REGISTRATION SYSTEM </h3>
         <h3><span class="text"></span></h3>
     </div>
+    <div style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
+        <script src="https://static.elfsight.com/platform/platform.js" async></script>
+        <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
+    </div>
+    <div id="root"></div>
     <video autoplay loop muted play-inline class="background-clip">
         <source src="../../image/bg1.mp4" type="video/mp4">
     </video>
