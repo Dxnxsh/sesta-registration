@@ -4,7 +4,7 @@ session_start();
 include("../config.php");
 
 if (!isset($_SESSION['validTC'])) {
-	header("Location: ../login-logout/loginb.php");
+	header("Location: ../login-logout/login.php");
 	exit();
 }
 
@@ -33,7 +33,7 @@ while ($result = mysqli_fetch_assoc($query)) {
 
 if (isset($_POST['submit'])) {
 
-	$teachname = $_POST['teachername'];
+	$teachname = $_POST['teacherName'];
 	$gender = $_POST['gender'];
 	$dob = $_POST['dob'];
 	$address = $_POST['address'];
@@ -79,18 +79,18 @@ if (isset($_POST['submit'])) {
 					<h2>Teacher Information :</h2>
 					<p><b>
 							<label for="teachername">Teacher Name :</label>
-							<input type="text" id="teacherName" required>
+							<input type="text" id="teacherName" name="teacherName" required>
 					</p>
 					<label>Gender : </label></b>
-					<input type="radio" id="male" name="gender" required></b>
+					<input type="radio" id="male" name="gender" value="Male" required></b>
 					<label for="male">Male</label>
-					<input type="radio" id="female" name="gender"  required>
+					<input type="radio" id="female" name="gender" value="Female" required>
 					<label for="female">Female</label><br>
 					<br><b>
 						<label>Status : </label>
-						<input type="radio" id="status" name="status" required>
+						<input type="radio" id="status" name="status" value="Single" required>
 						<label for="stat">Single</label>
-						<input type="radio" id="statusM" name="status" required>
+						<input type="radio" id="statusM" name="status" value="Married" required>
 						<label for="stat2">Married</label>
 						<label for="dob">
 							<br><br><b>
@@ -102,7 +102,9 @@ if (isset($_POST['submit'])) {
 							name="address"> </textarea>
 						<br>
 						<label for="phone">Phone No. :</label>
-						<input type="text" id="parentPhone" name="parentPhone" required>
+						<input type="text" id="phone" name="phone" required>
+						<label for="phone">Email :</label>
+						<input type="text" id="email" name="email" required>
 
 
 

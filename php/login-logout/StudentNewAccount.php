@@ -43,7 +43,7 @@
                     mysqli_query($con, "INSERT INTO `payment`(`PAYMENT_AMOUNT`, `PAYMENT_TYPE`, `PAYMENT_STATUS`, `STUDENT_ID`) VALUES('100', 'PIBG FEES', 'UNPAID', '$ic')") or die('Error: ' . mysqli_error($con));
 
 
-                    header("Location: loginb.php");
+                    header("Location: login.php");
                     exit();
                 }
             }
