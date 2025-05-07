@@ -286,13 +286,10 @@
 	 font-weight: 700;
 	 color: #ffeba7;
 	 letter-spacing: 2px;
-	 top: 50%;
-	 right: 20px;
+	 top: 95%;
+	 right: 45%;
 	 cursor: pointer;
 	 z-index: 2;
-	 -webkit-writing-mode: vertical-lr;
-	 writing-mode: vertical-lr;
-	 transform: translateY(-50%) rotate(180deg);
 	 -webkit-transition: all 200ms linear;
 	 transition: all 200ms linear;
  }
