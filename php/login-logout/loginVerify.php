@@ -47,6 +47,17 @@ if (isset($_POST['submit'])) {
             } else {
                 header("Location: ../student/StudentRegistration.php");
             }
+        } elseif ($role === 'teacher') {
+            // Additional logic for teachers
+            $teacherId = $_SESSION['validTC'];
+            $result = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID='$teacherId'");
+            $row = mysqli_fetch_assoc($result);
+
+            if (isset($row['TEACHER_NAME']) && !empty($row['TEACHER_NAME'])) {
+                header("Location: ../teacher/teacher_home.php");
+            } else {
+                header("Location: ../teacher/TeacherRegister.php");
+            }
         } else {
             header("Location: $redirectSuccess");
         }
