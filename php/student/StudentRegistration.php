@@ -61,11 +61,15 @@ if(isset($_POST['submit'])){
         $studLevel = "1";
     }
 	
-   mysqli_query($con, "INSERT INTO `parent`(`PARENT_ID`, `PARENT_NAME`, `PARENT_GENDER`, `PARENT_PHONENUM`,
-			   `PARENT_JOB`, `PARENT_MONTHLY_INCOME`, STUDENT_ID) VALUES('$parIC', '$parName', '$parGender', '$parPhone', '$parJob', '$parSalary', '$id' )") or die("Error Occurred student". mysqli_error($con));
-  
-			  
-  
+    // Check if parent ID already exists
+    $parentCheckQuery = mysqli_query($con, "SELECT * FROM `parent` WHERE `PARENT_ID` = '$parIC'");
+    if (mysqli_num_rows($parentCheckQuery) == 0) {
+        // If parent ID does not exist, insert the parent data
+        mysqli_query($con, "INSERT INTO `parent`(`PARENT_ID`, `PARENT_NAME`, `PARENT_GENDER`, `PARENT_PHONENUM`,
+                   `PARENT_JOB`, `PARENT_MONTHLY_INCOME`) VALUES('$parIC', '$parName', '$parGender', '$parPhone', '$parJob', '$parSalary')") 
+                   or die("Error Occurred student". mysqli_error($con));
+    }
+
 	mysqli_query($con,"UPDATE `student` SET `STUDENT_NAME`='$studname', `STUDENT_GENDER`='$studGender', `STUDENT_LEVEL`='$studLevel',
 	`STUDENT_DOB`='$studDOB', `STUDENT_POB`='$studPOB', `STUDENT_RELIGION`='$studReligion', `STUDENT_RACE`='$studRace', `STUDENT_NATIONALITY`='$studNationality',
 	`STUDENT_ADDRESS`='$studAddress', `STUDENT_DISEASE`='$studDisease', `STUDENT_DISABILITY`='$studDisable', `STUDENT_STATUS`='$studStatus', `PARENT_ID`='$parIC' WHERE `STUDENT_ID`='$res_id'") or die("Error Occurred student ". mysqli_error($con));

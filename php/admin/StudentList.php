@@ -9,13 +9,13 @@ if (!isset($_SESSION['adminID'])) {
 <?php include "../header/adminHeader.php" ?>
 <?php
 include("../config.php");
-// Handle class deletion
+// Handle student deletion
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $delete = mysqli_query($con, "DELETE FROM `student` WHERE `STUDENT_ID`='$id'");
 }
 
-// Handle class search
+// Handle student search
 $searchCondition = "";
 $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
 
@@ -40,7 +40,7 @@ $query = mysqli_query($con, $select);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Class Information</title>
+    <title>Student Information</title>
     <style>
         body {
             background-image: url("../../image/admin.png");
@@ -277,7 +277,7 @@ $query = mysqli_query($con, $select);
 <body>
     <div class="container">
         <form id="form2" name="form2" method="get">
-            <h1>Class Information</h1>
+            <h1>Student Information</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="STUDENT_ID">STUDENT ID</option>
@@ -333,7 +333,7 @@ $query = mysqli_query($con, $select);
     </div>
 
     <script>
-        function confirmDelete(classCode) {
+        function confirmDelete(studentCode) {
             Swal.fire({
                 title: 'Are you sure',
                 text: 'You won\'t be able to revert this!',
@@ -344,7 +344,7 @@ $query = mysqli_query($con, $select);
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'studentList.php?id=' + classCode;
+                    window.location.href = 'studentList.php?id=' + studentCode;
                 }
             });
         }
