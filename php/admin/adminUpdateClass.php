@@ -47,7 +47,6 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Assign Class</title>
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -117,8 +116,7 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
         #back:hover {
             background-color: #d14529;
         }
-
-</style>
+    </style>
 </head>
 
 <body
@@ -131,54 +129,64 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                 <input name="name" type="text" id="name" value="<?php echo $className ?>">
             </p>
             <p>
-    <label for="level">Study level:</label>
-    <select name="level" id="level" required>
-        <option value="Form 1" <?php echo ($classlvl == 'Form 1') ? 'selected' : ''; ?>>Form 1</option>
-        <option value="Form 4" <?php echo ($classlvl == 'Form 4') ? 'selected' : ''; ?>>Form 4</option>
-    </select>
-</p>
+                <label for="level">Study level:</label>
+                <select name="level" id="level" required>
+                    <option value="Form 1" <?php echo ($classlvl == 'Form 1') ? 'selected' : ''; ?>>Form 1</option>
+                    <option value="Form 4" <?php echo ($classlvl == 'Form 4') ? 'selected' : ''; ?>>Form 4</option>
+                </select>
+            </p>
             <p>
-    <label for="block">Block:</label>
-    <select name="block" id="block" required>
-        <option value="A" <?php echo ($blck == 'A') ? 'selected' : ''; ?>>Block A</option>
-        <option value="B" <?php echo ($blck == 'B') ? 'selected' : ''; ?>>Block B</option>
-        <option value="C" <?php echo ($blck == 'C') ? 'selected' : ''; ?>>Block C</option>
-        <option value="D" <?php echo ($blck == 'D') ? 'selected' : ''; ?>>Block D</option>
-        <option value="E" <?php echo ($blck == 'E') ? 'selected' : ''; ?>>Block E</option>
-    </select>
-</p>
-<p>
-    <label for="floor">Floor:</label>
-    <select name="floor" id="floor" required>
-        <option value="1" <?php echo ($flr == '1') ? 'selected' : ''; ?>>1st Floor</option>
-        <option value="2" <?php echo ($flr == '2') ? 'selected' : ''; ?>>2nd Floor</option>
-        <option value="3" <?php echo ($flr == '3') ? 'selected' : ''; ?>>3rd Floor</option>
-    </select>
-</p>
+                <label for="block">Block:</label>
+                <select name="block" id="block" required>
+                    <option value="A" <?php echo ($blck == 'A') ? 'selected' : ''; ?>>Block A</option>
+                    <option value="B" <?php echo ($blck == 'B') ? 'selected' : ''; ?>>Block B</option>
+                    <option value="C" <?php echo ($blck == 'C') ? 'selected' : ''; ?>>Block C</option>
+                    <option value="D" <?php echo ($blck == 'D') ? 'selected' : ''; ?>>Block D</option>
+                    <option value="E" <?php echo ($blck == 'E') ? 'selected' : ''; ?>>Block E</option>
+                </select>
+            </p>
             <p>
-            <label for="category">Category:</label>
-<select name="category" id="category" value="" required>
-    <option value="" disabled>Select Category</option>
-    <option value="Main Stream" class="form1-option" <?php echo ($cat == 'Main Stream') ? 'selected' : ''; ?>>Main Stream</option>
-    <option value="Science Stream" class="form4-option" <?php echo ($cat == 'Science Stream') ? 'selected' : ''; ?>>Science Stream</option>
-    <option value="Art Stream" class="form4-option" <?php echo ($cat == 'Art Stream') ? 'selected' : ''; ?>>Art Stream</option>
-    <option value="STEM" class="form4-option" <?php echo ($cat == 'STEM') ? 'selected' : ''; ?>>STEM</option>
-</select>
+                <label for="floor">Floor:</label>
+                <select name="floor" id="floor" required>
+                    <option value="1" <?php echo ($flr == '1') ? 'selected' : ''; ?>>1st Floor</option>
+                    <option value="2" <?php echo ($flr == '2') ? 'selected' : ''; ?>>2nd Floor</option>
+                    <option value="3" <?php echo ($flr == '3') ? 'selected' : ''; ?>>3rd Floor</option>
+                </select>
+            </p>
+            <p>
+                <label for="category">Category:</label>
+                <select name="category" id="category" value="" required>
+                    <option value="" disabled>Select Category</option>
+                    <option value="Main Stream" class="form1-option" <?php echo ($cat == 'Main Stream') ? 'selected' : ''; ?>>Main Stream</option>
+                    <option value="Science Stream" class="form4-option" <?php echo ($cat == 'Science Stream') ? 'selected' : ''; ?>>Science Stream</option>
+                    <option value="Art Stream" class="form4-option" <?php echo ($cat == 'Art Stream') ? 'selected' : ''; ?>>Art Stream</option>
+                    <option value="STEM" class="form4-option" <?php echo ($cat == 'STEM') ? 'selected' : ''; ?>>STEM</option>
+                </select>
 
-<p>Teacher ID:
-    <select name="teacherID" required>
-        <option value="<?php echo $teachid ?>'-'<?php echo $teachName ?>" disabled selected>Select Teacher ID</option>
-        <option value="">Revoke current Teacher</option>
- <?php
-        if (mysqli_num_rows($queryClassTeacher) > 0) {
-            while ($resultTeacher = mysqli_fetch_array($queryClassTeacher)) {
-                $selected = ($resultTeacher["TEACHER_ID"] == $teachid) ? 'selected' : '';
-                echo "<option value=" . $resultTeacher["TEACHER_ID"] . " $selected >" . $resultTeacher["TEACHER_ID"] . ' - ' . $resultTeacher["TEACHER_NAME"] . "</option>";
-            }
-        }
-        ?>
-    </select>
-</p>
+            <p>Teacher ID:
+                <select name="teacherID" required>
+                    <option value="" disabled>Select Teacher ID</option>
+                    <option value="">Revoke current Teacher</option>
+                    <?php
+                    // Fetch the current teacher assigned to the class
+                    $currentTeacherQuery = "SELECT TEACHER_ID, TEACHER_NAME FROM teacher WHERE TEACHER_ID = (SELECT TEACHER_ID FROM class WHERE CLASS_CODE = '$classCode')";
+                    $currentTeacherResult = mysqli_query($con, $currentTeacherQuery);
+                    $currentTeacher = mysqli_fetch_assoc($currentTeacherResult);
+
+                    if ($currentTeacher) {
+                        echo "<option value='" . $currentTeacher["TEACHER_ID"] . "' selected>" . $currentTeacher["TEACHER_ID"] . " - " . $currentTeacher["TEACHER_NAME"] . "</option>";
+                    }
+
+                    // Populate the list of teachers who are not assigned to any class
+                    if (mysqli_num_rows($queryClassTeacher) > 0) {
+                        while ($resultTeacher = mysqli_fetch_array($queryClassTeacher)) {
+                            $selected = isset($teachid) && ($resultTeacher["TEACHER_ID"] == $teachid) ? 'selected' : '';
+                            echo "<option value='" . $resultTeacher["TEACHER_ID"] . "' $selected>" . $resultTeacher["TEACHER_ID"] . " - " . $resultTeacher["TEACHER_NAME"] . "</option>";
+                        }
+                    }
+                    ?>
+                </select>
+            </p>
             <input type="hidden" name="cCode" id="cCode" value="<?php echo $classCode; ?>">
             <p>
                 <span style="text-align: left"><strong>
@@ -192,14 +200,14 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-        $(document).ready(function () {
-            $('#level').change(function () {
+        $(document).ready(function() {
+            $('#level').change(function() {
                 // Get the selected value
                 var selectedLevel = $(this).val();
 
                 // Show/hide options based on the selected level
                 if (selectedLevel === 'Form 1') {
-                    $('#category').val('Main Stream');  // Automatically set the value to 'Arus Perdana'
+                    $('#category').val('Main Stream'); // Automatically set the value to 'Arus Perdana'
                     $('.form1-option').show();
                     $('.form4-option').hide();
                 } else if (selectedLevel === 'Form 4') {
@@ -215,58 +223,57 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
 
 
 
-        document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('form1');
-    const saveButton = document.getElementById('update');
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('form1');
+            const saveButton = document.getElementById('update');
 
-    saveButton.addEventListener('click', function (event) {
-        event.preventDefault();
+            saveButton.addEventListener('click', function(event) {
+                event.preventDefault();
 
-        // Gather form data
-        const formData = new FormData(form);
+                // Gather form data
+                const formData = new FormData(form);
 
-        // Log form data for debugging
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
-
-        // Submit form data using AJAX
-        fetch('update_class.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Log the response for debugging
-                console.log(data);
-
-                // Handle the response from the server
-                if (data.success) {
-                    Swal.fire({
-                        title: 'Class Record Updated',
-                        text: 'The new class record has been updated successfully.',
-                        icon: 'success',
-                        confirmButtonColor: '#4caf50',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = 'adminClass.php';
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Failed to update class record. Please check the console for details.',
-                        icon: 'error',
-                        confirmButtonColor: '#d14529',
-                    });
+                // Log form data for debugging
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ', ' + pair[1]);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    });
-});
 
+                // Submit form data using AJAX
+                fetch('update_class.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Log the response for debugging
+                        console.log(data);
+
+                        // Handle the response from the server
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Class Record Updated',
+                                text: 'The new class record has been updated successfully.',
+                                icon: 'success',
+                                confirmButtonColor: '#4caf50',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = 'adminClass.php';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to update class record. Please check the console for details.',
+                                icon: 'error',
+                                confirmButtonColor: '#d14529',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
     </script>
 </body>
 
