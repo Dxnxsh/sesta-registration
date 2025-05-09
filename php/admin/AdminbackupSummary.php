@@ -274,7 +274,7 @@ if (!isset($_SESSION['adminID'])) {
         }
         ?>
         <div class="logo">
-            <img src="..\..\image\sesta.png" alt="Logo">
+            <img src="..\..\image\icon\sesta.png" alt="Logo">
         </div>
         <h2>
             <i class="fas fa-chart-pie"></i> SYSTEM SUMMARY
