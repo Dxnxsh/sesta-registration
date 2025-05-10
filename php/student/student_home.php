@@ -5,10 +5,16 @@
    if(!isset($_SESSION['valid'])){
        header("Location: ../login-logout/login.php");
    }
-
+   
    // Check if the popup has already been shown
    if (!isset($_SESSION['popup_shown'])) {
        $_SESSION['popup_shown'] = false;
+   }
+
+   // Include adHeader.php only if popup_shown is false
+   if (!$_SESSION['popup_shown']) {
+       include "../header/adHeader.php";
+       $_SESSION['popup_shown'] = true; // Set popup_shown to true after including adHeader.php
    }
 ?>
 <?php include "../header/studentHeader.php" ?>
@@ -19,59 +25,7 @@
 <meta charset="utf-8">
 <title>Student Homepage</title>
     
-<link rel="stylesheet" href="../../css/student_homeStyle.css"/>
-<style>
-/* Popup styling */
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 1072px;
-    height: 603px;
-    background-color: white;
-    border: 2px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 1000;
-}
-
-.popup img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.popup-close {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    cursor: pointer;
-    font-size: 37px;
-    color: red;
-    font-weight: bold;
-}
-
-/* Styling for the indicator */
-.indicator {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.indicator-line {
-    width: 30px;
-    height: 5px;
-    background-color: #ccc;
-    margin: 0 5px;
-    transition: background-color 0.3s ease;
-}
-
-.indicator-line.active {
-    background-color: #000; /* Highlight active indicator */
-}
-</style>
+    <link rel="stylesheet" href="../../css/student_homeStyle.css"/>
 </head>
 
 <body>
@@ -158,76 +112,6 @@
             </ul>
         </div>
     </div>
-
-    <!-- Popup for cycling images -->
-    <div class="popup" id="imagePopup">
-        <span class="popup-close" id="popupClose">&times;</span>
-        <img id="popupImage" src="" alt="Cycling Images">
-        <div class="indicator" id="imageIndicator"></div> <!-- Indicator container -->
-    </div>
-
-    <script>
-    // JavaScript for cycling images with indicators
-    const images = [
-        "../../image/bg1.png",
-        "../../image/bg3.jpg",
-        "../../image/bg6.png"
-    ]; // Add paths to your images here
-
-    let currentIndex = 0;
-    const popup = document.getElementById('imagePopup');
-    const popupImage = document.getElementById('popupImage');
-    const popupClose = document.getElementById('popupClose');
-    const indicator = document.getElementById('imageIndicator');
-
-    // Create indicators dynamically based on the number of images
-    function createIndicators() {
-        indicator.innerHTML = ''; // Clear existing indicators
-        images.forEach((_, index) => {
-            const line = document.createElement('div');
-            line.className = 'indicator-line';
-            if (index === 0) line.classList.add('active'); // Set the first indicator as active
-            indicator.appendChild(line);
-        });
-    }
-
-    // Update the active indicator
-    function updateIndicators() {
-        const lines = document.querySelectorAll('.indicator-line');
-        lines.forEach((line, index) => {
-            if (index === currentIndex) {
-                line.classList.add('active');
-            } else {
-                line.classList.remove('active');
-            }
-        });
-    }
-
-    function showPopup() {
-        popup.style.display = 'block';
-        createIndicators(); // Create indicators when the popup is shown
-        cycleImages();
-    }
-
-    function cycleImages() {
-        popupImage.src = images[currentIndex];
-        updateIndicators(); // Update the indicator for the current image
-        currentIndex = (currentIndex + 1) % images.length;
-        setTimeout(cycleImages, 3000); // Change image every 3 seconds
-    }
-
-    popupClose.addEventListener('click', () => {
-        popup.style.display = 'none';
-    });
-
-    // Show popup only if it hasn't been shown yet
-    window.onload = () => {
-        <?php if (!$_SESSION['popup_shown']): ?>
-            showPopup();
-            <?php $_SESSION['popup_shown'] = true; ?>
-        <?php endif; ?>
-    };
-    </script>
 </body>
 </html>
 <?php include "../header/footer.php" ?>
