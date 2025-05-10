@@ -4,6 +4,15 @@ include("../config.php");
 
 if (isset($_POST['submit'])) {
     $role = $_POST['role']; // Get the role (admin, teacher, student) from the form
+
+    // Validate CAPTCHA for teacher and student roles only
+    if (($role === 'teacher' || $role === 'student') && 
+        (!isset($_POST['captcha_input']) || $_POST['captcha_input'] !== $_SESSION['captcha_text'])) {
+        // CAPTCHA validation failed
+        header("Location: error/error_captcha.php");
+        exit();
+    }
+
     $username = mysqli_real_escape_string($con, $_POST['username']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
 
@@ -64,6 +73,7 @@ if (isset($_POST['submit'])) {
     } else {
         header("Location: $redirectError");
     }
+    unset($_SESSION['captcha_text']);
     exit();
 }
 ?>

@@ -56,6 +56,11 @@
                         <label for="teacher-password">Password</label>
                         <input type="password" name="password" id="teacher-password" autocomplete="off" required>
                     </div>
+                    <div class="field input">
+                        <label for="captcha_input">Enter CAPTCHA</label>
+                        <img src="captcha.php" alt="CAPTCHA Image" style="margin-bottom: 10px;">
+                        <input type="text" name="captcha_input" id="captcha_input" autocomplete="off" required>
+                    </div>
                     <div class="field">
                         <input type="submit" class="btn" name="submit" value="LOGIN">
                     </div>
