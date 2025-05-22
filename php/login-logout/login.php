@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/modal.css">
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
     <title>Login</title>
 </head>
@@ -24,8 +25,8 @@
             <!-- Admin Login Form -->
             <div id="admin-form" class="box form-box" style="display: none;">
                 <header>Login Admin</header>
-                <form action="loginVerify.php" method="post">
-                <input type="hidden" name="role" value="admin">
+                <form id="adminLoginForm" action="loginVerify.php" method="post">
+                    <input type="hidden" name="role" value="admin">
                     <div class="field input">
                         <label for="admin-username">Username</label>
                         <input type="text" name="username" id="admin-username" autocomplete="off" required>
@@ -37,6 +38,7 @@
                     <div class="field">
                         <input type="submit" class="btn" name="submit" value="LOGIN">
                     </div>
+                    <p>&nbsp;</p>
                 </form>
                 <button class="home-sci" onclick="showForm('student')">STUDENT</button>
                 <p>&nbsp;</p>
@@ -46,8 +48,8 @@
             <!-- Teacher Login Form -->
             <div id="teacher-form" class="box form-box" style="display: none;">
                 <header>Login Teacher</header>
-                <form action="loginVerify.php" method="post">
-                <input type="hidden" name="role" value="teacher">
+                <form id="teacherLoginForm" action="loginVerify.php" method="post">
+                    <input type="hidden" name="role" value="teacher">
                     <div class="field input">
                         <label for="teacher-username">Username</label>
                         <input type="text" name="username" id="teacher-username" autocomplete="off" required>
@@ -62,21 +64,23 @@
                         <input type="text" name="captcha_input" id="captcha_input" autocomplete="off" required>
                     </div>
                     <div class="field">
-                        <input type="submit" class="btn" name="submit" value="LOGIN">
+                        <button class="btn" type="button" onclick="openModal('teacherLoginForm')">Proceed with Face Verification</button>
                     </div>
-                    <div class="links">
-                        Don't have account? <a href="verifyTeacher.php">Sign Up Now</a>
-                    </div>
+                    <p>&nbsp;</p>
                 </form>
                 <button class="home-sci" onclick="showForm('student')">STUDENT</button>
                 <p>&nbsp;</p>
                 <button class="home-sci" onclick="showForm('admin')">ADMIN</button>
+                <p>&nbsp;</p>
+                <div class="links">
+                    Don't have account? <a href="verifyTeacher.php">Sign Up Now</a>
+                </div>
             </div>
 
             <!-- Student Login Form -->
             <div id="student-form" class="box form-box">
                 <header>Login Student</header>
-                <form action="loginVerify.php" method="post">
+                <form id="studentLoginForm" action="loginVerify.php" method="post">
                     <input type="hidden" name="role" value="student">
                     <div class="field input">
                         <label for="student-no_ic">IC Number</label>
@@ -95,7 +99,7 @@
                         <a href="ForgotPS.php">Forgot Password?</a>
                     </div>
                     <div class="field">
-                        <input type="submit" class="btn" name="submit" value="LOGIN">
+                        <button class="btn" type="button" onclick="openModal('studentLoginForm')">Proceed with Face Verification</button>
                     </div>
                     <p>&nbsp;</p>
                 </form>
@@ -121,6 +125,69 @@
         <source src="../../image/bg1.mp4" type="video/mp4">
     </video>
 
+
+    <!-- Face Verification Modal -->
+    <div id="faceModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Face Verification</h2>
+                    <button class="close-button" onclick="closeModal()">×</button>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab-buttons">
+                        <button id="uploadTabBtn" class="tab active" onclick="openTab('uploadTab')">
+                            <span class="icon">📁</span>
+                            <span class="label">Upload Image</span>
+                        </button>
+                        <button id="webcamTabBtn" class="tab" onclick="openTab('webcamTab')">
+                            <span class="icon">📷</span>
+                            <span class="label">Use Webcam</span>
+                        </button>
+                    </div>
+
+                    <div class="tab-content-container">
+                        <div id="uploadTab" class="tab-content active">
+                            <div class="file-upload-container">
+                                <div class="file-upload-area" id="dropArea">
+                                    <div class="file-upload-prompt">
+                                        <div class="upload-icon">📷</div>
+                                        <p>Drag and drop your image here</p>
+                                        <p>or</p>
+                                        <label for="faceFile" class="custom-file-input">Choose File</label>
+                                        <input type="file" accept="image/*" id="faceFile" class="hidden-file-input">
+                                    </div>
+                                    <div class="file-preview" id="filePreview"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="webcamTab" class="tab-content">
+                            <div class="webcam-container">
+                                <video id="video" width="100%" autoplay playsinline></video>
+                                <canvas id="canvas" style="display: none;"></canvas>
+                                <div class="capture-container">
+                                    <div id="capturedImage" class="captured-image"></div>
+                                </div>
+                                <button id="captureBtn" class="btn-accent" onclick="captureFace()">
+                                    <span class="icon">📸</span> Capture Face
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn-primary" onclick="submitFace()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/modal.js"></script>
     <script>
         function showForm(role) {
             document.getElementById('admin-form').style.display = 'none';
