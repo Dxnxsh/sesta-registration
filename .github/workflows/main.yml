@@ -22,16 +22,25 @@ jobs:
         script: |
           REPO_PATH="/var/www/html"
           BRANCH="main"
-
+          REPO_URL="https://github.com/${{ github.repository }}.git"
+        
           if [ -d "$REPO_PATH/.git" ]; then
-            echo "Repository exists at $REPO_PATH. Pulling latest changes..."
+            echo "Git repository exists at $REPO_PATH. Pulling latest changes..."
             cd "$REPO_PATH"
             sudo git reset --hard
             sudo git pull origin "$BRANCH"
+          elif [ -d "$REPO_PATH" ]; then
+            echo "Directory exists but is not a git repo. Initializing and pulling..."
+            cd "$REPO_PATH"
+            sudo git init
+            sudo git remote add origin "$REPO_URL"
+            sudo git fetch origin
+            sudo git checkout -t origin/"$BRANCH"
           else
-            echo "Cloning repository into $REPO_PATH..."
-            sudo git clone --branch "$BRANCH" https://github.com/${{ github.repository }}.git "$REPO_PATH"
+            echo "Directory doesn't exist. Cloning fresh..."
+            sudo git clone --branch "$BRANCH" "$REPO_URL" "$REPO_PATH"
           fi
-
+        
           echo "Restarting Apache..."
           sudo systemctl restart apache2
+
