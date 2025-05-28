@@ -1,46 +1,41 @@
-name: Pull to Azure VM and Restart Apache
+name: Deploy to Azure VM
 
 on:
   push:
     branches:
-      - main
+      - main  
 
 jobs:
-  pull-on-azure:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repo (not used directly, but required for Actions)
+        uses: actions/checkout@v4
 
-    - name: Pull latest code to Azure VM and restart Apache
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.AZURE_VM_IP }}
-        username: ${{ secrets.AZURE_VM_USER }}
-        key: ${{ secrets.AZURE_VM_SSH_KEY }}
-        script: |
-          REPO_PATH="/var/www/html"
-          BRANCH="main"
-          REPO_URL="https://github.com/${{ github.repository }}.git"
-        
-          if [ -d "$REPO_PATH/.git" ]; then
-            echo "Git repository exists at $REPO_PATH. Pulling latest changes..."
-            cd "$REPO_PATH"
-            sudo git reset --hard
-            sudo git pull origin "$BRANCH"
-          elif [ -d "$REPO_PATH" ]; then
-            echo "Directory exists but is not a git repo. Initializing and pulling..."
-            cd "$REPO_PATH"
-            sudo git init
-            sudo git remote add origin "$REPO_URL"
-            sudo git fetch origin
-            sudo git checkout -t origin/"$BRANCH"
-          else
-            echo "Directory doesn't exist. Cloning fresh..."
-            sudo git clone --branch "$BRANCH" "$REPO_URL" "$REPO_PATH"
-          fi
-        
-          echo "Restarting Apache..."
-          sudo systemctl restart apache2
+      - name: Deploy via SSH to Azure VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USERNAME }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          port: 22
 
+          script: |
+            REPO_PATH="/var/www/html"
+            BRANCH="main"
+            REPO_URL="https://github.com/Dxnxsh/sesta-registration.git"
+
+            if [ -d "$REPO_PATH/.git" ]; then
+              echo "Git repository exists at $REPO_PATH. Pulling latest changes..."
+              cd "$REPO_PATH"
+              sudo git reset --hard
+              sudo git pull origin "$BRANCH"
+            else
+              echo "Cleaning and cloning fresh..."
+              sudo rm -rf "$REPO_PATH"
+              sudo git clone --branch "$BRANCH" "$REPO_URL" "$REPO_PATH"
+            fi
+
+            echo "Restarting Apache..."
+            sudo systemctl restart apache2
