@@ -9,27 +9,27 @@ while ($result = mysqli_fetch_assoc($query)) {
   $res_Name = $result['STUDENT_NAME'];
 }
 
-// Auto-detect base URL - dynamic approach
-function getBaseUrl()
+function getBasePath()
 {
-  $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-  $host = $_SERVER['HTTP_HOST'];
-  $scriptPath = $_SERVER['SCRIPT_NAME'];
-  $basePath = str_replace('/php/header/studentHeader.php', '', $scriptPath);
-  return $protocol . '://' . $host . $basePath;
+  // Get the current script's directory relative to document root
+  $currentDir = dirname($_SERVER['SCRIPT_NAME']);
+  // Calculate how many levels up we need to go to reach the project root
+  $levels = substr_count($currentDir, '/') - 1; // -1 because we don't count the root /
+  if ($levels <= 0) {
+    return './';
+  }
+  return str_repeat('../', $levels);
 }
 
 function loadAsset($type, $path)
 {
-  $base_url = getBaseUrl();
+  $basePath = getBasePath();
   if ($type === 'css') {
-    echo '<link href="' . $base_url . $path . '" rel="stylesheet">';
+    echo '<link href="' . $basePath . $path . '" rel="stylesheet">';
   } elseif ($type === 'js') {
-    echo '<script src="' . $base_url . $path . '"></script>';
+    echo '<script src="' . $basePath . $path . '"></script>';
   }
 }
-
-$base_url = getBaseUrl(); // Use this for all URLs
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,9 +37,8 @@ $base_url = getBaseUrl(); // Use this for all URLs
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- CSS -->
-  <link href="<?php echo $base_url; ?>/php/header/headerStyle.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- CSS -->
+  <link href="<?php echo getBasePath(); ?>php/header/headerStyle.css" rel="stylesheet" />
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
 </head>
 
@@ -48,7 +47,7 @@ $base_url = getBaseUrl(); // Use this for all URLs
     <nav>
       <div class="logo">
         <i class="bx bx-menu menu-icon"></i>
-        <img src="<?php echo $base_url; ?>/image/icon/logoSESTA2.png" width="200">
+        <img src="<?php echo getBasePath(); ?>image/icon/logoSESTA2.png" width="200">
         <div class="user">
           <i class='bx bx-user-circle user-icon'></i>
           <div class="user-name"><?php echo $res_Name ?></div>
@@ -58,31 +57,31 @@ $base_url = getBaseUrl(); // Use this for all URLs
           <div class="logo">
             <div class="sideLogo">
               <i class="bx bx-menu menu-icon"></i>
-              <img src="<?php echo $base_url; ?>/image/icon/logoSESTA2.png" width="200">
+              <img src="<?php echo getBasePath(); ?>image/icon/logoSESTA2.png" width="200">
             </div>
 
             <div class="sidebar-content">
               <ul class="lists">
                 <li class="list">
-                  <a href="<?php echo $base_url; ?>/php/student/student_home.php" class="nav-link">
+                  <a href="<?php echo getBasePath(); ?>php/student/student_home.php" class="nav-link">
                     <i class='bx bxs-home icon'></i>
                     <span class="link">Home</span>
                   </a>
                 </li>
                 <li class="list">
-                  <a href="<?php echo $base_url; ?>/html/subject.html" class="nav-link">
+                  <a href="<?php echo getBasePath(); ?>html/subject.html" class="nav-link">
                     <i class='bx bxs-book icon'></i>
                     <span class="link">Subject Outline</span>
                   </a>
                 </li>
                 <li class="list">
-                  <a href="<?php echo $base_url; ?>/php/student/billing/billing.php" class="nav-link">
+                  <a href="<?php echo getBasePath(); ?>php/student/billing/billing.php" class="nav-link">
                     <i class='bx bxs-dollar-circle icon'></i>
                     <span class="link">Billing</span>
                   </a>
                 </li>
                 <li class="list">
-                  <a href="<?php echo $base_url; ?>/php/student/studentCard.php" class="nav-link">
+                  <a href="<?php echo getBasePath(); ?>php/student/studentCard.php" class="nav-link">
                     <i class='bx bxs-id-card icon'></i>
                     <span class="link">Student Card</span>
                   </a>
@@ -91,7 +90,7 @@ $base_url = getBaseUrl(); // Use this for all URLs
 
               <div class="bottom-cotent">
                 <li class="list">
-                  <a href="<?php echo $base_url; ?>/php/login-logout/logout.php" class="nav-link"> <i class="bx bx-log-out icon"></i>
+                  <a href="<?php echo getBasePath(); ?>php/login-logout/logout.php" class="nav-link"> <i class="bx bx-log-out icon"></i>
                     <span class="link">Logout</span>
                   </a>
                 </li>
@@ -122,11 +121,9 @@ $base_url = getBaseUrl(); // Use this for all URLs
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
     <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
   </div>
-  <div id="root"></div>
-  <?php
-  loadAsset('css', '/chatbox/index-vXR3yhj7.css');
-  loadAsset('js', '/chatbox/index-Dsumbowl.js');
-  ?>
+  <div id="root"></div> <?php loadAsset('css', 'chatbox/index-vXR3yhj7.css');
+                        loadAsset('js', 'chatbox/index-Dsumbowl.js');
+                        ?>
 </body>
 
 </html>
