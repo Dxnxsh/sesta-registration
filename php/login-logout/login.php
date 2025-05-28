@@ -136,6 +136,11 @@
                     <button class="close-button" onclick="closeModal()">×</button>
                 </div>
 
+                <div class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Verifying face...</div>
+                </div>
+
                 <div class="tabs">
                     <div class="tab-buttons">
                         <button id="uploadTabBtn" class="tab active" onclick="openTab('uploadTab')">

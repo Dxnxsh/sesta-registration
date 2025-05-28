@@ -7,6 +7,7 @@ const filePreview = document.getElementById('filePreview');
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const capturedImage = document.getElementById('capturedImage');
+const loadingOverlay = document.querySelector('.loading-overlay');
 activeForm = null;
 
 // Open modal
@@ -36,6 +37,7 @@ function closeModal() {
             tracks.forEach(track => track.stop());
             video.srcObject = null;
         }
+        loadingOverlay.classList.remove('show');
     }, 300);
 }
 
@@ -155,6 +157,8 @@ function submitFace() {
         return;
     }
 
+    loadingOverlay.classList.add('show');
+
     const reader = new FileReader();
     reader.onload = function () {
         const base64 = reader.result.split(',')[1];
@@ -181,11 +185,13 @@ function submitFace() {
                         input.value = value;
                         actualForm.appendChild(input);
                     }
+                    loadingOverlay.classList.remove('show');
                     actualForm.action = "loginVerify.php";
                     actualForm.method = "POST";
                     document.body.appendChild(actualForm);
                     actualForm.submit();
                 } else {
+                    loadingOverlay.classList.remove('show');
                     alert("Face verification failed!");
                     openModal(activeForm);
                 }
