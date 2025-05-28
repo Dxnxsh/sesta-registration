@@ -1,0 +1,37 @@
+name: Pull to Azure VM and Restart Apache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pull-on-azure:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Pull latest code to Azure VM and restart Apache
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.AZURE_VM_IP }}
+        username: ${{ secrets.AZURE_VM_USER }}
+        key: ${{ secrets.AZURE_VM_SSH_KEY }}
+        script: |
+          REPO_PATH="/var/www/html"
+          BRANCH="main"
+
+          if [ -d "$REPO_PATH/.git" ]; then
+            echo "Repository exists at $REPO_PATH. Pulling latest changes..."
+            cd "$REPO_PATH"
+            sudo git reset --hard
+            sudo git pull origin "$BRANCH"
+          else
+            echo "Cloning repository into $REPO_PATH..."
+            sudo git clone --branch "$BRANCH" https://github.com/${{ github.repository }}.git "$REPO_PATH"
+          fi
+
+          echo "Restarting Apache..."
+          sudo systemctl restart apache2
