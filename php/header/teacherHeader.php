@@ -11,14 +11,16 @@ while ($result = mysqli_fetch_assoc($query)) {
 
 function getBasePath()
 {
-  // Get the current script's directory relative to document root
-  $currentDir = dirname($_SERVER['SCRIPT_NAME']);
-  // Calculate how many levels up we need to go to reach the project root
-  $levels = substr_count($currentDir, '/') - 1; // -1 because we don't count the root /
-  if ($levels <= 0) {
-    return './';
+  // Determine if we're on localhost or production
+  $isLocalhost = ($_SERVER['HTTP_HOST'] === 'localhost' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
+
+  if ($isLocalhost) {
+    // On localhost, we're in a subdirectory
+    return '/Sesta-registration/';
+  } else {
+    // On production, we're at the root
+    return '/';
   }
-  return str_repeat('../', $levels);
 }
 
 function loadAsset($type, $path)
@@ -125,9 +127,9 @@ function loadAsset($type, $path)
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
     <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
   </div>
-  <div id="root"></div> <?php loadAsset('css', 'chatbox/index-vXR3yhj7.css');
-                        loadAsset('js', 'chatbox/index-Dsumbowl.js');
-                        ?>
+  <div id="root"></div>
+  <link href="<?php echo getBasePath(); ?>chatbox/index-vXR3yhj7.css" rel="stylesheet">
+  <script type="module" src="<?php echo getBasePath(); ?>chatbox/index-Dsumbowl.js"></script>
 </body>
 
 </html>
