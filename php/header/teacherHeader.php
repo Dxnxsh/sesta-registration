@@ -8,15 +8,28 @@ $query = mysqli_query($con, "SELECT*FROM teacher WHERE TEACHER_ID=$id");
 while ($result = mysqli_fetch_assoc($query)) {
   $res_Name = $result['TEACHER_NAME'];
 }
+
+// Auto-detect base URL - dynamic approach
+function getBaseUrl()
+{
+  $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+  $host = $_SERVER['HTTP_HOST'];
+  $scriptPath = $_SERVER['SCRIPT_NAME'];
+  $basePath = str_replace('/php/header/teacherHeader.php', '', $scriptPath);
+  return $protocol . '://' . $host . $basePath;
+}
+
 function loadAsset($type, $path)
 {
-  $base_url = "http://localhost/Sesta-registration";
+  $base_url = getBaseUrl();
   if ($type === 'css') {
     echo '<link href="' . $base_url . $path . '" rel="stylesheet">';
   } elseif ($type === 'js') {
     echo '<script src="' . $base_url . $path . '"></script>';
   }
 }
+
+$base_url = getBaseUrl(); // Use this for all URLs
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +38,7 @@ function loadAsset($type, $path)
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="http://localhost/Sesta-registration/php/header/headerStyle.css" rel="stylesheet" />
+  <link href="<?php echo $base_url; ?>/php/header/headerStyle.css" rel="stylesheet" />
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
 </head>
 
@@ -35,7 +48,7 @@ function loadAsset($type, $path)
     <nav>
       <div class="logo">
         <i class="bx bx-menu menu-icon"></i>
-        <img src="http://localhost/Sesta-registration/image/icon/logoSESTA2.png" width="200">
+        <img src="<?php echo $base_url; ?>/image/icon/logoSESTA2.png" width="200">
       </div>
       <div class="user">
         <i class='bx bx-user-circle user-icon'></i>
@@ -46,32 +59,32 @@ function loadAsset($type, $path)
         <div class="logo">
           <div class="sideLogo">
             <i class="bx bx-menu menu-icon"></i>
-            <img src="http://localhost/Sesta-registration/image/icon/logoSESTA2.png" width="200">
+            <img src="<?php echo $base_url; ?>/image/icon/logoSESTA2.png" width="200">
           </div>
         </div>
 
         <div class="sidebar-content">
           <ul class="lists">
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/teacher/teacher_home.php" class="nav-link">
+              <a href="<?php echo $base_url; ?>/php/teacher/teacher_home.php" class="nav-link">
                 <i class='bx bxs-home icon'></i>
                 <span class="link">Home</span>
               </a>
             </li>
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/teacher/TeacherClass.php" class="nav-link">
+              <a href="<?php echo $base_url; ?>/php/teacher/TeacherClass.php" class="nav-link">
                 <i class='bx bxs-calendar icon'></i>
                 <span class="link">Assigned Class</span>
               </a>
             </li>
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/teacher/studentList.php" class="nav-link">
+              <a href="<?php echo $base_url; ?>/php/teacher/studentList.php" class="nav-link">
                 <i class='bx bxs-pencil icon'></i>
                 <span class="link">View Student Profile</span>
               </a>
             </li>
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/teacher/teacherBilling.php" class="nav-link">
+              <a href="<?php echo $base_url; ?>/php/teacher/teacherBilling.php" class="nav-link">
                 <i class='bx bxs-dollar-circle icon'></i>
                 <span class="link">Display Student Bill</span>
               </a>
@@ -80,7 +93,7 @@ function loadAsset($type, $path)
 
           <div class="bottom-cotent">
             <li class="list">
-              <a href="http://localhost/Sesta-registration/php/login-logout/logout.php" class="nav-link">
+              <a href="<?php echo $base_url; ?>/php/login-logout/logout.php" class="nav-link">
                 <i class="bx bx-log-out icon"></i>
                 <span class="link">Logout</span>
               </a>
