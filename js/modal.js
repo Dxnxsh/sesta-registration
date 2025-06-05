@@ -130,7 +130,7 @@ function registerFace(id) {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    //window.location.href = '../login-logout/login.php';
+                    window.location.href = '../login-logout/login.php';
                     console.log("Face verification successful!");
                 } else {
                     alert("Face verification failed!");
