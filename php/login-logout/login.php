@@ -143,18 +143,18 @@
 
                 <div class="tabs">
                     <div class="tab-buttons">
-                        <!-- <button id="uploadTabBtn" class="tab" onclick="openTab('uploadTab')">
+                        <button id="uploadTabBtn" class="tab active" onclick="openTab('uploadTab')">
                             <span class="icon">📁</span>
                             <span class="label">Upload Image</span>
-                        </button> -->
-                        <button id="webcamTabBtn" class="tab active" onclick="openTab('webcamTab')">
+                        </button>
+                        <button id="webcamTabBtn" class="tab" onclick="openTab('webcamTab')">
                             <span class="icon">📷</span>
                             <span class="label">Use Webcam</span>
                         </button>
                     </div>
 
                     <div class="tab-content-container">
-                        <!-- <div id="uploadTab" class="tab-content">
+                        <div id="uploadTab" class="tab-content active">
                             <div class="file-upload-container">
                                 <div class="file-upload-area" id="dropArea">
                                     <div class="file-upload-prompt">
@@ -167,9 +167,9 @@
                                     <div class="file-preview" id="filePreview"></div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <div id="webcamTab" class="tab-content active">
+                        <div id="webcamTab" class="tab-content">
                             <div class="webcam-container">
                                 <video id="video" width="100%" autoplay playsinline></video>
                                 <canvas id="canvas" style="display: none;"></canvas>
