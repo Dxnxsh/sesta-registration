@@ -142,7 +142,7 @@
 
                 <div class="tabs">
                     <div class="tab-buttons">
-                        <button id="uploadTabBtn" class="tab active" onclick="openTab('uploadTab')">
+                        <button id="uploadTabBtn" class="tab" onclick="openTab('uploadTab')">
                             <span class="icon">📁</span>
                             <span class="label">Upload Image</span>
                         </button>
