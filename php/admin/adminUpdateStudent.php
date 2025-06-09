@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
         WHERE `STUDENT_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
 
     // Redirect to student_home.php after processing the form data
-    header("Location: studentList.php");
+    header("Location: StudentList.php");
     exit();
 }
 
@@ -129,7 +129,7 @@ if (isset($_POST['submit'])) {
 
 <body>
     <div class="container">
-        <div class='btn'><a class='btn btn-back' href='studentList.php'>Go Back</a></div>
+        <div class='btn'><a class='btn btn-back' href='StudentList.php'>Go Back</a></div>
         <form name="studentRegister" method="post" id="studentRegister">
             <h1><img src="../../image/icon/student.png" alt="Search Icon" width="50" height="45" class="img-icon">
                 Student Registration</h1>

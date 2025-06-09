@@ -278,7 +278,7 @@ $query = mysqli_query($con, $select);
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
-                <a class="reset-button" href="StudentList.php">Show All</a>
+                <a class="reset-button" href="studentList.php">Show All</a>
             </div>
         </form>
         <form id="form1" name="form1" method="post">

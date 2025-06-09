@@ -72,15 +72,14 @@ function loadAsset($type, $path)
                 <i class='bx bxs-home icon'></i>
                 <span class="link">Home</span>
               </a>
-            </li>
-            <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/adminClass.php" class="nav-link">
+            </li>            <li class="list">
+              <a href="<?php echo getBasePath(); ?>php/admin/adminclass.php" class="nav-link">
                 <i class='bx bxs-chalkboard icon'></i>
                 <span class="link">Class</span>
               </a>
             </li>
             <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/adminList.php" class="nav-link">
+              <a href="<?php echo getBasePath(); ?>php/admin/AdminList.php" class="nav-link">
                 <i class='bx bxs-user-circle icon'></i>
                 <span class="link">Admin</span>
               </a>

@@ -103,7 +103,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                 <option value="ic">Search by IC</option>
             </select>
             <input name="searchBox" type="text" id="searchBox" placeholder="Enter search term">
-            <input name="submit" type="submit" id="submit" formaction="teacherbilling.php" value="Search">
+            <input name="submit" type="submit" id="submit" formaction="TeacherBilling.php" value="Search">
         </p>
     </form>
 		

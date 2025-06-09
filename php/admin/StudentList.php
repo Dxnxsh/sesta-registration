@@ -344,7 +344,7 @@ $query = mysqli_query($con, $select);
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'studentList.php?id=' + studentCode;
+                    window.location.href = 'StudentList.php?id=' + studentCode;
                 }
             });
         }

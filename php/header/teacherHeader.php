@@ -84,9 +84,8 @@ function loadAsset($type, $path)
                 <i class='bx bxs-pencil icon'></i>
                 <span class="link">View Student Profile</span>
               </a>
-            </li>
-            <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/teacher/teacherBilling.php" class="nav-link">
+            </li>            <li class="list">
+              <a href="<?php echo getBasePath(); ?>php/teacher/TeacherBilling.php" class="nav-link">
                 <i class='bx bxs-dollar-circle icon'></i>
                 <span class="link">Display Student Bill</span>
               </a>

@@ -16,7 +16,7 @@
             text: "Password Does not Match!",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../studentNewAccount.php';
+            window.location.href = '../StudentNewAccount.php';
         });
     </script>
 </body>

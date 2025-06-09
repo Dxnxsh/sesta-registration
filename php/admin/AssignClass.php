@@ -267,7 +267,7 @@ if ($num === 0) {
             text: 'There are no students available for assignment.',
             icon: 'info'
         }).then(function() {
-            window.location.href = 'studentlist.php';
+            window.location.href = 'StudentList.php';
         });
     </script>";
     exit; // Prevent further execution of the code
@@ -288,7 +288,7 @@ if (isset($_POST['submit2'])) {
                             text: 'Student assigned successfully.',
                             icon: 'success'
                         }).then(function() {
-                            window.location.href = 'studentList.php';
+                            window.location.href = 'StudentList.php';
                         });
                     </script>";
                 } else {
@@ -352,7 +352,7 @@ if (isset($_POST['submit2'])) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='STUDENTLIST.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='StudentList.php'>Go Back</a></div>
 
     </div>
 

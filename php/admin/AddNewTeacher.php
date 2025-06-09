@@ -50,9 +50,8 @@
          }
         }
         ?>
-            <header>Add New Teacher</header>
-            <form action="" method="post">
-            <input class="button" type="submit" name="submit2" id="submit2" formaction="teacherlist.php"
+            <header>Add New Teacher</header>            <form action="" method="post">
+            <input class="button" type="submit" name="submit2" id="submit2" formaction="teacherList.php"
                     value="Back">
                 <div class="field input">
                     <label for="IC">New Teacher Ic</label>

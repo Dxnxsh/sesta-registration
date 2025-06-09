@@ -40,7 +40,7 @@ if (!isset($_SESSION['adminID'])) {
                 confirmButtonColor: '#007BFF',
               }).then((result) => {
                 if (result.isConfirmed) {
-                  window.location.href = 'adminClass.php';
+                  window.location.href = 'adminclass.php';
                 }
               });
             };

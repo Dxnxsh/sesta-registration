@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 
 }
 ?>
-<?php include "../header/teacherheader.php" ?>
+<?php include "../header/teacherHeader.php" ?>
 <!doctype html>
 <html>
 
@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
   <script>
     function goBack() {
-        window.location.href = 'adminClass.php';
+        window.location.href = 'TeacherClass.php';
     }
   </script>
 </head>

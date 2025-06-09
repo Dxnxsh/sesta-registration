@@ -106,9 +106,8 @@
                 <button class="home-sci" onclick="showForm('teacher')">TEACHER</button>
                 <p>&nbsp;</p>
                 <button class="home-sci" onclick="showForm('admin')">ADMIN</button>
-                <p>&nbsp;</p>
-                <div class="links">
-                    Don't have account? <a href=" StudentNewAccount.php">Sign Up Now</a>
+                <p>&nbsp;</p>                <div class="links">
+                    Don't have account? <a href="StudentNewAccount.php">Sign Up Now</a>
                 </div>
             </div>
         </div>

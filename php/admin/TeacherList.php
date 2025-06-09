@@ -295,11 +295,8 @@ if (!$query) {
             </div>
         </form>
         <form id="form1" name="form1" method="post">
-            <p>
-                <input class="button" type="submit" name="submit2" id="submit2" formaction="AssignTeacher.php"
-                    value="Assign teachers">
-        
-                <input class="button" type="submit" name="submit3" id="submit3" formaction="addnewteacher.php"
+            <p>                <input class="button" type="submit" name="submit2" id="submit2" formaction="assignTeacher.php"
+                    value="Assign teachers"><input class="button" type="submit" name="submit3" id="submit3" formaction="AddNewTeacher.php"
                     value="Add teachers">
             </p>
             <table width="163%">
@@ -325,7 +322,7 @@ if (!$query) {
                 <td>" . $result["TEACHER_EMAIL"] . "</td>
 
                 <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewteacher.php?id=" . $result["TEACHER_ID"] . "'>VIEW</a></td>
-                <td class='manage-buttons'><a class='update-button' href='adminUpdateteacher.php?id=" . $result["TEACHER_ID"] . "'>UPDATE</a></td>
+                <td class='manage-buttons'><a class='update-button' href='adminUpdateTeacher.php?id=" . $result["TEACHER_ID"] . "'>UPDATE</a></td>
                 <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["TEACHER_ID"] . "\")'>DELETE</a></td>
 
             </tr>

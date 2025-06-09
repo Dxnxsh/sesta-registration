@@ -158,9 +158,8 @@ if (!isset($_SESSION['adminID'])) {
 									<i class='bx bxs-book-reader icon'></i>
 									<span class="link">Teacher</span>
 								</a>
-							</li>
-							<li class="list">
-								<a href="studentlist.php" class="nav-link">
+							</li>							<li class="list">
+								<a href="StudentList.php" class="nav-link">
 									<i class='bx bxs-graduation icon'></i>
 									<span class="link">Student</span>
 								</a>

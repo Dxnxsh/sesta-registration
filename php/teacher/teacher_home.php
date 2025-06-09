@@ -76,9 +76,8 @@
 						<img src="../../image/icon/updateStudent.png" alt="View Student">
                         </a>
                     </li>  
-                </div>
-				<li>
-					<a href="teacherbilling.php">
+                </div>				<li>
+					<a href="TeacherBilling.php">
 						<img src="../../image/icon/studentBill.png" alt="Student Bill">
 					  </a>
 				</li>

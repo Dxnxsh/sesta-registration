@@ -19,7 +19,7 @@
             text: "Welcome to SESTA!",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../Teacher_home.php';
+            window.location.href = '../teacher_home.php';
         });
     </script>
 </body>
