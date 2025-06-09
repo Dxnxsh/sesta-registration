@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
    
 
     // Redirect to student_home.php after processing the form data
-    header("Location: teacherList.php");
+    header("Location: TeacherList.php");
     exit();
 
 }
@@ -91,7 +91,7 @@ if (isset($_POST['submit'])) {
 
 <body>
     <div class="container">
-        <div class='btn'><a class='btn btn-back' href='teacherList.php'>Go Back</a></div>
+        <div class='btn'><a class='btn btn-back' href='TeacherList.php'>Go Back</a></div>
         
         <form name="teacherRegister" method="post" id="teacherRegister">
             <h1><img src="../../image/icon/teacher.png" alt="Search Icon" width="50" height="45" class="img-icon">

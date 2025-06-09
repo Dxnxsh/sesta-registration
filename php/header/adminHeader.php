@@ -13,7 +13,7 @@ function getBasePath()
 
   if ($isLocalhost) {
     // On localhost, we're in a subdirectory
-    return '/Sesta-registration/';
+    return '/sesta-registration/';
   } else {
     // On production, we're at the root
     return '/';
@@ -68,25 +68,25 @@ function loadAsset($type, $path)
         <div class="sidebar-content">
           <ul class="lists">
             <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/admin_home.php" class="nav-link">
+              <a href="<?php echo getBasePath(); ?>php/admin/Admin_home.php" class="nav-link">
                 <i class='bx bxs-home icon'></i>
                 <span class="link">Home</span>
               </a>
             </li>            <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/adminclass.php" class="nav-link">
+              <a href="<?php echo getBasePath(); ?>php/admin/adminClass.php" class="nav-link">
                 <i class='bx bxs-chalkboard icon'></i>
                 <span class="link">Class</span>
               </a>
             </li>
             <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/AdminList.php" class="nav-link">
+              <a href="<?php echo getBasePath(); ?>php/admin/adminList.php" class="nav-link">
                 <i class='bx bxs-user-circle icon'></i>
                 <span class="link">Admin</span>
               </a>
             </li>
 
             <li class="list">
-              <a href="<?php echo getBasePath(); ?>php/admin/teacherList.php" class="nav-link">
+              <a href="<?php echo getBasePath(); ?>php/admin/TeacherList.php" class="nav-link">
                 <i class='bx bxs-book-reader icon'></i>
                 <span class="link">Teacher</span>
               </a>

@@ -19,7 +19,7 @@
             text: "Make sure to assign the teacher into class",
         }).then(function() {
             // Redirect to the login page
-            window.location.href = '../teacherList.php';
+            window.location.href = '../TeacherList.php';
         });
     </script>
 </body>

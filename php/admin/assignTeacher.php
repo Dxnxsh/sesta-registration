@@ -274,7 +274,7 @@ if (mysqli_num_rows($query) == 0) {
                 text: 'There are no class for teachers to assign.',
                 icon: 'info'
             }).then(function() {
-                window.location.href = 'teacherList.php';
+                window.location.href = 'TeacherList.php';
             });
         }, 500); // 0.5 milliseconds = 0.5 seconds
     </script>";
@@ -300,7 +300,7 @@ if (isset($_POST['submit2'])) {
                             text: 'Teacher assigned successfully.',
                             icon: 'success'
                         }).then(function() {
-                            window.location.href = 'teacherList.php';
+                            window.location.href = 'TeacherList.php';
                         });
                     </script>";
                 } else {
@@ -311,7 +311,7 @@ if (isset($_POST['submit2'])) {
                             text: 'Selected class already have Teacher.',
                             icon: 'error'
                         }).then(function() {
-                            window.location.href = 'assignteacher.php';
+                            window.location.href = 'assignTeacher.php';
                         });
                     </script>";
                 }
@@ -367,7 +367,7 @@ if (isset($_POST['submit2'])) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='teacherList.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='TeacherList.php'>Go Back</a></div>
 
     </div>
 

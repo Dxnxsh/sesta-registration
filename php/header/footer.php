@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link href="http://localhost/Sesta-registration/php/header/footerStyle.css"  rel="stylesheet" />
+<link href="http://localhost/sesta-registration/php/header/footerStyle.css"  rel="stylesheet" />
 
 </head>
 <body>

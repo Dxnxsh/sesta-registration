@@ -136,25 +136,25 @@ if (!isset($_SESSION['adminID'])) {
 					<div class="box">
 						<ul class="lists">
 							<li class="list">
-								<a href="admin_home.php" class="nav-link">
+								<a href="Admin_home.php" class="nav-link">
 									<i class='bx bxs-home icon'></i>
 									<span class="link">Home</span>
 								</a>
 							</li>
 							<li class="list">
-								<a href="adminclass.php" class="nav-link">
+								<a href="adminClass.php" class="nav-link">
 									<i class='bx bxs-chalkboard icon'></i>
 									<span class="link">Class</span>
 								</a>
 							</li>
 							<li class="list">
-								<a href="AdminList.php" class="nav-link">
+								<a href="adminList.php" class="nav-link">
 									<i class='bx bxs-user-circle icon'></i>
 									<span class="link">Admin</span>
 								</a>
 							</li>
 							<li class="list">
-								<a href="teacherList.php" class="nav-link">
+								<a href="TeacherList.php" class="nav-link">
 									<i class='bx bxs-book-reader icon'></i>
 									<span class="link">Teacher</span>
 								</a>

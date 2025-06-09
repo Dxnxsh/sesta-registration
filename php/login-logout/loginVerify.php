@@ -19,7 +19,7 @@ if (isset($_POST['submit']) || isset($_POST['username'])) {
         $query = "SELECT * FROM admin WHERE ADMIN_USERNAME='$username' AND ADMIN_PWD='$password'";
         $sessionKey = 'adminID';
         $sessionValue = 'ADMIN_ID';
-        $redirect = "../admin/admin_home.php";
+        $redirect = "../admin/Admin_home.php";
         $error = "error/error_admin.php";
     } elseif ($role === 'teacher') {
         $query = "SELECT * FROM teacher WHERE TEACHER_USERNAME='$username' AND TEACHER_PWD='$password'";

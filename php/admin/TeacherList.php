@@ -291,7 +291,7 @@ if (!$query) {
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
-                <a class="reset-button" href="teacherList.php">Show All</a>
+                <a class="reset-button" href="TeacherList.php">Show All</a>
             </div>
         </form>
         <form id="form1" name="form1" method="post">
@@ -335,7 +335,7 @@ if (!$query) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='admin_home.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='Admin_home.php'>Go Back</a></div>
 
     </div>
 
@@ -351,7 +351,7 @@ if (!$query) {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'teacherList.php?id=' + classCode;
+                    window.location.href = 'TeacherList.php?id=' + classCode;
                 }
             });
         }

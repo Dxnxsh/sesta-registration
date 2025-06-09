@@ -113,7 +113,7 @@ if (isset($_GET['id'])) {
         </table>      
       </div>
       <br>
-      <a class='back-button' href='teacherList.php'>Go Back</a>
+      <a class='back-button' href='TeacherList.php'>Go Back</a>
   </form>
 </body>
 

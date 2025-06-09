@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
   <script>
     function goBack() {
-        window.location.href = 'adminclass.php';
+        window.location.href = 'adminClass.php';
     }
   </script>
 </head>

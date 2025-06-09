@@ -324,7 +324,7 @@
             }
  ?>
     <div class="logo">
-    <img src="<?php echo '/Sesta-registration/image/icon/logoSESTA2.png'; ?>" alt="Logo">
+    <img src="<?php echo '/sesta-registration/image/icon/logoSESTA2.png'; ?>" alt="Logo">
 </div>
     <h2>
       <i class="fas fa-money-bill"></i> BILLING

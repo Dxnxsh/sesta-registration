@@ -16,7 +16,7 @@ function getBasePath()
 
   if ($isLocalhost) {
     // On localhost, we're in a subdirectory
-    return '/Sesta-registration/';
+    return '/sesta-registration/';
   } else {
     // On production, we're at the root
     return '/';
