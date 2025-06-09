@@ -329,7 +329,7 @@ if (!isset($_SESSION['adminID'])) {
             </tr>
         </table>
         <div class="button-container">
-            <button type="button" class="proceed-payment-button" onclick="window.location.href = 'admin_home.php';">
+            <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
             <a href="pdf_summary.php?&ACTION=VIEW" class="proceed-payment-button" target="_blank"><i

@@ -356,7 +356,7 @@ if (isset($_POST['upload'])) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='admin_home.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='Admin_home.php'>Go Back</a></div>
     </div>
     <script>
         function enableUploadButton() {

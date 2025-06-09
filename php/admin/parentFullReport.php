@@ -310,7 +310,7 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
         </form>
         <p>&nbsp;</p>
         <div class="button-container">
-  <button type="button" class="proceed-payment-button" onclick="window.location.href = 'admin_home.php';">
+  <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
     <i class="fas fa-arrow-left"></i> Back
   </button>
   <button type="button" class="proceed-payment-button" onclick="window.print()">
