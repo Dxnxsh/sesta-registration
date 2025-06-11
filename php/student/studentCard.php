@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include("..\config.php");
+include("../config.php");
 if (!isset($_SESSION['valid'])) {
     header("Location: ../login-logout/login.php");
 }
