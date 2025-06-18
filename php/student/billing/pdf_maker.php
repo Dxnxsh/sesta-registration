@@ -55,7 +55,8 @@
 
 <?php                
  
-include_once('../../../tcpdf/tcpdf.php');
+// Include Composer autoloader to load tcpdf
+require_once('../../../vendor/autoload.php');
 
 	//----- Code for generate pdf
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
