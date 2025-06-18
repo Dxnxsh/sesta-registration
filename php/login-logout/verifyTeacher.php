@@ -49,7 +49,7 @@ session_start();
          }
          else{
             // Redirect to the error page
-            header("Location: error/error_verifyTC.php");
+            header("Location: error/error_VerifyTc.php");
             exit();
          }
 
