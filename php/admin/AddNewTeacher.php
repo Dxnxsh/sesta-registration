@@ -15,6 +15,7 @@ if (!isset($_SESSION['adminID'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/sweetalert2.min.css">
     <title>Register Teacher</title>
 </head>
 
@@ -39,15 +40,46 @@ if (!isset($_SESSION['adminID'])) {
                 $verify_query = mysqli_query($con, "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID='$TeachID'");
 
                 if (mysqli_num_rows($verify_query) != 0) {
-                    echo "<div class='message'>
-                      <p>Teacher already registered!</p>
-                  </div> <br>";
-                    echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Registration Failed',
+                                text: 'Teacher already registered!',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                    </script>";
                 } else {
-                    mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')") or die("Error Occurred student " . mysqli_error($con));
-
-                    header("Location: noti/noti_AddTeach.php");
-                    exit();
+                    $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
+                    
+                    if ($insert_query) {
+                        echo "<script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: 'Teacher registered successfully!',
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = 'noti/noti_AddTeach.php';
+                                    }
+                                });
+                            });
+                        </script>";
+                    } else {
+                        echo "<script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Database Error',
+                                    text: 'Error occurred: " . mysqli_error($con) . "',
+                                    confirmButtonText: 'OK'
+                                });
+                            });
+                        </script>";
+                    }
                 }
             }
             ?>
@@ -68,6 +100,7 @@ if (!isset($_SESSION['adminID'])) {
             </form>
         </div>
     </div>
+    <script src="../../js/sweetalert2.all.min.js"></script>
 </body>
 
 </html>
