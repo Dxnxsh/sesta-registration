@@ -286,8 +286,8 @@ if (!$query) {
             <h1>Teacher List</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
-                        <option value="TEACHER_ID">teacher ID</option>
-                        <option value="TEACHER_NAME">teacher NAME</option>
+                        <option value="TEACHER_ID">Teacher ID</option>
+                        <option value="TEACHER_NAME">Teacher Name</option>
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
