@@ -56,7 +56,7 @@ if (isset($_SESSION['validTC'])) {
 
 <h1>CLASS INFORMATION </h1>
     <div class="container">
-        <h2>CLASS <?php echo $className ?></h2>
+        <h2>CLASS <?php echo htmlspecialchars($className ?? 'N/A'); ?></h2>
         <table>
             <thead>
                 <tr>
@@ -68,15 +68,21 @@ if (isset($_SESSION['validTC'])) {
                     <th>TEACHER NAME</th>
                     <th>ID</th>
                 </tr>
+                <?php if (isset($row_rsClass) && $row_rsClass): ?>
                 <tr>
-                    <th><?php echo $row_rsClass['CLASS_CODE']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_LEVEL']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_BLOCK']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_FLOOR']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_CAT']; ?></th>
-                    <th><?php echo $row_rsClass['TEACHER_NAME']; ?></th>
-                    <th><?php echo $row_rsClass['TEACHER_ID']; ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CODE'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_LEVEL'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_BLOCK'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_FLOOR'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CAT'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['TEACHER_NAME'] ?? ''); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['TEACHER_ID'] ?? ''); ?></th>
                 </tr>
+                <?php else: ?>
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 20px;">No class information found for this teacher.</td>
+                </tr>
+                <?php endif; ?>
             </thead>
             <tbody>
             </tbody>
@@ -102,12 +108,14 @@ if (isset($_SESSION['validTC'])) {
             </thead>
             <tbody>
                 <?php
-                $selectData2 = "SELECT * FROM student
-                JOIN class ON class.CLASS_CODE = student.CLASS_CODE
-                JOIN parent ON student.STUDENT_ID = parent.STUDENT_ID
-                WHERE student.CLASS_CODE = '{$row_rsClass['CLASS_CODE']}'";
+                // Check if class data exists before querying students
+                if (isset($row_rsClass) && !empty($row_rsClass['CLASS_CODE'])) {
+                    $selectData2 = "SELECT * FROM student
+                    JOIN class ON class.CLASS_CODE = student.CLASS_CODE
+                    JOIN parent ON student.STUDENT_ID = parent.STUDENT_ID
+                    WHERE student.CLASS_CODE = '{$row_rsClass['CLASS_CODE']}'";
 
-                $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
+                    $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
 
                 // Check if any records exist
                 if (mysqli_num_rows($queryClass2) > 0) {
@@ -145,6 +153,14 @@ if (isset($_SESSION['validTC'])) {
                     ?>
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 20px;">No students found in this class.</td>
+                    </tr>
+                    <?php
+                }
+                } else {
+                    // Display message when no class data found
+                    ?>
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 20px;">No class assigned to this teacher.</td>
                     </tr>
                     <?php
                 }
