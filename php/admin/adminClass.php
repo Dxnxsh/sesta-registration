@@ -369,7 +369,7 @@ $query = mysqli_query($con, $select);
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'adminclass.php?id=' + classCode;
+                    window.location.href = 'adminClass.php?id=' + classCode;
                 }
             });
         }

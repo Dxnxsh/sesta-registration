@@ -106,35 +106,45 @@ if (isset($_SESSION['validTC'])) {
                 JOIN class ON class.CLASS_CODE = student.CLASS_CODE
                 JOIN parent ON student.STUDENT_ID = parent.STUDENT_ID
                 WHERE student.CLASS_CODE = '{$row_rsClass['CLASS_CODE']}'";
-            
-                $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
-            
-                // Fetch and process the results
-                if ($row_rsClass2 = mysqli_fetch_assoc($queryClass2)) {
-                    // Process data from the "teacher" and "class" tables
-                    $stid = $row_rsClass2['STUDENT_ID'];
-                    $stname = $row_rsClass2['STUDENT_NAME'];
-                    $stgend = $row_rsClass2['STUDENT_GENDER'];
-                    $strel = $row_rsClass2['STUDENT_RELIGION'];
-                    $stdob = $row_rsClass2['STUDENT_DOB'];
-                    $stpar = $row_rsClass2['PARENT_NAME'];
-                    $stctc = $row_rsClass2['PARENT_PHONENUM'];
-                    $email = $row_rsClass2['STUDENT_EMAIL'];
-                }
-            
-                // Reset the pointer for the next fetch
-                mysqli_data_seek($queryClass2, 0);
 
-                while ($row_rsClass_rsStudent = mysqli_fetch_assoc($queryClass2)) {
+                $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
+
+                // Check if any records exist
+                if (mysqli_num_rows($queryClass2) > 0) {
+                    // Fetch and process the results
+                    if ($row_rsClass2 = mysqli_fetch_assoc($queryClass2)) {
+                        // Process data from the "teacher" and "class" tables
+                        $stid = $row_rsClass2['STUDENT_ID'];
+                        $stname = $row_rsClass2['STUDENT_NAME'];
+                        $stgend = $row_rsClass2['STUDENT_GENDER'];
+                        $strel = $row_rsClass2['STUDENT_RELIGION'];
+                        $stdob = $row_rsClass2['STUDENT_DOB'];
+                        $stpar = $row_rsClass2['PARENT_NAME'];
+                        $stctc = $row_rsClass2['PARENT_PHONENUM'];
+                        $email = $row_rsClass2['STUDENT_EMAIL'];
+                    }
+
+                    // Reset the pointer for the next fetch
+                    mysqli_data_seek($queryClass2, 0);
+
+                    while ($row_rsClass_rsStudent = mysqli_fetch_assoc($queryClass2)) {
+                        ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_ID'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_NAME'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_GENDER'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_RELIGION'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_DOB'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['PARENT_PHONENUM'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_EMAIL'] ?? ''); ?></td>
+                        </tr>
+                        <?php
+                    }
+                } else {
+                    // Display message when no students found
                     ?>
                     <tr>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_ID']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_NAME']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_GENDER']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_RELIGION']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_DOB']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['PARENT_PHONENUM']; ?></td>
-                        <td><?php echo $row_rsClass_rsStudent['STUDENT_EMAIL']; ?></td>
+                        <td colspan="7" style="text-align: center; padding: 20px;">No students found in this class.</td>
                     </tr>
                     <?php
                 }
