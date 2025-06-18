@@ -63,7 +63,7 @@
 
                 <div class="field input">
                     <label for="email">Email</label>
-                    <input type="text" name="email" id="email" autocomplete="off" required>
+                    <input type="email" name="email" id="email" autocomplete="off" required>
                 </div>
 
                 <div class="field input">
