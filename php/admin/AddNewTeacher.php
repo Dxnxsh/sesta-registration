@@ -93,7 +93,7 @@ if (!isset($_SESSION['adminID'])) {
                     <input type="submit" class="btn" name="submit" value="Register" required>
                 </div>
             </form>
-            <a class="btn" style="background-color: #007BFF;" href="TeacherList.php">Back</a>
+            <button class="btn" style="background-color: #007BFF; margin-top: 0px;" onclick="window.location.href='TeacherList.php'">Back</button>
         </div>
     </div>
     <script src="../../js/sweetalert2.all.min.js"></script>
