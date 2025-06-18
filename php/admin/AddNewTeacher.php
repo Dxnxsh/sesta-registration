@@ -84,9 +84,8 @@ if (!isset($_SESSION['adminID'])) {
             }
             ?>
             <header>Add New Teacher</header>
+            <a class="back-button" href="TeacherList.php">Back</a>
             <form action="" method="post">
-                <input class="button" type="submit" name="submit2" id="submit2" formaction="TeacherList.php"
-                    value="Back">
                 <div class="field input">
                     <label for="IC">New Teacher Ic</label>
                     <input type="text" name="TeacherID" id="TeacherID" maxlength="12" autocomplete="off" pattern="\d{12}" required>
