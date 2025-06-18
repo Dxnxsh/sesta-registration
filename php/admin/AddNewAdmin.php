@@ -180,9 +180,25 @@ if (!isset($_SESSION['adminID'])) {
                         }
                     });
                 } else {
+                    // Handle different error messages
+                    let errorTitle = 'Registration Failed';
+                    let errorText = 'An error occurred while registering the admin.';
+                    
+                    if (data.message) {
+                        if (data.message === 'Admin ID already exists') {
+                            errorTitle = 'Admin ID Exists';
+                            errorText = 'The Admin ID you entered already exists. Please choose a different ID.';
+                        } else if (data.message === 'Database error occurred') {
+                            errorTitle = 'Database Error';
+                            errorText = 'A database error occurred. Please try again later.';
+                        } else {
+                            errorText = data.message;
+                        }
+                    }
+                    
                     Swal.fire({
-                        title: 'Admin ID Exist',
-                        text: 'Admin already exists.',
+                        title: errorTitle,
+                        text: errorText,
                         icon: 'error',
                         confirmButtonColor: '#FF0004',
                     });

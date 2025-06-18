@@ -14,13 +14,22 @@ $fullname = $_POST['fname'];
 $phoneN = $_POST['phone'];
 $pswd = $_POST['pwd'];
 
-// Perform the insert query
-$insertQuery = "INSERT INTO admin (ADMIN_ID, ADMIN_NAME, ADMIN_USERNAME, ADMIN_PHONE, ADMIN_PWD) 
-                VALUES ('$id', '$fullname', '$uname', '$phoneN', '$pswd')";
+// Check if admin ID already exists
+$checkQuery = "SELECT ADMIN_ID FROM admin WHERE ADMIN_ID = '$id'";
+$checkResult = mysqli_query($con, $checkQuery);
 
-if (mysqli_query($con, $insertQuery)) {
-    echo json_encode(['success' => true]);
+if (mysqli_num_rows($checkResult) > 0) {
+    // Admin ID already exists
+    echo json_encode(['success' => false, 'message' => 'Admin ID already exists']);
 } else {
-    echo json_encode(['success' => false]);
+    // Perform the insert query
+    $insertQuery = "INSERT INTO admin (ADMIN_ID, ADMIN_NAME, ADMIN_USERNAME, ADMIN_PHONE, ADMIN_PWD) 
+                    VALUES ('$id', '$fullname', '$uname', '$phoneN', '$pswd')";
+
+    if (mysqli_query($con, $insertQuery)) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Database error occurred']);
+    }
 }
 ?>
