@@ -261,12 +261,22 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                                 }
                             });
                         } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Failed to update class record. Please check the console for details.',
-                                icon: 'error',
-                                confirmButtonColor: '#d14529',
-                            });
+                            // Check if it's a teacher assignment error
+                            if (data.error && data.error.includes('Teacher is already assigned')) {
+                                Swal.fire({
+                                    title: 'Teacher Assignment Error',
+                                    text: data.error,
+                                    icon: 'error',
+                                    confirmButtonColor: '#d14529',
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.error || 'Failed to update class record. Please check the console for details.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#d14529',
+                                });
+                            }
                         }
                     })
                     .catch(error => {

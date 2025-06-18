@@ -239,12 +239,22 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
                         }
                     });
                 } else {
-                    Swal.fire({
-                        title: 'Class Code Exist',
-                        text: 'Class code already exist, Please try another code.',
-                        icon: 'error',
-                        confirmButtonColor: '#FF0004',
-                    });
+                    // Check if it's a teacher assignment error
+                    if (data.error && data.error.includes('Teacher is already assigned')) {
+                        Swal.fire({
+                            title: 'Teacher Assignment Error',
+                            text: data.error,
+                            icon: 'error',
+                            confirmButtonColor: '#FF0004',
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Class Code Exist',
+                            text: 'Class code already exist, Please try another code.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF0004',
+                        });
+                    }
                 }
             })
             .catch(error => {

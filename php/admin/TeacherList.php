@@ -193,6 +193,29 @@ if (!$query) {
             margin-top: 30px;
         }
 
+        /* Styling for teacher assignment status */
+        .teacher-assigned {
+            background-color: #f8f9fa !important;
+            border-left: 4px solid #28a745;
+        }
+
+        .teacher-unassigned {
+            background-color: #fff !important;
+            border-left: 4px solid #ffc107;
+        }
+
+        .assignment-status {
+            font-weight: bold;
+        }
+
+        .assignment-status.assigned {
+            color: #28a745;
+        }
+
+        .assignment-status.unassigned {
+            color: #ffc107;
+        }
+
         @keyframes buttonHover {
             0% {
                 transform: translateY(0);
@@ -282,8 +305,29 @@ if (!$query) {
 
 <body>
     <div class="container">
+        <?php
+        // Calculate assignment statistics
+        $totalTeachers = mysqli_num_rows($query);
+        $assignedCount = 0;
+        mysqli_data_seek($query, 0); // Reset pointer to beginning
+        while ($result = mysqli_fetch_assoc($query)) {
+            if (!empty($result["CLASS_CODE"])) {
+                $assignedCount++;
+            }
+        }
+        $unassignedCount = $totalTeachers - $assignedCount;
+        mysqli_data_seek($query, 0); // Reset pointer again for main display
+        ?>
+        
         <form id="form2" name="form2" method="get">
             <h1>Teacher List</h1>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 10px 0; color: #333;">Assignment Summary</h3>
+                <p style="margin: 5px 0;"><strong>Total Teachers:</strong> <?php echo $totalTeachers; ?></p>
+                <p style="margin: 5px 0; color: #28a745;"><strong>Assigned:</strong> <?php echo $assignedCount; ?></p>
+                <p style="margin: 5px 0; color: #ffc107;"><strong>Available:</strong> <?php echo $unassignedCount; ?></p>
+                <small style="color: #6c757d;">Each teacher can only be assigned to one class.</small>
+            </div>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="TEACHER_ID">Teacher ID</option>
@@ -313,11 +357,16 @@ if (!$query) {
                 if ($num > 0) {
                     while ($result = mysqli_fetch_assoc($query)) {
                         $classCode = $result["CLASS_CODE"];
+                        $isAssigned = !empty($classCode);
+                        $rowClass = $isAssigned ? 'teacher-assigned' : 'teacher-unassigned';
+                        $statusClass = $isAssigned ? 'assigned' : 'unassigned';
+                        $statusText = $isAssigned ? $classCode : 'Not Assigned';
+                        
                         echo "
-            <tr>
+            <tr class='$rowClass'>
                 <td>" . $result["TEACHER_NAME"] . "</td>
                 <td>" . $result["TEACHER_ID"] . "</td>              
-                <td>" . ($classCode ? $classCode : 'Not Assigned') . "</td>
+                <td><span class='assignment-status $statusClass'>$statusText</span></td>
                 <td>" . $result["TEACHER_PHONENUM"] . "</td>
                 <td>" . $result["TEACHER_EMAIL"] . "</td>
 
