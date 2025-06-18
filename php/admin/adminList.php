@@ -295,7 +295,7 @@ $query = mysqli_query($con, $select);
                         <td>".$result["ADMIN_USERNAME"]."</td>
                         <td>".$result["ADMIN_NAME"]."</td>
                         <td colspan='3' >".$result["ADMIN_PHONE"]."</td>
-                        <td class='manage-buttons'><a class='update-button' href='adminUpdateAdmin.php?id=".$result["ADMIN_ID"]."'>UPDATE</a></td>
+                        <td class='manage-buttons'><a class='update-button' href='AdminUpdateAdmin.php?id=".$result["ADMIN_ID"]."'>UPDATE</a></td>
                         <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"".$result["ADMIN_ID"]."\")'>DELETE</a></td>
        
                         </tr>
