@@ -181,7 +181,7 @@ include_once('../../../tcpdf/tcpdf.php');
     </div>
 ';
 $pdf->writeHTML($content);
-$file_location = $_SERVER['DOCUMENT_ROOT'] . "/sesta-registration/pdf"; //add your full path of your server
+$file_location = $_SERVER['DOCUMENT_ROOT'] . "pdf"; //add your full path of your server
 //$file_location = "/opt/lampp/htdocs/examples/generate_pdf/uploads/"; //for local xampp server
 
 $datetime=date('dmY_hms');
