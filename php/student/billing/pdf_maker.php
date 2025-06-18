@@ -199,7 +199,7 @@ else if($_GET['ACTION']=='DOWNLOAD')
 else if ($_GET['ACTION'] == 'EMAIL') {
     $pdf->Output($file_location . $file_name, 'F');
 
-    include_once '../../../PHPMailer/PHPMailerAutoload.php';
+    include_once '../../config/email_config.php';
 
     $body = '<html>
         <head>
@@ -220,32 +220,20 @@ else if ($_GET['ACTION'] == 'EMAIL') {
         </body>
     </html>';
 
-    $mail = new PHPMailer();
-    $mail->CharSet = 'UTF-8';
-    $mail->IsSMTP();
+    $result = EmailConfig::sendEmailWithAttachment(
+        $res_Email, 
+        'Invoice details', 
+        $body, 
+        $file_location . $file_name,
+        $file_name
+    );
     
-    // Configure SMTP settings if using SMTP
-    // $mail->Host = 'your-smtp-host';
-    // $mail->Port = 587; // Adjust the port accordingly
-    // $mail->SMTPSecure = 'tls'; // Use 'ssl' or 'tls' depending on your server
-    // $mail->SMTPAuth = true;
-    // $mail->Username = 'your-smtp-username';
-    // $mail->Password = 'your-smtp-password';
-
-    $mail->Subject = 'Invoice details';
-    $mail->From = 'mail@sesta.com';
-    $mail->FromName = 'SEKOLAH MENENGAH SAINS TAPAH';
-    $mail->IsHTML(true);
-    $mail->AddAddress($res_Email);
-    $mail->AddAttachment($file_location . $file_name);
-    $mail->MsgHTML($body);
-    $mail->WordWrap = 50;
-    if ($mail->Send()) {
+    if ($result['success']) {
         // Email sent successfully
         echo '<script>alert("Email sent successfully!");</script>';
     } else {
         // Email sending failed
-        echo '<script>alert("Email could not be sent.");</script>';
+        echo '<script>alert("Email could not be sent: ' . $result['message'] . '");</script>';
     }
 
     // Redirect back to the original page

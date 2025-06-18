@@ -1,5 +1,5 @@
 <?php
-include_once '../../PHPMailer/PHPMailerAutoload.php';
+include_once '../config/email_config.php';
 
 ?>
 <html>
@@ -72,22 +72,13 @@ $output .= '<p><a href="' . $base_url . '/php/login-logout/reset-password.php?ke
 
                             $email_to = $email;
 
-
-                            //autoload the PHPMailer
-                            include_once '../../PHPMailer/PHPMailerAutoload.php';
-                            $mail = new PHPMailer();
-                            $mail->CharSet = 'UTF-8';
-                            $mail->IsSMTP();
-                        
-                            $mail->IsHTML(true);
-                            $mail->From = "support@rathorji.in";
-                            $mail->FromName = "SESTA TAPAH";
-
-                            $mail->Subject = $subject;
-                            $mail->Body = $body;
-                            $mail->AddAddress($email_to);
-                            if (!$mail->Send()) {
-                                echo "Mailer Error: " . $mail->ErrorInfo;
+                            // Use the new PHPMailer integration
+                            include_once '../config/email_config.php';
+                            
+                            $result = EmailConfig::sendPasswordRecoveryEmail($email_to, $subject, $body);
+                            
+                            if (!$result['success']) {
+                                echo "Mailer Error: " . $result['message'];
                             } else {
                                  ?>
     <script>
