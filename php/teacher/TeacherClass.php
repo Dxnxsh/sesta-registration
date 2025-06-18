@@ -112,7 +112,7 @@ if (isset($_SESSION['validTC'])) {
                 if (isset($row_rsClass) && !empty($row_rsClass['CLASS_CODE'])) {
                     $selectData2 = "SELECT * FROM student
                     JOIN class ON class.CLASS_CODE = student.CLASS_CODE
-                    JOIN parent ON student.STUDENT_ID = parent.STUDENT_ID
+                    JOIN parent ON student.PARENT_ID = parent.PARENT_ID
                     WHERE student.CLASS_CODE = '{$row_rsClass['CLASS_CODE']}'";
 
                     $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
