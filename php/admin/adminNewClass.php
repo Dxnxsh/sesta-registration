@@ -21,7 +21,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
                 title: 'No Teacher Available!',
                 text: 'Adding a class is prohibited when there are no available teachers.',            icon: 'error'
             }).then(function() {
-                window.location.href = 'adminclass.php';
+                window.location.href = 'adminClass.php';
             });
         }, 500); // 500 milliseconds = 0.5 seconds
     </script>";
@@ -183,7 +183,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
                 <button type="button" id="save" name="submit" value="classForm">Insert</button>
             </div>
         </form>
-        <a href="adminclass.php"><input class="back-button" type="button" value="BACK"></a>
+        <a href="adminClass.php"><input class="back-button" type="button" value="BACK"></a>
 
     </div>
     
@@ -235,7 +235,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
                         icon: 'success',
                         confirmButtonColor: '#4caf50',
                     }).then((result) => {
-                        if (result.isConfirmed) {                        window.location.href = 'adminclass.php';
+                        if (result.isConfirmed) {                        window.location.href = 'adminClass.php';
                         }
                     });
                 } else {
