@@ -57,13 +57,11 @@
  
 include_once('../../../tcpdf/tcpdf.php');
 
-	$inv_mst_data_row = mysqli_fetch_array($inv_mst_results, MYSQLI_ASSOC);
-
 	//----- Code for generate pdf
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->SetCreator(PDF_CREATOR);  
 	//$pdf->SetTitle("Export HTML Table data to PDF using TCPDF in PHP");  
-	$pdf->SetHeaderData('', '', PDF_HEADER_TITLE, PDF_HEADER_STRING);  
+	$pdf->SetHeaderData('', 0, PDF_HEADER_TITLE, PDF_HEADER_STRING);  
 	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));  
 	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));  
 	$pdf->SetDefaultMonospacedFont('helvetica');  
