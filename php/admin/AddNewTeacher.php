@@ -54,20 +54,7 @@ if (!isset($_SESSION['adminID'])) {
                     $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
 
                     if ($insert_query) {
-                        echo "<script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: 'Teacher registered successfully!',
-                                    confirmButtonText: 'OK'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = 'noti/noti_AddTeach.php';
-                                    }
-                                });
-                            });
-                        </script>";
+                        header("Location: noti/noti_AddTeach.php");
                     } else {
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
