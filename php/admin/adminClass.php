@@ -266,7 +266,7 @@ if (isset($_GET['id'])) {
                     text: 'Revoke assigned teacher before deleting the class.',
                     icon: 'error'
                 }).then(function() {
-                    window.location.href = 'adminclass.php';
+                    window.location.href = 'adminClass.php';
                 });
             </script>";
         exit; // Prevent further execution of the code
@@ -307,7 +307,7 @@ $query = mysqli_query($con, $select);
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
-                <a class="reset-button" href="adminclass.php">Show All</a>
+                <a class="reset-button" href="adminClass.php">Show All</a>
             </div>
         </form>
         <form id="form1" name="form1" method="post">
