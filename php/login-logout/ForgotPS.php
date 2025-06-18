@@ -67,7 +67,7 @@ include_once '../../PHPMailer/PHPMailerAutoload.php';
 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
 
 // Use the base URL to create the absolute path
-$output .= '<p><a href="' . $base_url . '/sesta-registration/php/login-logout/reset-password.php?key=' . $key . '&email=' . $email . '&action=reset" target="_blank">' . $base_url . '/sesta-registration/php/login-logout/reset-password.php?key=' . $key . '&email=' . $email . '&action=reset</a></p>'; $body = $output;
+$output .= '<p><a href="' . $base_url . '/php/login-logout/reset-password.php?key=' . $key . '&email=' . $email . '&action=reset" target="_blank">' . $base_url . '/sesta-registration/php/login-logout/reset-password.php?key=' . $key . '&email=' . $email . '&action=reset</a></p>'; $body = $output;
                             $subject = "Password Recovery";
 
                             $email_to = $email;
