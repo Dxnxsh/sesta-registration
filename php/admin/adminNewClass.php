@@ -159,9 +159,9 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
                 <label for="category">Category:</label>
                 <select name="category" id="category" value="" required>
                     <option value="" disabled selected>Select Category</option>
-                    <option value="Main Stream" class="form1-option">Arus Perdana</option>
-                    <option value="Science Stream" class="form4-option">Sains Tulen</option>
-                    <option value="Art Stream" class="form4-option">Sastera</option>
+                    <option value="Main Stream" class="form1-option">Main Stream</option>
+                    <option value="Science Stream" class="form4-option">Science Stream/option>
+                    <option value="Art Stream" class="form4-option">Art Stream</option>
                     <option value="STEM" class="form4-option">STEM</option>
                 </select>
 
