@@ -61,7 +61,7 @@ $payload = json_encode([
 //echo "<h3>Captured image</h3>";
 //echo "<img src='" . htmlspecialchars($captured_base64) . "' style='border: 2px solid #333;'><br><br>";
 
-$ch = curl_init('https://deepface.meordnsh.dev/verify'); // service name in Docker
+$ch = curl_init('https://deepface.meordnsh.dev/verify'); // Docker url
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
