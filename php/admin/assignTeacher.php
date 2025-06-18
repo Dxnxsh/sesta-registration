@@ -349,7 +349,7 @@ if (isset($_POST['submit2'])) {
                             <td>" . $result["CLASS_CAT"] . " </td>
                             <td>
                                 <select name='teacher_id[" . $result["CLASS_CODE"] . "]'>
-                                    <option value='' selected disabled>Select Class</option>";
+                                    <option value='' selected disabled>Select Teacher</option>";
 
                         // Fetch and display teacher codes
                         $teacherQuery = mysqli_query($con, "SELECT * FROM teacher");
@@ -359,7 +359,7 @@ if (isset($_POST['submit2'])) {
                         echo "</select>
                             </td>
                             <td class='manage-buttons' style='text-align: justify'>
-                                <input class='button' type='submit' name='submit2[" . $result["CLASS_CODE"] . "]' value='Assign Students'>
+                                <input class='button' type='submit' name='submit2[" . $result["CLASS_CODE"] . "]' value='Assign Teachers'>
                             </td>
                         </tr>";
                     }
