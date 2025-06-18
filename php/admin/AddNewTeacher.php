@@ -16,41 +16,6 @@ if (!isset($_SESSION['adminID'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/sweetalert2.min.css">
-    <style>
-        .back-button {
-            display: inline-block;
-            background-color: #007BFF;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 14px;
-            border-radius: 4px;
-            margin: 4px;
-            transition: background-color 0.3s;
-            width: fit-content;
-            margin-top: 30px;
-        }
-
-        .back-button:hover {
-            animation: buttonHover 0.3s ease;
-            opacity: 0.9;
-        }
-
-        @keyframes buttonHover {
-            0% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-5px);
-            }
-
-            100% {
-                transform: translateY(0);
-            }
-        }
-    </style>
     <title>Register Teacher</title>
 </head>
 
@@ -87,7 +52,7 @@ if (!isset($_SESSION['adminID'])) {
                     </script>";
                 } else {
                     $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
-                    
+
                     if ($insert_query) {
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
@@ -119,19 +84,16 @@ if (!isset($_SESSION['adminID'])) {
             }
             ?>
             <header>Add New Teacher</header>
-            <a class="back-button" href="TeacherList.php">Back</a>
             <form action="" method="post">
                 <div class="field input">
                     <label for="IC">New Teacher Ic</label>
                     <input type="text" name="TeacherID" id="TeacherID" maxlength="12" autocomplete="off" pattern="\d{12}" required>
                 </div>
-
-
                 <div class="field">
-
                     <input type="submit" class="btn" name="submit" value="Register" required>
                 </div>
             </form>
+            <a class="btn" style="background-color: #007BFF;" href="TeacherList.php">Back</a>
         </div>
     </div>
     <script src="../../js/sweetalert2.all.min.js"></script>
