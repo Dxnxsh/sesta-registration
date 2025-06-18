@@ -33,7 +33,7 @@ $query = mysqli_query($con, $select);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Class Information</title>
+    <title>Student Information</title>
     <style>
         body {
             background-image: url("../../image/teacher.png");
@@ -270,7 +270,7 @@ $query = mysqli_query($con, $select);
 <body>
     <div class="container">
         <form id="form2" name="form2" method="get">
-            <h1>Class Information</h1>
+            <h1>Student Information</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="STUDENT_ID">STUDENT ID</option>
