@@ -321,13 +321,6 @@ if (!$query) {
         
         <form id="form2" name="form2" method="get">
             <h1>Teacher List</h1>
-            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #dee2e6;">
-                <h3 style="margin: 0 0 10px 0; color: #333;">Assignment Summary</h3>
-                <p style="margin: 5px 0;"><strong>Total Teachers:</strong> <?php echo $totalTeachers; ?></p>
-                <p style="margin: 5px 0; color: #28a745;"><strong>Assigned:</strong> <?php echo $assignedCount; ?></p>
-                <p style="margin: 5px 0; color: #ffc107;"><strong>Available:</strong> <?php echo $unassignedCount; ?></p>
-                <small style="color: #6c757d;">Each teacher can only be assigned to one class.</small>
-            </div>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="TEACHER_ID">Teacher ID</option>
