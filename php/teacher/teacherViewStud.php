@@ -8,13 +8,24 @@ if (!isset($_SESSION['validTC'])) {
 
 if (isset($_GET['id'])) {
   $stud_id = $_GET['id'];
+  $teacherId = $_SESSION['validTC'];
+  
+  // Modified query to ensure teacher can only view students from their assigned classes
   $selectClassStudent = "SELECT * FROM student s
   INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
-  WHERE s.STUDENT_ID = '$stud_id'";
+  WHERE s.STUDENT_ID = '$stud_id' AND c.TEACHER_ID = '$teacherId'";
   $queryClassStudent = mysqli_query($con, $selectClassStudent);
 
   if (!$queryClassStudent) {
     die('Error: ' . mysqli_error($con));
+  }
+
+  // Check if any student data was found
+  $num_rows = mysqli_num_rows($queryClassStudent);
+  if ($num_rows == 0) {
+    // No student found or teacher doesn't have access to this student
+    header("Location: studentList.php");
+    exit();
   }
 
   // Fetch and process the results

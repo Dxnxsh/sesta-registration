@@ -10,6 +10,8 @@ if (!isset($_SESSION['validTC'])) {
 <?php
 include("../config.php");
 
+$teacherId = $_SESSION['validTC'];
+
 // Handle class search
 $searchCondition = "";
 $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
@@ -17,13 +19,17 @@ $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
 if (isset($_GET['searchBox'])) {
     $searchValue = $_GET['searchBox'];
     if ($searchType === 'STUDENT_ID') {
-        $searchCondition = "AND STUDENT_ID LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_ID LIKE '%$searchValue%'";
     } elseif ($searchType === 'STUDENT_NAME') {
-        $searchCondition = "AND STUDENT_NAME LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_NAME LIKE '%$searchValue%'";
     }
 }
 
-$select = "SELECT * FROM student WHERE 1 $searchCondition AND CLASS_CODE IS NOT NULL";
+$select = "SELECT s.* FROM student s 
+           INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE 
+           WHERE c.TEACHER_ID = '$teacherId' 
+           AND s.CLASS_CODE IS NOT NULL 
+           $searchCondition";
 $query = mysqli_query($con, $select);
 ?>
 <!DOCTYPE html>
