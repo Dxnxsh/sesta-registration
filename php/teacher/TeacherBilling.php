@@ -181,7 +181,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                 } else {
                 ?>
                 <tr>
-                    <td colspan="2">No files uploaded yet.</td>
+                    <td colspan="6">No records found..</td>
                 </tr>
                 <?php
                 }
