@@ -32,10 +32,19 @@
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
-                mysqli_query($con, "UPDATE `teacher` SET `TEACHER_USERNAME`='$username', `TEACHER_PWD`='$password' WHERE `TEACHER_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
+                // Check if username already exists
+                $checkUsername = mysqli_query($con, "SELECT TEACHER_USERNAME FROM teacher WHERE TEACHER_USERNAME='$username' AND TEACHER_ID != '$id'");
+                $usernameExists = mysqli_num_rows($checkUsername);
 
+                if ($usernameExists > 0) {
+                    echo "<div class='message error'>
+                          <p>Username already exists! Please choose a different username.</p>
+                          </div>";
+                } else {
+                    mysqli_query($con, "UPDATE `teacher` SET `TEACHER_USERNAME`='$username', `TEACHER_PWD`='$password' WHERE `TEACHER_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
 
-                $showModal = true;
+                    $showModal = true;
+                }
             }
 
             ?>
