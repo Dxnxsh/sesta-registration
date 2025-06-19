@@ -311,6 +311,13 @@ $query = mysqli_query($con, $select);
                     ";
 
                     }
+                } else {
+                    // Display message when no students found
+                    echo "
+                    <tr>
+                        <td colspan='6' style='text-align: center; padding: 20px;'>No students found.</td>
+                    </tr>
+                    ";
                 }
 
                 ?>
