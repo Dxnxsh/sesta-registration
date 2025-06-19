@@ -348,8 +348,14 @@ $query = mysqli_query($con, $select);
                     ";
 
                     }
+                } else {
+                    // Display message when no classes found
+                    echo "
+                    <tr>
+                        <td colspan='8'>No classes found.</td>
+                    </tr>
+                    ";
                 }
-
                 ?>
             </table>
         </form>
