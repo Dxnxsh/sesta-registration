@@ -196,14 +196,6 @@ if (isset($_POST['submit'])) {
                             confirmButtonText: 'Yes, update it!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                Swal.fire({
-                                    title: 'Updating...',
-                                    text: 'Please wait...',
-                                    allowOutsideClick: false,
-                                    didOpen: () => {
-                                        Swal.showLoading();
-                                    }
-                                });
                                 form.submit();
                             }
                         });
