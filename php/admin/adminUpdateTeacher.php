@@ -53,25 +53,74 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 if (isset($_POST['submit'])) {
 
-    $teachname = $_POST['teacherName'];
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
-    $address = $_POST['address'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $Status = $_POST['status'];
+    // Sanitize and validate input data
+    $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
+    $gender = mysqli_real_escape_string($con, $_POST['gender']);
+    $dob = mysqli_real_escape_string($con, $_POST['dob']);
+    $address = mysqli_real_escape_string($con, trim($_POST['address']));
+    $phone = mysqli_real_escape_string($con, trim($_POST['phone']));
+    $email = mysqli_real_escape_string($con, trim($_POST['email']));
+    $Status = mysqli_real_escape_string($con, $_POST['status']);
+    $id = mysqli_real_escape_string($con, $id);
 
+    // Validate required fields
+    if (empty($teachname) || empty($gender) || empty($dob) || empty($phone) || empty($email) || empty($Status)) {
+        echo "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill in all required fields.',
+                confirmButtonText: 'OK'
+            });
+        </script>";
+    } else {
+        $updateQuery = "UPDATE `teacher` SET 
+            `TEACHER_NAME`='$teachname', 
+            `TEACHER_GENDER`='$gender',
+            `TEACHER_DOB`='$dob', 
+            `TEACHER_ADDRESS`='$address', 
+            `TEACHER_PHONENUM`='$phone', 
+            `TEACHER_EMAIL`='$email',
+            `TEACHER_STATUS`='$Status' 
+            WHERE `TEACHER_ID`='$id'";
 
-    mysqli_query($con, "UPDATE `teacher` SET `TEACHER_NAME`='$teachname', `TEACHER_GENDER`='$gender',
-	`TEACHER_DOB`='$dob', `TEACHER_ADDRESS`='$address', `TEACHER_PHONENUM`='$phone', `TEACHER_EMAIL`='$email',
-	`TEACHER_STATUS`='$Status'WHERE `TEACHER_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
+        $result = mysqli_query($con, $updateQuery);
 
-   
+        if ($result) {
+            if (mysqli_affected_rows($con) > 0) {
+                echo "<script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Teacher information updated successfully.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = 'TeacherList.php';
+                    });
+                </script>";
+            } else {
+                echo "<script>
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Changes',
+                        text: 'No changes were made to the teacher information.',
+                        confirmButtonText: 'OK'
+                    });
+                </script>";
+            }
+        } else {
+            error_log("MySQL Error in adminUpdateTeacher.php: " . mysqli_error($con));
 
-    // Redirect to student_home.php after processing the form data
-    header("Location: TeacherList.php");
-    exit();
-
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: 'An error occurred while updating teacher information. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            </script>";
+        }
+    }
 }
 ?>
 <!doctype html>
@@ -85,14 +134,11 @@ if (isset($_POST['submit'])) {
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Update Teacher details</title>
-
-
 </head>
 
 <body>
     <div class="container">
         <div class='btn'><a class='btn btn-back' href='TeacherList.php'>Go Back</a></div>
-        
         <form name="teacherRegister" method="post" id="teacherRegister">
             <h1><img src="../../image/icon/teacher.png" alt="Search Icon" width="50" height="45" class="img-icon">
                 Teacher Update Details</h1>
@@ -128,14 +174,42 @@ if (isset($_POST['submit'])) {
 
                         <label for="Email">Email :</label>
                         <input type="text" id="email" name="email" value="<?php echo $teachEm ?>" required></b>
-
                 </div>
             </div>
             <div class="button-container">
                 <button type="submit" name="submit" class="btn btn-admin">Save</button>
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+            <script>
+                document
+                    .getElementById('teacherRegister')
+                    .addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const form = this;
+                        Swal.fire({
+                            title: 'Confirm Update',
+                            text: 'Are you sure you want to update this teacher\'s information?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, update it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Updating...',
+                                    text: 'Please wait...',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                                form.submit();
+                            }
+                        });
+                    });
+            </script>
         </form>
-
     </div>
 </body>
 
