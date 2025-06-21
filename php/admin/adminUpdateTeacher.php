@@ -74,14 +74,7 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     // Validate required fields
     if (empty($teachname) || empty($gender) || empty($dob) || empty($phone) || empty($email) || empty($Status)) {
         error_log("Validation failed - missing required fields");
-        echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please fill in all required fields.',
-                confirmButtonText: 'OK'
-            });
-        </script>";
+        $_SESSION['message'] = array('type' => 'error', 'text' => 'Please fill in all required fields.');
     } else {
         $updateQuery = "UPDATE `teacher` SET 
             `TEACHER_NAME`='$teachname', 
@@ -102,48 +95,17 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
             
             if ($affected_rows > 0) {
                 error_log("Update successful - redirecting to TeacherList.php");
-                // Try both approaches
-                echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: 'Teacher information updated successfully.',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            window.location.href = 'TeacherList.php';
-                        });
-                    });
-                </script>";
-                // Backup redirect
-                echo "<meta http-equiv='refresh' content='2;url=TeacherList.php'>";
+                $_SESSION['message'] = array('type' => 'success', 'text' => 'Teacher information updated successfully.');
+                header("Location: TeacherList.php");
+                exit();
             } else {
                 error_log("No rows affected - no changes made");
-                echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'No Changes',
-                            text: 'No changes were made to the teacher information.',
-                            confirmButtonText: 'OK'
-                        });
-                    });
-                </script>";
+                $_SESSION['message'] = array('type' => 'info', 'text' => 'No changes were made to the teacher information.');
             }
         } else {
             $error = mysqli_error($con);
             error_log("MySQL Error in adminUpdateTeacher.php: $error");
-
-            echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Update Failed',
-                        text: 'An error occurred while updating teacher information. Please try again.',
-                        confirmButtonText: 'OK'
-                    });
-                });
-            </script>";
+            $_SESSION['message'] = array('type' => 'error', 'text' => 'An error occurred while updating teacher information. Please try again.');
         }
     }
 }
@@ -159,6 +121,18 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Update Teacher details</title>
+    <?php if (isset($_SESSION['message'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: '<?php echo $_SESSION['message']['type']; ?>',
+                title: '<?php echo ucfirst($_SESSION['message']['type']); ?>',
+                text: '<?php echo $_SESSION['message']['text']; ?>',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+    <?php unset($_SESSION['message']); endif; ?>
 </head>
 
 <body>
