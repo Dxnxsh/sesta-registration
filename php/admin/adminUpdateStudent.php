@@ -6,8 +6,8 @@ if (!isset($_SESSION['adminID'])) {
     exit();
 }
 
-
-$id = $_GET['id'];
+// Sanitize the student ID from GET parameter
+$id = SecuritySanitizer::sanitize($_GET['id'] ?? '', 'id', 'STUDENT_ID');
 $oldparIC = "";
 $yearPrefix = substr($id, 0, 2);
 
@@ -24,65 +24,70 @@ $dayPrefix = substr($id, 4, 2);
 // Combine the variables to create $dobpredict
 $dobpredict = "$year-$monthPrefix-$dayPrefix";
 
-$selectStudParent = "SELECT * FROM student s
-INNER JOIN parent c ON s.PARENT_ID = c.PARENT_ID
-WHERE s.STUDENT_ID = '$id'";
-$queryStudParent = mysqli_query($con, $selectStudParent);
+// Use prepared statement for secure query
+$stmt = $con->prepare("SELECT * FROM student s INNER JOIN parent c ON s.PARENT_ID = c.PARENT_ID WHERE s.STUDENT_ID = ?");
+$stmt->bind_param("s", $id);
+$stmt->execute();
+$queryStudParent = $stmt->get_result();
 
 if (!$queryStudParent) {
-    die('Error: ' . mysqli_error($con));
+    SecuritySanitizer::logSecurityEvent('admin_update_student_query_failed', [
+        'student_id' => $id,
+        'admin_id' => $_SESSION['adminID'] ?? '',
+        'error' => 'Database query failed'
+    ]);
+    die('Error: Unable to retrieve student data.');
 }
 
 // Fetch and process the results
-while ($row = mysqli_fetch_assoc($queryStudParent)) {
-    // Process each row of data
-    // $row contains the combined data from both "student" and "class" tables
-    $studname = $row['STUDENT_NAME'];
-    $studGender = $row['STUDENT_GENDER'];
-    $studLevel = $row['STUDENT_LEVEL'];
-    $studDOB = $row['STUDENT_DOB'];
-    $studPOB = $row['STUDENT_POB'];
-    $studReligion = $row['STUDENT_RELIGION'];
-    $studRace = $row['STUDENT_RACE'];
-    $studNationality = $row['STUDENT_NATIONALITY'];
-    $studAddress = $row['STUDENT_ADDRESS'];
-    $studDisease = $row['STUDENT_DISEASE'];
-    $studDisable = $row['STUDENT_DISABILITY'];
-    $studStatus = $row['STUDENT_STATUS'];
+while ($row = $queryStudParent->fetch_assoc()) {
+    // Sanitize all database outputs
+    $studname = SecuritySanitizer::sanitize($row['STUDENT_NAME'], 'name');
+    $studGender = SecuritySanitizer::sanitize($row['STUDENT_GENDER'], 'gender');
+    $studLevel = SecuritySanitizer::sanitize($row['STUDENT_LEVEL'], 'class_level');
+    $studDOB = SecuritySanitizer::sanitize($row['STUDENT_DOB'], 'date');
+    $studPOB = SecuritySanitizer::sanitize($row['STUDENT_POB'], 'name');
+    $studReligion = SecuritySanitizer::sanitize($row['STUDENT_RELIGION'], 'religion');
+    $studRace = SecuritySanitizer::sanitize($row['STUDENT_RACE'], 'race');
+    $studNationality = SecuritySanitizer::sanitize($row['STUDENT_NATIONALITY'], 'nationality');
+    $studAddress = SecuritySanitizer::sanitize($row['STUDENT_ADDRESS'], 'address');
+    $studDisease = SecuritySanitizer::sanitize($row['STUDENT_DISEASE'], 'name');
+    $studDisable = SecuritySanitizer::sanitize($row['STUDENT_DISABILITY'], 'name');
+    $studStatus = SecuritySanitizer::sanitize($row['STUDENT_STATUS'], 'status');
 
-    $oldparIC = $row['PARENT_ID'];
-    $parIC = $row['PARENT_ID'];
-    $parName = $row['PARENT_NAME'];
-    $parGender = $row['PARENT_GENDER'];
-    $parPhone = $row['PARENT_PHONENUM'];
-    $parJob = $row['PARENT_JOB'];
-    $parSalary = $row['PARENT_MONTHLY_INCOME'];
+    $oldparIC = SecuritySanitizer::sanitize($row['PARENT_ID'], 'id');
+    $parIC = SecuritySanitizer::sanitize($row['PARENT_ID'], 'id');
+    $parName = SecuritySanitizer::sanitize($row['PARENT_NAME'], 'name');
+    $parGender = SecuritySanitizer::sanitize($row['PARENT_GENDER'], 'gender');
+    $parPhone = SecuritySanitizer::sanitize($row['PARENT_PHONENUM'], 'phone');
+    $parJob = SecuritySanitizer::sanitize($row['PARENT_JOB'], 'job');
+    $parSalary = SecuritySanitizer::sanitize($row['PARENT_MONTHLY_INCOME'], 'decimal');
 }
+$stmt->close();
 
 
 
 if (isset($_POST['submit'])) {
+    // Sanitize all form inputs with proper types
+    $studname = SecuritySanitizer::sanitizeForDB($_POST['studentName'] ?? '', 'name', 'STUDENT_NAME');
+    $studGender = SecuritySanitizer::sanitizeForDB($_POST['gender'] ?? '', 'gender', 'STUDENT_GENDER');
+    $studLevel = SecuritySanitizer::sanitizeForDB($_POST['level'] ?? '', 'class_level', 'STUDENT_LEVEL');
+    $studDOB = SecuritySanitizer::sanitizeForDB($_POST['dob'] ?? '', 'date', 'STUDENT_DOB');
+    $studPOB = SecuritySanitizer::sanitizeForDB($_POST['placeOfBirth'] ?? '', 'name', 'STUDENT_POB');
+    $studReligion = SecuritySanitizer::sanitizeForDB($_POST['religion'] ?? '', 'religion', 'STUDENT_RELIGION');
+    $studRace = SecuritySanitizer::sanitizeForDB($_POST['race'] ?? '', 'race', 'STUDENT_RACE');
+    $studNationality = SecuritySanitizer::sanitizeForDB($_POST['nationality'] ?? '', 'nationality', 'STUDENT_NATIONALITY');
+    $studAddress = SecuritySanitizer::sanitizeForDB($_POST['address'] ?? '', 'address', 'STUDENT_ADDRESS');
+    $studDisease = SecuritySanitizer::sanitizeForDB($_POST['disease'] ?? '', 'name', 'STUDENT_DISEASE');
+    $studDisable = SecuritySanitizer::sanitizeForDB($_POST['disability'] ?? '', 'name', 'STUDENT_DISABILITY');
+    $studStatus = SecuritySanitizer::sanitizeForDB($_POST['status'] ?? '', 'status', 'STUDENT_STATUS');
 
-    $studname = $_POST['studentName'];
-    $studGender = $_POST['gender'];
-    $studLevel = $_POST['level'];
-    $studDOB = $_POST['dob'];
-    $studPOB = $_POST['placeOfBirth'];
-    $studReligion = $_POST['religion'];
-    $studRace = $_POST['race'];
-    $studNationality = $_POST['nationality'];
-    $studAddress = $_POST['address'];
-    $studDisease = $_POST['disease'];
-    $studDisable = $_POST['disability'];
-    $studStatus = $_POST['status'];
-
-    echo $oldparIC;
-    $parIC = $_POST['parentIC'];
-    $parName = $_POST['parentName'];
-    $parGender = $_POST['parentGender'];
-    $parPhone = $_POST['parentPhone'];
-    $parJob = $_POST['parentJob'];
-    $parSalary = $_POST['parentIncome'];
+    $parIC = SecuritySanitizer::sanitizeForDB($_POST['parentIC'] ?? '', 'id', 'PARENT_ID');
+    $parName = SecuritySanitizer::sanitizeForDB($_POST['parentName'] ?? '', 'name', 'PARENT_NAME');
+    $parGender = SecuritySanitizer::sanitizeForDB($_POST['parentGender'] ?? '', 'gender', 'PARENT_GENDER');
+    $parPhone = SecuritySanitizer::sanitizeForDB($_POST['parentPhone'] ?? '', 'phone', 'PARENT_PHONENUM');
+    $parJob = SecuritySanitizer::sanitizeForDB($_POST['parentJob'] ?? '', 'job', 'PARENT_JOB');
+    $parSalary = SecuritySanitizer::sanitizeForDB($_POST['parentIncome'] ?? '', 'decimal', 'PARENT_MONTHLY_INCOME');
 
 
     // Modify $studLevel based on student level to be insert into db
@@ -92,16 +97,41 @@ if (isset($_POST['submit'])) {
         $studLevel = "1";
     }
 
-    mysqli_query($con, "UPDATE `parent` SET `PARENT_ID`='$parIC',`PARENT_NAME`='$parName', `PARENT_GENDER`='$parGender', 
-        `PARENT_PHONENUM`='$parPhone', `PARENT_JOB`='$parJob', `PARENT_MONTHLY_INCOME`='$parSalary' 
-        WHERE `PARENT_ID`='$oldparIC'") or die("Error Occurred parent " . mysqli_error($con));
+    // Update parent table using prepared statement
+    $stmt = $con->prepare("UPDATE `parent` SET `PARENT_ID`=?, `PARENT_NAME`=?, `PARENT_GENDER`=?, `PARENT_PHONENUM`=?, `PARENT_JOB`=?, `PARENT_MONTHLY_INCOME`=? WHERE `PARENT_ID`=?");
+    $stmt->bind_param("sssssds", $parIC, $parName, $parGender, $parPhone, $parJob, $parSalary, $oldparIC);
+    
+    if (!$stmt->execute()) {
+        SecuritySanitizer::logSecurityEvent('admin_update_parent_failed', [
+            'parent_id' => $oldparIC,
+            'new_parent_id' => $parIC,
+            'admin_id' => $_SESSION['adminID'] ?? '',
+            'error' => $stmt->error
+        ]);
+        die("Error updating parent data.");
+    }
+    $stmt->close();
 
-    mysqli_query($con, "UPDATE `student` SET `STUDENT_NAME`='$studname', `STUDENT_GENDER`='$studGender', 
-        `STUDENT_LEVEL`='$studLevel', `STUDENT_DOB`='$studDOB', `STUDENT_POB`='$studPOB', 
-        `STUDENT_RELIGION`='$studReligion', `STUDENT_RACE`='$studRace', `STUDENT_NATIONALITY`='$studNationality',
-        `STUDENT_ADDRESS`='$studAddress', `STUDENT_DISEASE`='$studDisease', 
-        `STUDENT_DISABILITY`='$studDisable', `STUDENT_STATUS`='$studStatus' 
-        WHERE `STUDENT_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
+    // Update student table using prepared statement
+    $stmt = $con->prepare("UPDATE `student` SET `STUDENT_NAME`=?, `STUDENT_GENDER`=?, `STUDENT_LEVEL`=?, `STUDENT_DOB`=?, `STUDENT_POB`=?, `STUDENT_RELIGION`=?, `STUDENT_RACE`=?, `STUDENT_NATIONALITY`=?, `STUDENT_ADDRESS`=?, `STUDENT_DISEASE`=?, `STUDENT_DISABILITY`=?, `STUDENT_STATUS`=? WHERE `STUDENT_ID`=?");
+    $stmt->bind_param("sssssssssssss", $studname, $studGender, $studLevel, $studDOB, $studPOB, $studReligion, $studRace, $studNationality, $studAddress, $studDisease, $studDisable, $studStatus, $id);
+    
+    if (!$stmt->execute()) {
+        SecuritySanitizer::logSecurityEvent('admin_update_student_failed', [
+            'student_id' => $id,
+            'admin_id' => $_SESSION['adminID'] ?? '',
+            'error' => $stmt->error
+        ]);
+        die("Error updating student data.");
+    }
+    $stmt->close();
+
+    // Log successful update
+    SecuritySanitizer::logSecurityEvent('admin_updated_student', [
+        'student_id' => $id,
+        'parent_id' => $parIC,
+        'admin_id' => $_SESSION['adminID'] ?? ''
+    ]);
 
     // Redirect to student_home.php after processing the form data
     header("Location: StudentList.php");

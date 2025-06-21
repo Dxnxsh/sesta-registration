@@ -50,24 +50,24 @@
   <div class="container" id="blur">
   <?php include("../../config.php"); 
             
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID=$id");
+            $id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
+            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID='$id'");
+            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID='$id'");
             $queryParent  = mysqli_query($con,"SELECT student.*, parent.* FROM student INNER JOIN parent ON student.PARENT_ID = parent.PARENT_ID
-            WHERE student.STUDENT_ID = $id");
+            WHERE student.STUDENT_ID = '$id'");
             
 
             while($result = mysqli_fetch_assoc($query)){
-                $res_Name = $result['STUDENT_NAME'];
-                $res_IC = $result['STUDENT_ID'];
-                $res_Add = $result['STUDENT_ADDRESS'];
+                $res_Name = SecuritySanitizer::sanitize($result['STUDENT_NAME'], 'name');
+                $res_IC = SecuritySanitizer::sanitize($result['STUDENT_ID'], 'id');
+                $res_Add = SecuritySanitizer::sanitize($result['STUDENT_ADDRESS'], 'address');
             }
 
             while($result = mysqli_fetch_assoc($query2))
             {
-                $res_type = $result['PAYMENT_TYPE'];
-                $res_amount = $result['PAYMENT_AMOUNT'];
-                $res_stts = $result['PAYMENT_STATUS'];
+                $res_type = SecuritySanitizer::sanitize($result['PAYMENT_TYPE'], 'enum');
+                $res_amount = SecuritySanitizer::sanitize($result['PAYMENT_AMOUNT'], 'decimal');
+                $res_stts = SecuritySanitizer::sanitize($result['PAYMENT_STATUS'], 'enum');
 
                  // Check if the payment type is "SCHOOL FEES"
                if ($res_type == "SCHOOL FEES") {
@@ -78,7 +78,7 @@
             }  
 
             while ($resultParent = mysqli_fetch_assoc($queryParent)) {
-              $res_ParentMonthlyIncome = $resultParent['PARENT_MONTHLY_INCOME'];
+              $res_ParentMonthlyIncome = SecuritySanitizer::sanitize($resultParent['PARENT_MONTHLY_INCOME'], 'decimal');
 
                 // Check if parent monthly income is less than 1000
                 if ($res_ParentMonthlyIncome < 1000) {
@@ -88,6 +88,12 @@
                      // No discount if the income is 1000 or more
                      $discountedIncome = 0;
                 }
+                
+                SecuritySanitizer::logSecurityEvent('student_qr_access', [
+                    'student_id' => $res_IC,
+                    'payment_type' => 'SCHOOL FEES',
+                    'amount' => $res_amount1 ?? 0
+                ]);
           }
  ?>     
 </div>

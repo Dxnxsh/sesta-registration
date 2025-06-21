@@ -2,18 +2,36 @@
 session_start();
 include("../config.php");
 if (!isset($_SESSION['adminID'])) {
+  SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin view class access without valid session');
   header("Location: ../login-logout/login.php");
   exit();
 }
 ?>
 <?php if (isset($_GET['id'])) {
-  $classCode = $_GET['id'];
+  $classCode = SecuritySanitizer::sanitize($_GET['id'], 'id', 'CLASS_CODE');
+  
+  if (empty($classCode)) {
+    SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid class code in view: ' . $_GET['id']);
+    header("Location: adminClass.php");
+    exit();
+  }
+  
   $selectClassTeacher = "SELECT * FROM teacher t
   INNER JOIN class c ON t.TEACHER_ID = c.TEACHER_ID
-  WHERE c.CLASS_CODE = '$classCode'";
-  $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
+  WHERE c.CLASS_CODE = ?";
+  
+  $stmt = mysqli_prepare($con, $selectClassTeacher);
+  if (!$stmt) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare class view query: ' . mysqli_error($con));
+    die('Database error occurred');
+  }
+  
+  mysqli_stmt_bind_param($stmt, "s", $classCode);
+  mysqli_stmt_execute($stmt);
+  $queryClassTeacher = mysqli_stmt_get_result($stmt);
 
   if (!$queryClassTeacher) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Class view query failed: ' . mysqli_error($con));
     die('Error: ' . mysqli_error($con));
   }
 
@@ -90,43 +108,43 @@ if (!isset($_SESSION['adminID'])) {
             <tr>
               <th>Class Code </th>
               <td>
-                <?php echo $classCode ?>
+                <?php echo htmlspecialchars($classCode ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Name </th>
               <td>
-                <?php echo $className ?>
+                <?php echo htmlspecialchars($className ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Level </th>
               <td>
-                <?php echo $classlvl ?>
+                <?php echo htmlspecialchars($classlvl ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Block </th>
               <td>
-                <?php echo $blck ?>
+                <?php echo htmlspecialchars($blck ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Teacher ID</th>
               <td>
-                <?php echo $teachid ?>
+                <?php echo htmlspecialchars($teachid ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Teacher Name</th>
               <td>
-                <?php echo $teachName ?>
+                <?php echo htmlspecialchars($teachName ?? '') ?>
               </td>
             </tr>
             <tr>
               <th> Teacher Contact</th>
               <td>
-                <?php echo $teachphone ?>
+                <?php echo htmlspecialchars($teachphone ?? '') ?>
               </td>
             </tr>
           </tbody>

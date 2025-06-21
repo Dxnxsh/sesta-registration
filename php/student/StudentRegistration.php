@@ -8,7 +8,7 @@ if (!isset($_SESSION['valid'])) {
 	exit();
 }
 
-$id = $_SESSION['valid'];
+$id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
 
 $yearPrefix = substr($id, 0, 2);
 
@@ -25,56 +25,115 @@ $dayPrefix = substr($id, 4, 2);
 // Combine the variables to create $dobpredict
 $dobpredict = "$year-$monthPrefix-$dayPrefix";
 
-$query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID=$id");
+$query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID='$id'");
 
 while ($result = mysqli_fetch_assoc($query)) {
 	$res_id = $result['STUDENT_ID'];
 }
 
 if (isset($_POST['submit'])) {
+    
+    try {
+        // Sanitize and validate all student data
+        $studname = SecuritySanitizer::sanitizeForDB($_POST['studentName'] ?? '', 'name', 'STUDENT_NAME');
+        $studGender = SecuritySanitizer::sanitizeForDB($_POST['gender'] ?? '', 'gender', 'STUDENT_GENDER');
+        $studLevel = SecuritySanitizer::sanitizeForDB($_POST['level'] ?? '', 'class_level', 'STUDENT_LEVEL');
+        $studDOB = SecuritySanitizer::sanitizeForDB($_POST['dob'] ?? '', 'date', 'STUDENT_DOB');
+        $studPOB = SecuritySanitizer::sanitizeForDB($_POST['placeOfBirth'] ?? '', 'name', 'STUDENT_POB');
+        $studReligion = SecuritySanitizer::sanitizeForDB($_POST['religion'] ?? '', 'religion', 'STUDENT_RELIGION');
+        $studRace = SecuritySanitizer::sanitizeForDB($_POST['race'] ?? '', 'race', 'STUDENT_RACE');
+        $studNationality = SecuritySanitizer::sanitizeForDB($_POST['nationality'] ?? '', 'nationality', 'STUDENT_NATIONALITY');
+        $studAddress = SecuritySanitizer::sanitizeForDB($_POST['address'] ?? '', 'address', 'STUDENT_ADDRESS');
+        $studDisease = SecuritySanitizer::sanitizeForDB($_POST['disease'] ?? '', 'name', 'STUDENT_DISEASE');
+        $studDisable = SecuritySanitizer::sanitizeForDB($_POST['disability'] ?? '', 'name', 'STUDENT_DISABILITY');
+        $studStatus = SecuritySanitizer::sanitizeForDB($_POST['status'] ?? '', 'status', 'STUDENT_STATUS');
+        $studReligion = SecuritySanitizer::sanitizeForDB($_POST['religion'] ?? '', 'religion', 'STUDENT_RELIGION');
+        $studRace = SecuritySanitizer::sanitizeForDB($_POST['race'] ?? '', 'race', 'STUDENT_RACE');
 
-	$studname = $_POST['studentName'];
-	$studGender = $_POST['gender'];
-	$studLevel = $_POST['level'];
-	$studDOB = $_POST['dob'];
-	$studPOB = $_POST['placeOfBirth'];
-	$studReligion = $_POST['religion'];
-	$studRace = $_POST['race'];
-	$studNationality = $_POST['nationality'];
-	$studAddress = $_POST['address'];
-	$studDisease = $_POST['disease'];
-	$studDisable = $_POST['disability'];
-	$studStatus = $_POST['status'];
+        // Sanitize parent data
+        $parIC = SecuritySanitizer::sanitizeForDB($_POST['parentIC'] ?? '', 'id', 'PARENT_ID');
+        $parName = SecuritySanitizer::sanitizeForDB($_POST['parentName'] ?? '', 'name', 'PARENT_NAME');
+        $parGender = SecuritySanitizer::sanitizeForDB($_POST['parentGender'] ?? '', 'enum', 'PARENT_GENDER');
+        $parPhone = SecuritySanitizer::sanitizeForDB($_POST['parentPhone'] ?? '', 'phone', 'PARENT_PHONENUM');
+        $parJob = SecuritySanitizer::sanitizeForDB($_POST['parentJob'] ?? '', 'job', 'PARENT_JOB');
+        $parSalary = SecuritySanitizer::sanitizeForDB($_POST['parentIncome'] ?? '', 'decimal', 'PARENT_MONTHLY_INCOME');
 
-	$parIC = $_POST['parentIC'];
-	$parName = $_POST['parentName'];
-	$parGender = $_POST['parentGender'];
-	$parPhone = $_POST['parentPhone'];
-	$parJob = $_POST['parentJob'];
-	$parSalary = $_POST['parentIncome'];
+        // Validate required fields
+        $requiredFields = [$studname, $studGender, $studLevel, $studDOB, $parIC, $parName];
+        foreach ($requiredFields as $field) {
+            if (empty($field)) {
+                throw new InvalidArgumentException("Required fields cannot be empty");
+            }
+        }
 
+        // Check for malicious input
+        $allInputs = [$studname, $studGender, $studLevel, $studDOB, $studPOB, $studReligion, 
+                     $studRace, $studNationality, $studAddress, $studDisease, $studDisable, 
+                     $studStatus, $parIC, $parName, $parGender, $parPhone, $parJob, $parSalary];
+        
+        foreach ($allInputs as $input) {
+            if ($input && detectMaliciousInput($input)) {
+                SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                    'field' => 'student_registration',
+                    'student_id' => $id
+                ]);
+                throw new InvalidArgumentException("Invalid input detected");
+            }
+        }
 
-	// Modify $studLevel based on student level to be insert into db
-	if ($studLevel == "Form 4") {
-		$studLevel = "4";
-	} elseif ($studLevel == "Form 1") {
-		$studLevel = "1";
-	}
+    } catch (InvalidArgumentException $e) {
+        $registration_error = $e->getMessage();
+    }
 
-	// Check if parent ID already exists
-	$parentCheckQuery = mysqli_query($con, "SELECT * FROM `parent` WHERE `PARENT_ID` = '$parIC'");
-	if (mysqli_num_rows($parentCheckQuery) == 0) {
-		// If parent ID does not exist, insert the parent data
-		mysqli_query($con, "INSERT INTO `parent`(`PARENT_ID`, `PARENT_NAME`, `PARENT_GENDER`, `PARENT_PHONENUM`,
-                   `PARENT_JOB`, `PARENT_MONTHLY_INCOME`) VALUES('$parIC', '$parName', '$parGender', '$parPhone', '$parJob', '$parSalary')")
-			or die("Error Occurred student" . mysqli_error($con));
-	}
+    if (!isset($registration_error)) {
+        // Modify $studLevel based on student level to be insert into db
+        if ($studLevel == "Form 4") {
+            $studLevel = "4";
+        } elseif ($studLevel == "Form 1") {
+            $studLevel = "1";
+        }
 
-	mysqli_query($con, "UPDATE `student` SET `STUDENT_NAME`='$studname', `STUDENT_GENDER`='$studGender', `STUDENT_LEVEL`='$studLevel',
-	`STUDENT_DOB`='$studDOB', `STUDENT_POB`='$studPOB', `STUDENT_RELIGION`='$studReligion', `STUDENT_RACE`='$studRace', `STUDENT_NATIONALITY`='$studNationality',
-	`STUDENT_ADDRESS`='$studAddress', `STUDENT_DISEASE`='$studDisease', `STUDENT_DISABILITY`='$studDisable', `STUDENT_STATUS`='$studStatus', `PARENT_ID`='$parIC' WHERE `STUDENT_ID`='$res_id'") or die("Error Occurred student " . mysqli_error($con));
+        // Check if parent ID already exists using prepared statement
+        $parentCheckQuery = "SELECT PARENT_ID FROM parent WHERE PARENT_ID = ?";
+        $stmt = mysqli_prepare($con, $parentCheckQuery);
+        mysqli_stmt_bind_param($stmt, "s", $parIC);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        if (mysqli_num_rows($result) == 0) {
+            // If parent ID does not exist, insert the parent data
+            $insertParentQuery = "INSERT INTO parent (PARENT_ID, PARENT_NAME, PARENT_GENDER, PARENT_PHONENUM, PARENT_JOB, PARENT_MONTHLY_INCOME) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt2 = mysqli_prepare($con, $insertParentQuery);
+            mysqli_stmt_bind_param($stmt2, "sssssd", $parIC, $parName, $parGender, $parPhone, $parJob, $parSalary);
+            
+            if (!mysqli_stmt_execute($stmt2)) {
+                $registration_error = "Error inserting parent data: " . mysqli_error($con);
+            }
+            mysqli_stmt_close($stmt2);
+        }
+        mysqli_stmt_close($stmt);
 
-	$registration_success = true;
+        // Update student record using prepared statement
+        if (!isset($registration_error)) {
+            $updateStudentQuery = "UPDATE student SET STUDENT_NAME=?, STUDENT_GENDER=?, STUDENT_LEVEL=?, STUDENT_DOB=?, STUDENT_POB=?, STUDENT_RELIGION=?, STUDENT_RACE=?, STUDENT_NATIONALITY=?, STUDENT_ADDRESS=?, STUDENT_DISEASE=?, STUDENT_DISABILITY=?, STUDENT_STATUS=?, PARENT_ID=? WHERE STUDENT_ID=?";
+            $stmt3 = mysqli_prepare($con, $updateStudentQuery);
+            mysqli_stmt_bind_param($stmt3, "ssssssssssssss", $studname, $studGender, $studLevel, $studDOB, $studPOB, $studReligion, $studRace, $studNationality, $studAddress, $studDisease, $studDisable, $studStatus, $parIC, $res_id);
+            
+            if (mysqli_stmt_execute($stmt3)) {
+                $registration_success = true;
+                SecuritySanitizer::logSecurityEvent('student_registration_completed', [
+                    'student_id' => $res_id
+                ]);
+            } else {
+                $registration_error = "Error updating student data: " . mysqli_error($con);
+                SecuritySanitizer::logSecurityEvent('student_registration_failed', [
+                    'student_id' => $res_id,
+                    'error' => mysqli_error($con)
+                ]);
+            }
+            mysqli_stmt_close($stmt3);
+        }
+    }
 }
 ?>
 

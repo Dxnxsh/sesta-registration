@@ -1,7 +1,9 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin new class access without valid session');
     header("Location: ../login-logout/login.php");
     exit();
 }

@@ -1,31 +1,58 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
     exit();
 }
 
-// Handle url parameter
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in AdminUpdateAdmin.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Handle and sanitize URL parameter
+$targetAdminId = '';
+$name = '';
+$paswd = '';
+$contact = '';
+
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-}
-
-if (isset($_GET['id'])){
-    $classCode = $_GET['id'];
-    $selectAdmin = "SELECT * FROM admin WHERE ADMIN_ID = $classCode";
-    $rsAdminClass = mysqli_query($con, $selectAdmin);
-
-
-
-// Fetch and process the results
-while ($row = mysqli_fetch_assoc($rsAdminClass)) {
-    // Process each row of data
-    // $row contains the combined data from both "student" and "class" tables
-    $name = $row['ADMIN_NAME'];
-    $paswd = $row['ADMIN_PWD'];
-    $contact = $row['ADMIN_PHONE'];
-}
+    $targetAdminId = SecuritySanitizer::sanitize($_GET['id'], 'id', 'ADMIN_ID');
+    
+    if (!$targetAdminId) {
+        SecuritySanitizer::logSecurityEvent("Invalid admin ID parameter in AdminUpdateAdmin.php by admin $adminId", 'MEDIUM');
+        header("Location: adminList.php");
+        exit();
+    }
+    
+    // Use prepared statement to fetch admin data
+    $stmt = $con->prepare("SELECT * FROM admin WHERE ADMIN_ID = ?");
+    $stmt->bind_param("s", $targetAdminId);
+    $stmt->execute();
+    $rsAdminClass = $stmt->get_result();
+    
+    if ($rsAdminClass->num_rows > 0) {
+        $row = $rsAdminClass->fetch_assoc();
+        $name = SecuritySanitizer::sanitize($row['ADMIN_NAME'], 'name');
+        $paswd = SecuritySanitizer::sanitize($row['ADMIN_PWD'], 'password');
+        $contact = SecuritySanitizer::sanitize($row['ADMIN_PHONE'], 'phone');
+        
+        SecuritySanitizer::logSecurityEvent("Admin $adminId accessed admin update form for admin $targetAdminId", 'INFO');
+    } else {
+        SecuritySanitizer::logSecurityEvent("Admin $adminId attempted to access non-existent admin $targetAdminId", 'MEDIUM');
+        header("Location: adminList.php");
+        exit();
+    }
+    $stmt->close();
+} else {
+    SecuritySanitizer::logSecurityEvent("Admin $adminId accessed AdminUpdateAdmin.php without ID parameter", 'MEDIUM');
+    header("Location: adminList.php");
+    exit();
 }
 ?>
 <?php include "../header/adminHeader.php" ?>
@@ -126,18 +153,18 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
     <p>
             
                 <label for="name">Fullname:</label>
-                <input type="text" name="fname" id="fname" value="<?php echo $name ?>" placeholder="Enter admin Name" required>
+                <input type="text" name="fname" id="fname" value="<?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>" placeholder="Enter admin Name" required>
 
                 <label for="passwd">Contact Number:</label>
-                <input type="text" name="phone" id="phone" value="<?php echo $contact ?>" required>
+                <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($contact, ENT_QUOTES, 'UTF-8') ?>" required>
 
                 <label for="passwd">Password:</label>
-                <input type="text" name="pwd" id="pwd" value="<?php echo $paswd ?>" required>
+                <input type="text" name="pwd" id="pwd" value="<?php echo htmlspecialchars($paswd, ENT_QUOTES, 'UTF-8') ?>" required>
 
                 <label for="passwd">Re-Enter Password:</label>
-                <input type="text" name="pwd2" id="pwd2" value="<?php echo $paswd ?>" required>
+                <input type="text" name="pwd2" id="pwd2" value="<?php echo htmlspecialchars($paswd, ENT_QUOTES, 'UTF-8') ?>" required>
 
-                <input type="hidden" name="old_id" value="<?php echo $id ?>">
+                <input type="hidden" name="old_id" value="<?php echo htmlspecialchars($targetAdminId, ENT_QUOTES, 'UTF-8') ?>">
 
 
             </p>

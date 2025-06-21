@@ -1,42 +1,87 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Teacher list access without admin session');
     header("Location: ../login-logout/login.php");
+    exit();
 }
 
 ?>
 <?php include "../header/adminHeader.php" ?>
 <?php
 include("../config.php");
-// Handle class deletion
+
+// Handle teacher deletion with proper sanitization
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $delete = mysqli_query($con, "DELETE FROM `teacher` WHERE `TEACHER_ID`='$id'");
-}
-
-// Handle class search
-$searchCondition = "";
-$searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'TEACHER_ID';
-
-if (isset($_GET['searchBox'])) {
-    $searchValue = $_GET['searchBox'];
-    if ($searchType === 'TEACHER_ID') {
-        $searchCondition = "AND t.TEACHER_ID LIKE '%$searchValue%'";
-    } elseif ($searchType === 'TEACHER_NAME') {
-        $searchCondition = "AND t.TEACHER_NAME LIKE '%$searchValue%'";
+    $id = SecuritySanitizer::sanitize($_GET['id'], 'id', 'TEACHER_ID');
+    if (!empty($id)) {
+        $deleteQuery = "DELETE FROM `teacher` WHERE `TEACHER_ID` = ?";
+        $stmt = mysqli_prepare($con, $deleteQuery);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $id);
+            $deleteResult = mysqli_stmt_execute($stmt);
+            if ($deleteResult) {
+                SecuritySanitizer::logSecurityEvent('teacher_deletion', 'Teacher deleted: ' . $id);
+            } else {
+                SecuritySanitizer::logSecurityEvent('sql_error', 'Teacher deletion failed: ' . mysqli_error($con));
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare delete statement: ' . mysqli_error($con));
+        }
+    } else {
+        SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid teacher ID for deletion: ' . $_GET['id']);
     }
 }
 
-$select = "SELECT t.*, c.CLASS_CODE 
-           FROM teacher t 
-           LEFT JOIN class c ON t.TEACHER_ID = c.TEACHER_ID 
-           WHERE 1 $searchCondition";
+// Handle teacher search with proper sanitization
+$searchType = 'TEACHER_ID'; // Default search type
+$searchValue = '';
 
-$query = mysqli_query($con, $select);
-// Check for errors during the query execution
-if (!$query) {
-    die('Error in SQL query: ' . mysqli_error($con));
+if (isset($_GET['searchType'])) {
+    $searchType = SecuritySanitizer::sanitize($_GET['searchType'], 'name');
+    if (!in_array($searchType, ['TEACHER_ID', 'TEACHER_NAME'])) {
+        SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid search type: ' . $_GET['searchType']);
+        $searchType = 'TEACHER_ID';
+    }
+}
+
+if (isset($_GET['searchBox'])) {
+    $searchValue = SecuritySanitizer::sanitize($_GET['searchBox'], 'name');
+}
+
+// Build the query with prepared statements
+$baseQuery = "SELECT t.*, c.CLASS_CODE 
+              FROM teacher t 
+              LEFT JOIN class c ON t.TEACHER_ID = c.TEACHER_ID 
+              WHERE 1";
+$params = [];
+$types = "";
+
+if (!empty($searchValue)) {
+    if ($searchType === 'TEACHER_ID') {
+        $baseQuery .= " AND t.TEACHER_ID LIKE ?";
+        $params[] = $searchValue . "%";
+        $types .= "s";
+    } elseif ($searchType === 'TEACHER_NAME') {
+        $baseQuery .= " AND t.TEACHER_NAME LIKE ?";
+        $params[] = "%" . $searchValue . "%";
+        $types .= "s";
+    }
+}
+
+$stmt = mysqli_prepare($con, $baseQuery);
+if ($stmt) {
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    $query = mysqli_stmt_get_result($stmt);
+} else {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare teacher list query: ' . mysqli_error($con));
+    die('Database error occurred');
 }
 ?>
 <!DOCTYPE html>

@@ -174,10 +174,10 @@ if (!isset($_SESSION['valid'])) {
 </head>
 <?php include("../config.php");
 
-$id = $_SESSION['valid'];
-$query = mysqli_query($con, "SELECT*FROM student WHERE STUDENT_ID=$id");
+$id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
+$query = mysqli_query($con, "SELECT*FROM student WHERE STUDENT_ID='$id'");
 $queryClass  = mysqli_query($con, "SELECT student.*, class.* FROM student INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE
-            WHERE student.STUDENT_ID = $id");
+            WHERE student.STUDENT_ID = '$id'");
 
 // Initialize $res_Class with a default value
 $res_Class = '';

@@ -1,28 +1,54 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in AdminBilling.php', 'HIGH');
     header("Location: ../login-logout/login.php");
     exit();
 }
 ?>
 <?php include "../header/adminHeader.php" ?>
 <?php
-// Handle search form submission
+// Handle search form submission with proper sanitization
 if (isset($_GET['submit'])) {
-    $searchId = $_GET['searchBox'];
+    $searchId = isset($_GET['searchBox']) ? trim($_GET['searchBox']) : '';
+    
     if (!empty($searchId)) {
-        $sql = "SELECT * FROM payment WHERE STUDENT_ID = '$searchId'";
+        // Sanitize and validate student ID
+        $searchId = SecuritySanitizer::sanitize($searchId, 'id', 'STUDENT_ID');
+        
+        if ($searchId) {
+            // Use prepared statement for search
+            $stmt = $con->prepare("SELECT * FROM payment WHERE STUDENT_ID = ?");
+            $stmt->bind_param("s", $searchId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $isSearch = true;
+            SecuritySanitizer::logSecurityEvent("Admin $adminId searched for student payments: $searchId", 'INFO');
+        } else {
+            SecuritySanitizer::logSecurityEvent("Invalid student ID search attempted by admin $adminId", 'MEDIUM');
+            // Set empty result for invalid search
+            $result = $con->query("SELECT * FROM payment WHERE 1=0"); // Empty result
+            $isSearch = true;
+        }
     } else {
         // If search box is empty, retrieve all data
-        $sql = "SELECT * FROM payment";
+        $result = $con->query("SELECT * FROM payment");
+        $isSearch = false;
     }
 } else {
     // Default query without search
-    $sql = "SELECT * FROM payment";
+    $result = $con->query("SELECT * FROM payment");
+    $isSearch = false;
 }
-
-$result = $con->query($sql);
 
 ?>
 <!doctype html>
@@ -129,11 +155,16 @@ $result = $con->query($sql);
 
     <?php include("../config.php");
 
-    $queryParent = mysqli_query($con, "SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
+    // Use prepared statement for joining payment and student data
+    $stmt = $con->prepare("SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
+    $stmt->execute();
+    $queryParent = $stmt->get_result();
 
-    while ($resultStud = mysqli_fetch_assoc($queryParent)) {
-        $studentInfo[$resultStud['STUDENT_ID']] = $resultStud['STUDENT_NAME'];
+    $studentInfo = [];
+    while ($resultStud = $queryParent->fetch_assoc()) {
+        $studentInfo[$resultStud['STUDENT_ID']] = SecuritySanitizer::sanitize($resultStud['STUDENT_NAME'], 'name');
     }
+    $stmt->close();
     ?>
     <div class="container">  
         <h1>Manage Billings</h1>
@@ -162,12 +193,15 @@ $result = $con->query($sql);
                 // Display the uploaded files and download links
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        $file_path = "../../uploads/" . $row['PAYMENT_RECEIPT'];
-                        $res_paymentType = $row['PAYMENT_TYPE'];
-                        $res_paymentAmount = $row['PAYMENT_AMOUNT'];
-                        $res_paymentID = $row['PAYMENT_ID'];
-                        $res_paymentStatus = $row['PAYMENT_STATUS'];
-                        $res_StudId = $row['STUDENT_ID'];
+                        // Sanitize all outputs for XSS protection
+                        $res_paymentID = SecuritySanitizer::sanitize($row['PAYMENT_ID'], 'id');
+                        $res_paymentType = SecuritySanitizer::sanitize($row['PAYMENT_TYPE'], 'enum');
+                        $res_paymentAmount = SecuritySanitizer::sanitize($row['PAYMENT_AMOUNT'], 'decimal');
+                        $res_paymentStatus = SecuritySanitizer::sanitize($row['PAYMENT_STATUS'], 'enum');
+                        $res_StudId = SecuritySanitizer::sanitize($row['STUDENT_ID'], 'id');
+                        $paymentReceipt = SecuritySanitizer::sanitize($row['PAYMENT_RECEIPT'], 'file_path');
+                        
+                        $file_path = "../../uploads/" . $paymentReceipt;
 
                         if (array_key_exists($res_StudId, $studentInfo)) {
                             $res_StudName = $studentInfo[$res_StudId];
@@ -176,23 +210,23 @@ $result = $con->query($sql);
                         }
 
                         // Check if the file path is not empty and the file exists
-                        if (!empty($row['PAYMENT_RECEIPT']) && file_exists($file_path)) {
+                        if (!empty($paymentReceipt) && file_exists($file_path)) {
                             ?>
                             <tr class="tr-hover">
                                 <td>
-                                    <?php echo $res_paymentID ?>
+                                    <?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_StudName ?>
+                                    <?php echo htmlspecialchars($res_StudName, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_StudId ?>
+                                    <?php echo htmlspecialchars($res_StudId, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_paymentType ?>
+                                    <?php echo htmlspecialchars($res_paymentType, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>RM
-                                    <?php echo $res_paymentAmount ?>
+                                    <?php echo htmlspecialchars($res_paymentAmount, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td style="text-align: center; color: <?php
                                 if ($res_paymentStatus == 'UNPAID') {
@@ -203,11 +237,11 @@ $result = $con->query($sql);
                                     echo 'green';
                                 }
                                 ?>;">
-                                    <?php echo $res_paymentStatus ?>
+                                    <?php echo htmlspecialchars($res_paymentStatus, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
                                     <select name="selectStatus" class="status-select"
-                                        data-payment-id="<?php echo $res_paymentID ?>">
+                                        data-payment-id="<?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?>">
                                         <option value="PENDING" <?php echo ($res_paymentStatus == 'PENDING') ? 'selected' : ''; ?>>
                                             PENDING</option>
                                         <option value="COMPLETED" <?php echo ($res_paymentStatus == 'COMPLETED') ? 'selected' : ''; ?>>COMPLETED</option>
@@ -216,11 +250,11 @@ $result = $con->query($sql);
                                     </select>
                                 </td>
                                 <td width="6%"><button class="manage-buttons update-button"
-                                        data-payment-id="<?php echo $res_paymentID ?>"
+                                        data-payment-id="<?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?>"
                                         onclick="updateFunction(this)">Update</button></td>
 
                                 <td><button class="manage-buttons view-button download-button"
-                                        onclick="downloadFile2('<?php echo $file_path; ?>')">Download</button></td>
+                                        onclick="downloadFile2('<?php echo htmlspecialchars($file_path, ENT_QUOTES, 'UTF-8'); ?>')">Download</button></td>
 
                             </tr>
                             <?php
@@ -228,19 +262,19 @@ $result = $con->query($sql);
                             ?>
                             <tr>
                                 <td>
-                                    <?php echo $res_paymentID ?>
+                                    <?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_StudName ?>
+                                    <?php echo htmlspecialchars($res_StudName, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_StudId ?>
+                                    <?php echo htmlspecialchars($res_StudId, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
-                                    <?php echo $res_paymentType ?>
+                                    <?php echo htmlspecialchars($res_paymentType, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>RM
-                                    <?php echo $res_paymentAmount ?>
+                                    <?php echo htmlspecialchars($res_paymentAmount, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td style="text-align: center; color: <?php
                                 if ($res_paymentStatus == 'UNPAID') {
@@ -251,7 +285,7 @@ $result = $con->query($sql);
                                     echo 'green';
                                 }
                                 ?>;">
-                                    <?php echo $res_paymentStatus ?>
+                                    <?php echo htmlspecialchars($res_paymentStatus, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                 <td>
                                     <select name="selectStatus" id="selectStatus" class="status-select">
@@ -263,7 +297,7 @@ $result = $con->query($sql);
                                     </select>
                                 </td>
                                 <td width="6%"><button class="manage-buttons update-button"
-                                        data-payment-id="<?php echo $res_paymentID ?>"
+                                        data-payment-id="<?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?>"
                                         onclick="updateFunction(this)">Update</button></td>
                                 <td width="6%"><button class="manage-buttons view-button" onclick="downloadFile()">Download</button>
                                 </td>

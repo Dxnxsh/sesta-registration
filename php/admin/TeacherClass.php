@@ -3,8 +3,11 @@
 session_start();
 
 include("config.php");
+
 if (!isset($_SESSION['validTc'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Teacher class access without valid session');
     header("Location: login.php");
+    exit();
 }
 require_once('../Connections/registersekolah.php');
 ?>
@@ -12,10 +15,7 @@ require_once('../Connections/registersekolah.php');
 if (!function_exists("GetSQLValueString")) {
     function GetSQLValueString($conn, $theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "")
     {
-        if (PHP_VERSION < 6) {
-            $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-        }
-
+        // Removed deprecated get_magic_quotes_gpc() function
         $theValue = $conn->real_escape_string($theValue);
 
         switch ($theType) {
@@ -46,22 +46,43 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Assuming TEACHER_ID is stored in the session, modify this part accordingly
-$teacherId = $_SESSION['validTc'];
+// Sanitize and validate teacher ID from session
+$teacherId = SecuritySanitizer::sanitize($_SESSION['validTc'], 'id', 'TEACHER_ID');
 
-// Query to fetch class information
-$query_rsClass = "SELECT * FROM `class` WHERE TEACHER_ID = '$teacherId'";
-$rsClass = $conn->query($query_rsClass) or die($conn->error);
+// Query to fetch class information using prepared statement
+$query_rsClass = "SELECT * FROM `class` WHERE TEACHER_ID = ?";
+$stmt = $conn->prepare($query_rsClass);
+if (!$stmt) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare class query: ' . $conn->error);
+    die("Database error occurred");
+}
+
+$stmt->bind_param("s", $teacherId);
+$stmt->execute();
+$rsClass = $stmt->get_result();
 $row_rsClass = $rsClass->fetch_assoc();
 $totalRows_rsClass = $rsClass->num_rows;
+
+if ($totalRows_rsClass == 0) {
+    SecuritySanitizer::logSecurityEvent('invalid_access', 'Teacher attempted to access class with no assignment: ' . $teacherId);
+    die("No class assigned to this teacher");
+}
 
 // Query to fetch students registered under the specific CLASS_CODE
 $classCode = $row_rsClass['CLASS_CODE'];
 $query_rsStudent = "SELECT student.*
                     FROM student
                     JOIN class ON student.CLASS_CODE = class.CLASS_CODE
-                    WHERE class.CLASS_CODE = '$classCode'";
-$rsStudent = $conn->query($query_rsStudent) or die($conn->error);
+                    WHERE class.CLASS_CODE = ?";
+$stmt2 = $conn->prepare($query_rsStudent);
+if (!$stmt2) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare student query: ' . $conn->error);
+    die("Database error occurred");
+}
+
+$stmt2->bind_param("s", $classCode);
+$stmt2->execute();
+$rsStudent = $stmt2->get_result();
 
 ?>
 <?php include "teacherHeader.php" ?>
@@ -92,10 +113,10 @@ $rsStudent = $conn->query($query_rsStudent) or die($conn->error);
                   <th>TEACHER NAME</th>
                 </tr>
                 <tr>
-                    <th><?php echo $row_rsClass['CLASS_CODE']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_NAME']; ?></th>
-                    <th><?php echo $row_rsClass['CLASS_CAT']; ?></th>
-                    <th><?php echo $row_rsClass['TEACHER_ID']; ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CODE']); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_NAME']); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CAT']); ?></th>
+                    <th><?php echo htmlspecialchars($row_rsClass['TEACHER_ID']); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -126,17 +147,17 @@ $rsStudent = $conn->query($query_rsStudent) or die($conn->error);
             <tbody>
                 <?php while ($row_rsStudent = $rsStudent->fetch_assoc()) { ?>
                     <tr>
-                        <td><?php echo $row_rsStudent['STUDENT_ID']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_NAME']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_GENDER']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_DOB']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_POB']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_RELIGION']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_RACE']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_NATIONALITY']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_ADDRESS']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_DISEASE']; ?></td>
-                        <td><?php echo $row_rsStudent['STUDENT_DISABILITY']; ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_ID']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_NAME']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_GENDER']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DOB']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_POB']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_RELIGION']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_RACE']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_NATIONALITY']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_ADDRESS']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DISEASE']); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DISABILITY']); ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -152,8 +173,23 @@ $rsStudent = $conn->query($query_rsStudent) or die($conn->error);
 </body>
 </html>
 <?php
-$rsClass->free_result();
-$rsStudent->free_result();
+// Clean up prepared statements
+if (isset($stmt)) {
+    $stmt->close();
+}
+if (isset($stmt2)) {
+    $stmt2->close();
+}
+
+// Clean up result sets
+if (isset($rsClass)) {
+    $rsClass->free_result();
+}
+if (isset($rsStudent)) {
+    $rsStudent->free_result();
+}
+
+// Close connection
 $conn->close();
 ?>
 <?php include "footer.php" ?>

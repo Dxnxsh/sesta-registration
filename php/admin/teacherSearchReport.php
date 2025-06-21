@@ -1,45 +1,52 @@
 <?php
   session_start();
-  include "../header/adminHeader.php" ?>
+  include "../header/adminHeader.php"; ?>
 <?php require_once('../config.php'); 
 
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  global $con;
-  $theValue = mysqli_real_escape_string($con, $theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
-}
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Teacher search report access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
-$colname_rsSearchTeacher = "-1";
+$colname_rsSearchTeacher = "";
 if (isset($_POST['searchBox'])) {
-    $colname_rsSearchTeacher = $_POST['searchBox'];
+    $colname_rsSearchTeacher = SecuritySanitizer::sanitize($_POST['searchBox'], 'id', 'TEACHER_ID');
+    if (empty($colname_rsSearchTeacher)) {
+        SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid teacher search input: ' . $_POST['searchBox']);
+        $colname_rsSearchTeacher = "";
+    }
 }
 
-$query_rsSearchTeacher = sprintf("SELECT * FROM teacher WHERE TEACHER_ID LIKE %s", GetSQLValueString($colname_rsSearchTeacher . "%", "text"));
-$rsSearchTeacher = mysqli_query($con, $query_rsSearchTeacher) or die(mysqli_error($con));
-$row_rsSearchTeacher = mysqli_fetch_assoc($rsSearchTeacher);
-$totalRows_rsSearchTeacher = mysqli_num_rows($rsSearchTeacher);
+// Use prepared statement for the search query
+if (!empty($colname_rsSearchTeacher)) {
+    $searchPattern = $colname_rsSearchTeacher . "%";
+    $query_rsSearchTeacher = "SELECT * FROM teacher WHERE TEACHER_ID LIKE ?";
+    $stmt = mysqli_prepare($con, $query_rsSearchTeacher);
+    
+    if (!$stmt) {
+        SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare teacher search query: ' . mysqli_error($con));
+        die('Database error occurred');
+    }
+    
+    mysqli_stmt_bind_param($stmt, "s", $searchPattern);
+    mysqli_stmt_execute($stmt);
+    $rsSearchTeacher = mysqli_stmt_get_result($stmt);
+    
+    if ($rsSearchTeacher) {
+        $row_rsSearchTeacher = mysqli_fetch_assoc($rsSearchTeacher);
+        $totalRows_rsSearchTeacher = mysqli_num_rows($rsSearchTeacher);
+    } else {
+        $row_rsSearchTeacher = [];
+        $totalRows_rsSearchTeacher = 0;
+    }
+    
+    mysqli_stmt_close($stmt);
+} else {
+    // No search term provided - show empty results
+    $row_rsSearchTeacher = [];
+    $totalRows_rsSearchTeacher = 0;
+}
 ?>
 <!doctype html>
 <html>

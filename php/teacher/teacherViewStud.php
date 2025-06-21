@@ -7,7 +7,7 @@ if (!isset($_SESSION['validTC'])) {
 }
 
 if (isset($_GET['id'])) {
-  $stud_id = $_GET['id'];
+  $stud_id = SecuritySanitizer::sanitize($_GET['id'], 'id');
   $teacherId = $_SESSION['validTC'];
   
   // Modified query to ensure teacher can only view students from their assigned classes

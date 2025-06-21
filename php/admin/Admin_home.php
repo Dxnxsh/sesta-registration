@@ -1,8 +1,17 @@
 <?php
 session_start();
 include("../config.php");
-if (!isset($_SESSION['adminID'])) {
+
+if (!isset($_SESSION['validAD'])) {
+	SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin home access without valid session');
 	header("Location: ../login-logout/login.php");
+	exit();
+}
+
+if (!isset($_SESSION['adminID'])) {
+	SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin home access without valid session');
+	header("Location: ../login-logout/login.php");
+	exit();
 }
 ?>
 
@@ -102,7 +111,7 @@ if (!isset($_SESSION['adminID'])) {
 						<i class='bx bxs-graduation'></i>
 						<span class="text">
 							<h3>
-								<?php echo $rowCount ?>
+								<?php echo htmlspecialchars($rowCount) ?>
 							</h3>
 							<p>Total Student</p>
 						</span>
@@ -111,7 +120,7 @@ if (!isset($_SESSION['adminID'])) {
 						<i class='bx bxs-book-reader'></i>
 						<span class="text">
 							<h3>
-								<?php echo $rowCount2 ?>
+								<?php echo htmlspecialchars($rowCount2) ?>
 							</h3>
 							<p>Total Teacher</p>
 						</span>
@@ -120,7 +129,7 @@ if (!isset($_SESSION['adminID'])) {
 						<i class='bx bxs-user'></i>
 						<span class="text">
 							<h3>
-								<?php echo $rowCount3 ?>
+								<?php echo htmlspecialchars($rowCount3) ?>
 							</h3>
 							<p>Total Admin</p>
 						</span>
@@ -202,7 +211,7 @@ if (!isset($_SESSION['adminID'])) {
 	const barChartOptions = {
 		series: [
 			{
-				data: [<?php echo $rowCount ?>, <?php echo $rowCount2 ?>, <?php echo $rowCount3 ?>,],
+				data: [<?php echo htmlspecialchars($rowCount) ?>, <?php echo htmlspecialchars($rowCount2) ?>, <?php echo htmlspecialchars($rowCount3) ?>,],
 			},
 		],
 		chart: {

@@ -23,28 +23,89 @@
             include("../config.php");
 
             $id = $_SESSION['validTC'];
-            $query = mysqli_query($con, "SELECT*FROM teacher WHERE TEACHER_ID=$id");
-
-            while ($result = mysqli_fetch_assoc($query)) {
-                $res_id = $result['TEACHER_ID'];
-            }
+            
+            // Use prepared statement to get teacher info
+            $query = "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID = ?";
+            $stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($stmt, "s", $id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $teacher = mysqli_fetch_assoc($result);
+            $res_id = $teacher['TEACHER_ID'] ?? null;
+            mysqli_stmt_close($stmt);
 
             if (isset($_POST['submit'])) {
-                $username = $_POST['username'];
-                $password = $_POST['password'];
+                
+                try {
+                    // Sanitize and validate input data
+                    $username = SecuritySanitizer::sanitizeForDB($_POST['username'] ?? '', 'username', 'TEACHER_USERNAME');
+                    $password = SecuritySanitizer::sanitizeForDB($_POST['password'] ?? '', 'password', 'TEACHER_PWD');
 
-                // Check if username already exists
-                $checkUsername = mysqli_query($con, "SELECT TEACHER_USERNAME FROM teacher WHERE TEACHER_USERNAME='$username' AND TEACHER_ID != '$id'");
-                $usernameExists = mysqli_num_rows($checkUsername);
+                    // Validate required fields
+                    if (empty($username) || empty($password)) {
+                        echo "<div class='message error'>
+                              <p>All fields are required!</p>
+                              </div>";
+                    } else {
+                        // Check for malicious input
+                        if (detectMaliciousInput($username) || detectMaliciousInput($password)) {
+                            SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                                'field' => 'teacher_account_setup',
+                                'teacher_id' => $id
+                            ]);
+                            echo "<div class='message error'>
+                                  <p>Invalid input detected!</p>
+                                  </div>";
+                        } else {
+                            // Check if username already exists using prepared statement
+                            $checkUsername = "SELECT TEACHER_USERNAME FROM teacher WHERE TEACHER_USERNAME = ? AND TEACHER_ID != ?";
+                            $stmt = mysqli_prepare($con, $checkUsername);
+                            mysqli_stmt_bind_param($stmt, "ss", $username, $id);
+                            mysqli_stmt_execute($stmt);
+                            $checkResult = mysqli_stmt_get_result($stmt);
+                            $usernameExists = mysqli_num_rows($checkResult);
+                            mysqli_stmt_close($stmt);
 
-                if ($usernameExists > 0) {
+                            if ($usernameExists > 0) {
+                                echo "<div class='message error'>
+                                      <p>Username already exists! Please choose a different username.</p>
+                                      </div>";
+                            } else {
+                                // Update teacher credentials using prepared statement
+                                $updateQuery = "UPDATE teacher SET TEACHER_USERNAME = ?, TEACHER_PWD = ? WHERE TEACHER_ID = ?";
+                                $stmt = mysqli_prepare($con, $updateQuery);
+                                
+                                if ($stmt) {
+                                    mysqli_stmt_bind_param($stmt, "sss", $username, $password, $id);
+                                    
+                                    if (mysqli_stmt_execute($stmt)) {
+                                        SecuritySanitizer::logSecurityEvent('teacher_account_setup_completed', [
+                                            'teacher_id' => $id,
+                                            'username' => $username
+                                        ]);
+                                        $showModal = true;
+                                    } else {
+                                        SecuritySanitizer::logSecurityEvent('teacher_account_setup_failed', [
+                                            'teacher_id' => $id,
+                                            'error' => mysqli_error($con)
+                                        ]);
+                                        echo "<div class='message error'>
+                                              <p>Error updating account. Please try again.</p>
+                                              </div>";
+                                    }
+                                    mysqli_stmt_close($stmt);
+                                } else {
+                                    echo "<div class='message error'>
+                                          <p>Database error. Please try again.</p>
+                                          </div>";
+                                }
+                            }
+                        }
+                    }
+                } catch (InvalidArgumentException $e) {
                     echo "<div class='message error'>
-                          <p>Username already exists! Please choose a different username.</p>
+                          <p>Invalid input format. Please check your entries.</p>
                           </div>";
-                } else {
-                    mysqli_query($con, "UPDATE `teacher` SET `TEACHER_USERNAME`='$username', `TEACHER_PWD`='$password' WHERE `TEACHER_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
-
-                    $showModal = true;
                 }
             }
 

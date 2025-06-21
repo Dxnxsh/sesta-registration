@@ -18,7 +18,9 @@
 </head>
 
 <body>
-   <?php $result = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID='{$_SESSION['validTC']}'") or die("Select Error");
+   <?php 
+   $teacherId = SecuritySanitizer::sanitize($_SESSION['validTC'], 'id', 'TEACHER_ID');
+   $result = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID='$teacherId'") or die("Select Error");
          $row_rsTeach = mysqli_fetch_assoc($result);
 		 ?>
 

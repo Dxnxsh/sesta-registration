@@ -10,6 +10,20 @@
         die("Connection failed: " . mysqli_connect_error());
     }
 
+    // Include sanitization library for security
+    require_once __DIR__ . '/config/sanitization.php';
+    
+    // Initialize SecuritySanitizer with database connection
+    SecuritySanitizer::init($con);
+    
+    // Start session securely
+    if (session_status() === PHP_SESSION_NONE) {
+        // Set secure session parameters
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_secure', 1);
+        ini_set('session.use_strict_mode', 1);
+        session_start();
+    }
     
     ?>
 

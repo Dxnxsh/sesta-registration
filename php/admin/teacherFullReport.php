@@ -1,36 +1,12 @@
 <?php
   session_start();
-  include "../header/adminHeader.php" ?>
+  include "../header/adminHeader.php"; ?>
 <?php require_once('../config.php'); 
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  if (PHP_VERSION < 6) {
-    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-  }
 
-  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
-}
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Teacher full report access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
 $query_rsTeacher = "SELECT * FROM teacher";
@@ -302,16 +278,16 @@ $totalRows_rsTeacher = mysqli_num_rows($rsTeacher);
       </tr>
 		<?php do { ?>
       <tr class="tr-hover">
-        <td><?php echo $row_rsTeacher['TEACHER_ID']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_NAME']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_GENDER']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_DOB']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_ADDRESS']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_PHONENUM']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_EMAIL']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_STATUS']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_USERNAME']; ?></td>
-        <td><?php echo $row_rsTeacher['TEACHER_PWD']; ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_ID']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_NAME']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_GENDER']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_DOB']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_ADDRESS']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_PHONENUM']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_EMAIL']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_STATUS']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsTeacher['TEACHER_USERNAME']); ?></td>
+        <td>****** (Hidden for security)</td>
       </tr>
       <?php } while ($row_rsTeacher = mysqli_fetch_assoc($rsTeacher)); ?>
     </tbody>

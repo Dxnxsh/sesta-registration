@@ -1,24 +1,41 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+  SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin view teacher access without valid session');
   header("Location: ../login-logout/login.php");
   exit();
 }
 
+// Initialize variables
+$studname = $id = $cCode = $cName = $gender = $dob = $pob = $email = $address = '';
+
 if (isset($_GET['id'])) {
-  $stud_id = $_GET['id'];
+  $stud_id = SecuritySanitizer::sanitize($_GET['id'], 'id', 'TEACHER_ID');
+  
+  // Use prepared statement to prevent SQL injection
   $selectClassStudent = "SELECT * FROM teacher s
   LEFT JOIN class c ON s.TEACHER_ID = c.TEACHER_ID
-  WHERE s.TEACHER_ID = '$stud_id'";
-  $queryClassStudent = mysqli_query($con, $selectClassStudent);
+  WHERE s.TEACHER_ID = ?";
+  
+  $stmt = mysqli_prepare($con, $selectClassStudent);
+  if (!$stmt) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare teacher view query: ' . mysqli_error($con));
+    die('Database error occurred');
+  }
+  
+  mysqli_stmt_bind_param($stmt, "s", $stud_id);
+  mysqli_stmt_execute($stmt);
+  $queryClassStudent = mysqli_stmt_get_result($stmt);
 
   if (!$queryClassStudent) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Teacher view query failed: ' . mysqli_error($con));
     die('Error: ' . mysqli_error($con));
   }
 
   // Fetch and process the results
-  while ($row = mysqli_fetch_assoc($queryClassStudent)) {
+  if ($row = mysqli_fetch_assoc($queryClassStudent)) {
     // Process each row of data
     // $row contains the combined data from both "teacher" and "class" tables
     $studname = $row['TEACHER_NAME'];
@@ -30,11 +47,13 @@ if (isset($_GET['id'])) {
     $pob = $row['TEACHER_PHONENUM'];
     $email = $row['TEACHER_EMAIL'];
     $address = $row['TEACHER_ADDRESS'];
-
-
-    
+  } else {
+    SecuritySanitizer::logSecurityEvent('invalid_access', 'Teacher ID not found: ' . $stud_id);
   }
-
+  
+  mysqli_stmt_close($stmt);
+} else {
+  SecuritySanitizer::logSecurityEvent('invalid_access', 'Admin view teacher accessed without teacher ID');
 }
 ?>
 <?php include "../header/adminHeader.php" ?>
@@ -64,49 +83,49 @@ if (isset($_GET['id'])) {
           <tr>
               <th>Name </th>
               <td>
-              <?php echo (!empty($studname) ? $studname : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($studname) ? $studname : 'Not available'); ?>
               </td>
             </tr>  
           <tr>
               <th>ID</th>
               <td>
-              <?php echo (!empty($stud_id) ? $stud_id : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($stud_id) ? $stud_id : 'Not available'); ?>
               </td>
             </tr>  
           <tr>
               <th>Gender </th>
               <td>
-              <?php echo (!empty($gender) ? $gender : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($gender) ? $gender : 'Not available'); ?>
               </td>
             </tr>
             <tr>
               <th> Class </th>
               <td>
-              <?php echo (!empty($cCode) && !empty($cName) ? $cCode . ' - ' . $cName : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($cCode) && !empty($cName) ? $cCode . ' - ' . $cName : 'Not available'); ?>
       </td>
             </tr>
             <tr>
               <th> Phone Number </th>
               <td>
-              <?php echo (!empty($pob) ? $pob : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($pob) ? $pob : 'Not available'); ?>
 </td>
             </tr>
             <tr>
               <th>Date of Birth</th>
               <td>
-              <?php echo (!empty($dob) ? $dob : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($dob) ? $dob : 'Not available'); ?>
               </td>
             </tr>
             <tr>
               <th>E-mail</th>
               <td>
-              <?php echo (!empty($email) ? $email : 'Not available'); ?>
+              <?php echo htmlspecialchars(!empty($email) ? $email : 'Not available'); ?>
              </td>
             </tr>
             <tr>
               <th> Address</th>
               <td>
-              <input type="text" id="address" name="address" value="<?php echo (!empty($address) ? $address : 'Not available'); ?>" disabled><br>
+              <input type="text" id="address" name="address" value="<?php echo htmlspecialchars(!empty($address) ? $address : 'Not available'); ?>" disabled><br>
   </td>
             </tr>
           </tbody>

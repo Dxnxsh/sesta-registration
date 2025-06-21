@@ -2,32 +2,67 @@
    session_start();
 /*SCHOOL FEES */
    include("../../config.php");
+   
    if(!isset($_SESSION['valid'])){
-    header("Location: ../login-logout/login.php");
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'PDF maker access without valid student session');
+    header("Location: ../../login-logout/login.php");
+    exit();
    }
 ?>
 <?php include("../../config.php"); 
             
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID=$id");
-            $queryParent  = mysqli_query($con,"SELECT student.*, parent.* FROM student INNER JOIN parent ON student.PARENT_ID = parent.PARENT_ID
-            WHERE student.STUDENT_ID = $id");
+            $id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
             
+            // Use prepared statements for all queries
+            $query = mysqli_prepare($con, "SELECT * FROM student WHERE STUDENT_ID = ?");
+            if (!$query) {
+                SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare student query in PDF maker: ' . mysqli_error($con));
+                die('Database error occurred');
+            }
+            
+            mysqli_stmt_bind_param($query, "s", $id);
+            mysqli_stmt_execute($query);
+            $result = mysqli_stmt_get_result($query);
+            
+            $query2 = mysqli_prepare($con, "SELECT * FROM payment WHERE STUDENT_ID = ?");
+            if (!$query2) {
+                SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare payment query in PDF maker: ' . mysqli_error($con));
+                die('Database error occurred');
+            }
+            
+            mysqli_stmt_bind_param($query2, "s", $id);
+            mysqli_stmt_execute($query2);
+            $result2 = mysqli_stmt_get_result($query2);
+            
+            $queryParent = mysqli_prepare($con, "SELECT student.*, parent.* FROM student INNER JOIN parent ON student.PARENT_ID = parent.PARENT_ID WHERE student.STUDENT_ID = ?");
+            if (!$queryParent) {
+                SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare parent query in PDF maker: ' . mysqli_error($con));
+                die('Database error occurred');
+            }
+            
+            mysqli_stmt_bind_param($queryParent, "s", $id);
+            mysqli_stmt_execute($queryParent);
+            $resultParent = mysqli_stmt_get_result($queryParent);
 
-            while($result = mysqli_fetch_assoc($query)){
-                $res_Name = $result['STUDENT_NAME'];
-                $res_IC = $result['STUDENT_ID'];
-                $res_Add = $result['STUDENT_ADDRESS'];
-                $res_Email = $result['STUDENT_EMAIL'];
+            // Initialize variables to prevent undefined variable warnings
+            $res_Name = $res_IC = $res_Add = $res_Email = '';
+            $res_id1 = $res_type1 = $res_amount1 = $res_stts1 = '';
+            $res_ParentMonthlyIncome = $res_ParentName = '';
+            $discountedIncome = 0;
+
+            if($row = mysqli_fetch_assoc($result)){
+                $res_Name = $row['STUDENT_NAME'];
+                $res_IC = $row['STUDENT_ID'];
+                $res_Add = $row['STUDENT_ADDRESS'];
+                $res_Email = $row['STUDENT_EMAIL'];
             }
 
-            while($result = mysqli_fetch_assoc($query2))
+            while($row2 = mysqli_fetch_assoc($result2))
             {
-                $res_id = $result['PAYMENT_ID'];
-                $res_type = $result['PAYMENT_TYPE'];
-                $res_amount = $result['PAYMENT_AMOUNT'];
-                $res_stts = $result['PAYMENT_STATUS'];
+                $res_id = $row2['PAYMENT_ID'];
+                $res_type = $row2['PAYMENT_TYPE'];
+                $res_amount = $row2['PAYMENT_AMOUNT'];
+                $res_stts = $row2['PAYMENT_STATUS'];
 
                  // Check if the payment type is "SCHOOL FEES"
                if ($res_type == "SCHOOL FEES") {
@@ -38,9 +73,9 @@
                }
             }  
 
-            while ($resultParent = mysqli_fetch_assoc($queryParent)) {
-              $res_ParentMonthlyIncome = $resultParent['PARENT_MONTHLY_INCOME'];
-              $res_ParentName = $resultParent['PARENT_NAME'];
+            if ($rowParent = mysqli_fetch_assoc($resultParent)) {
+              $res_ParentMonthlyIncome = $rowParent['PARENT_MONTHLY_INCOME'];
+              $res_ParentName = $rowParent['PARENT_NAME'];
 
                 // Check if parent monthly income is less than 1000
                 if ($res_ParentMonthlyIncome < 1000) {

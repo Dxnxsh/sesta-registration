@@ -1,13 +1,18 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
     exit();
 }
 
+// Fix the undefined variable - should be selecting from admin table
 $selectadmin = "SELECT * FROM admin";
-$queryadmin = mysqli_query($con, $selectClassCategory);
+$queryadmin = mysqli_query($con, $selectadmin);
+
+// Set form action properly
+$editFormAction = $_SERVER['PHP_SELF'];
 ?>
 
 <?php include "../header/adminHeader.php" ?>

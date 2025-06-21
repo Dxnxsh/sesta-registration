@@ -13,24 +13,30 @@ if (!isset($_SESSION['validTC'])) {
 
 // Assuming 'validTC' is the session variable you want to use
 if (isset($_SESSION['validTC'])) {
+    $teacherId = SecuritySanitizer::sanitize($_SESSION['validTC'], 'id', 'TEACHER_ID');
     $selectData = "SELECT * FROM teacher
     JOIN class ON teacher.TEACHER_ID = class.TEACHER_ID
-    WHERE teacher.TEACHER_ID = '" . $_SESSION['validTC'] . "'";
+    WHERE teacher.TEACHER_ID = '$teacherId'";
 
     $queryClass = mysqli_query($con, $selectData) or die(mysqli_error($con));
 
     // Fetch and process the results
     if ($row_rsClass = mysqli_fetch_assoc($queryClass)) {
         // Process data from the "teacher" and "class" tables
-        $className = $row_rsClass['CLASS_NAME'];
-        $classlvl = $row_rsClass['CLASS_LEVEL'];
-        $blck = $row_rsClass['CLASS_BLOCK'];
-        $flr = $row_rsClass['CLASS_FLOOR'];
-        $cat = $row_rsClass['CLASS_CAT'];
-        $teachName = $row_rsClass['TEACHER_NAME'];
-        $teachid = $row_rsClass['TEACHER_ID'];
-        $uname = $row_rsClass['TEACHER_USERNAME'];
-        $teachphone = $row_rsClass['TEACHER_PHONENUM'];
+        $className = SecuritySanitizer::sanitize($row_rsClass['CLASS_NAME'], 'class_name');
+        $classlvl = SecuritySanitizer::sanitize($row_rsClass['CLASS_LEVEL'], 'class_level');
+        $blck = SecuritySanitizer::sanitize($row_rsClass['CLASS_BLOCK'], 'class_block');
+        $flr = SecuritySanitizer::sanitize($row_rsClass['CLASS_FLOOR'], 'floor');
+        $cat = SecuritySanitizer::sanitize($row_rsClass['CLASS_CAT'], 'class_category');
+        $teachName = SecuritySanitizer::sanitize($row_rsClass['TEACHER_NAME'], 'name');
+        $teachid = SecuritySanitizer::sanitize($row_rsClass['TEACHER_ID'], 'id');
+        $uname = SecuritySanitizer::sanitize($row_rsClass['TEACHER_USERNAME'], 'username');
+        $teachphone = SecuritySanitizer::sanitize($row_rsClass['TEACHER_PHONENUM'], 'phone');
+        
+        SecuritySanitizer::logSecurityEvent('teacher_class_access', [
+            'teacher_id' => $teachid,
+            'class_code' => $row_rsClass['CLASS_CODE'] ?? ''
+        ]);
     }
 
     // Reset the pointer for the next fetch
@@ -110,10 +116,11 @@ if (isset($_SESSION['validTC'])) {
                 <?php
                 // Check if class data exists before querying students
                 if (isset($row_rsClass) && !empty($row_rsClass['CLASS_CODE'])) {
+                    $classCode = SecuritySanitizer::sanitize($row_rsClass['CLASS_CODE'], 'class_code', 'CLASS_CODE');
                     $selectData2 = "SELECT * FROM student
                     JOIN class ON class.CLASS_CODE = student.CLASS_CODE
                     JOIN parent ON student.PARENT_ID = parent.PARENT_ID
-                    WHERE student.CLASS_CODE = '{$row_rsClass['CLASS_CODE']}'";
+                    WHERE student.CLASS_CODE = '$classCode'";
 
                     $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
 
@@ -121,15 +128,15 @@ if (isset($_SESSION['validTC'])) {
                 if (mysqli_num_rows($queryClass2) > 0) {
                     // Fetch and process the results
                     if ($row_rsClass2 = mysqli_fetch_assoc($queryClass2)) {
-                        // Process data from the "teacher" and "class" tables
-                        $stid = $row_rsClass2['STUDENT_ID'];
-                        $stname = $row_rsClass2['STUDENT_NAME'];
-                        $stgend = $row_rsClass2['STUDENT_GENDER'];
-                        $strel = $row_rsClass2['STUDENT_RELIGION'];
-                        $stdob = $row_rsClass2['STUDENT_DOB'];
-                        $stpar = $row_rsClass2['PARENT_NAME'];
-                        $stctc = $row_rsClass2['PARENT_PHONENUM'];
-                        $email = $row_rsClass2['STUDENT_EMAIL'];
+                        // Process and sanitize data from the "student" and "parent" tables
+                        $stid = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_ID'], 'id');
+                        $stname = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_NAME'], 'name');
+                        $stgend = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_GENDER'], 'gender');
+                        $strel = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_RELIGION'], 'religion');
+                        $stdob = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_DOB'], 'date');
+                        $stpar = SecuritySanitizer::sanitize($row_rsClass2['PARENT_NAME'], 'name');
+                        $stctc = SecuritySanitizer::sanitize($row_rsClass2['PARENT_PHONENUM'], 'phone');
+                        $email = SecuritySanitizer::sanitize($row_rsClass2['STUDENT_EMAIL'], 'email');
                     }
 
                     // Reset the pointer for the next fetch

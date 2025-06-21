@@ -20,38 +20,126 @@
         <div class="box form-box">
 
             <?php
-
             include("../config.php");
+            
             if (isset($_POST['submit'])) {
-                $ic = $_POST['ic'];
-                $email = $_POST['email'];
-                $pwd = $_POST['pwd'];
-                $pwd2 = $_POST['pwd2'];
+                
+                try {
+                    // Sanitize and validate input data
+                    $ic = SecuritySanitizer::sanitizeForDB($_POST['ic'] ?? '', 'id', 'STUDENT_ID');
+                    $email = SecuritySanitizer::sanitizeForDB($_POST['email'] ?? '', 'email', 'STUDENT_EMAIL');
+                    $pwd = SecuritySanitizer::sanitizeForDB($_POST['pwd'] ?? '', 'password', 'STUDENT_PWD');
+                    $pwd2 = SecuritySanitizer::sanitizeForDB($_POST['pwd2'] ?? '', 'password', 'STUDENT_PWD');
 
-                //verifying the ic and password
+                    // Validate required fields
+                    if (empty($ic) || empty($email) || empty($pwd) || empty($pwd2)) {
+                        header("Location: error/error_page.php");
+                        exit();
+                    }
 
-                $verify_query = mysqli_query($con, "SELECT STUDENT_ID FROM student WHERE student_id='$ic'");
+                    // Check for malicious input
+                    $inputs = [$ic, $email, $pwd, $pwd2];
+                    foreach ($inputs as $input) {
+                        if (detectMaliciousInput($input)) {
+                            SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                                'field' => 'student_registration',
+                                'student_id' => $ic
+                            ]);
+                            header("Location: error/error_page.php");
+                            exit();
+                        }
+                    }
 
+                } catch (InvalidArgumentException $e) {
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+
+                // Verify password match
                 if ($pwd != $pwd2) {
-                    // Redirect to the error page
                     header("Location: error/error_page1.php");
                     exit();
-                } else if (mysqli_num_rows($verify_query) != 0) {
-                    // Redirect to the error page
+                }
+
+                // Check if student ID already exists using prepared statement
+                $verify_query = "SELECT STUDENT_ID FROM student WHERE STUDENT_ID = ?";
+                $stmt = mysqli_prepare($con, $verify_query);
+                
+                if (!$stmt) {
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+                
+                mysqli_stmt_bind_param($stmt, "s", $ic);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                
+                if (mysqli_num_rows($result) != 0) {
+                    mysqli_stmt_close($stmt);
                     header("Location: error/error_page2.php");
                     exit();
-                } else {
-
-                    mysqli_query($con, "INSERT INTO `student`(`STUDENT_ID`,`STUDENT_EMAIL`, `STUDENT_PWD`) VALUES('$ic','$email', '$pwd')") or die("Error Occurred");
-                    mysqli_query($con, "INSERT INTO `payment`(`PAYMENT_AMOUNT`, `PAYMENT_TYPE`, `PAYMENT_STATUS`, `STUDENT_ID`) VALUES('200', 'SCHOOL FEES', 'UNPAID', '$ic')") or die('Error: ' . mysqli_error($con));
-                    mysqli_query($con, "INSERT INTO `payment`(`PAYMENT_AMOUNT`, `PAYMENT_TYPE`, `PAYMENT_STATUS`, `STUDENT_ID`) VALUES('210', 'DORMITORY FEES', 'UNPAID', '$ic')") or die('Error: ' . mysqli_error($con));
-                    mysqli_query($con, "INSERT INTO `payment`(`PAYMENT_AMOUNT`, `PAYMENT_TYPE`, `PAYMENT_STATUS`, `STUDENT_ID`) VALUES('100', 'PIBG FEES', 'UNPAID', '$ic')") or die('Error: ' . mysqli_error($con));
-
-                    $showModal = true;
                 }
+                mysqli_stmt_close($stmt);
+
+                // Insert student record using prepared statement
+                $insert_student = "INSERT INTO student (STUDENT_ID, STUDENT_EMAIL, STUDENT_PWD) VALUES (?, ?, ?)";
+                $stmt = mysqli_prepare($con, $insert_student);
+                
+                if (!$stmt) {
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+                
+                mysqli_stmt_bind_param($stmt, "sss", $ic, $email, $pwd);
+                
+                if (!mysqli_stmt_execute($stmt)) {
+                    mysqli_stmt_close($stmt);
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+                mysqli_stmt_close($stmt);
+
+                // Insert payment records using prepared statements
+                $payment_records = [
+                    ['200', 'SCHOOL FEES', 'UNPAID'],
+                    ['210', 'DORMITORY FEES', 'UNPAID'],
+                    ['100', 'PIBG FEES', 'UNPAID']
+                ];
+
+                $insert_payment = "INSERT INTO payment (PAYMENT_AMOUNT, PAYMENT_TYPE, PAYMENT_STATUS, STUDENT_ID) VALUES (?, ?, ?, ?)";
+                $stmt = mysqli_prepare($con, $insert_payment);
+                
+                if (!$stmt) {
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+
+                $payment_success = true;
+                foreach ($payment_records as $payment) {
+                    mysqli_stmt_bind_param($stmt, "dsss", $payment[0], $payment[1], $payment[2], $ic);
+                    if (!mysqli_stmt_execute($stmt)) {
+                        $payment_success = false;
+                        break;
+                    }
+                }
+                mysqli_stmt_close($stmt);
+
+                if (!$payment_success) {
+                    SecuritySanitizer::logSecurityEvent('student_account_creation_failed', [
+                        'student_id' => $ic,
+                        'error' => 'payment_insertion_failed'
+                    ]);
+                    header("Location: error/error_page.php");
+                    exit();
+                }
+
+                SecuritySanitizer::logSecurityEvent('student_account_created', [
+                    'student_id' => $ic,
+                    'email' => $email
+                ]);
+
+                $showModal = true;
             }
-
-
             ?>
 
             <header>Sign Up Student</header>

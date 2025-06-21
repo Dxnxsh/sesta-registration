@@ -1,52 +1,117 @@
 <?php
 header('Content-Type: application/json');
 
+include('../config.php');
+
 // Get raw POST data and decode JSON
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
+    SecuritySanitizer::logSecurityEvent('face_verify_invalid_json', [
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode(["success" => false, "message" => "Invalid JSON input"]);
     exit;
 }
 
 // Validate required keys
 if (!isset($data['username'], $data['face_image'], $data['role'])) {
+    SecuritySanitizer::logSecurityEvent('face_verify_missing_fields', [
+        'provided_keys' => array_keys($data),
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode(["success" => false, "message" => "Missing required fields"]);
     exit;
 }
 
-$id = $data['username'];
-$captured_base64 = $data['face_image'];
-$role = $data['role'];
+// Sanitize inputs
+$id = SecuritySanitizer::sanitize($data['username'], 'id');
+$role = SecuritySanitizer::sanitize($data['role'], 'status');
 
-// Connect to MySQL
-include('../config.php');
-if ($role == 'student') {
-    $stmt = $con->prepare("SELECT STUDENT_FACE FROM student WHERE STUDENT_ID = ?");
-} else if ($role == 'teacher') {
-        $stmt = $con->prepare("SELECT TEACHER_FACE FROM teacher WHERE TEACHER_USERNAME = ?");
-} else {
+// Validate role
+$validRoles = ['student', 'teacher'];
+if (!in_array($role, $validRoles)) {
+    SecuritySanitizer::logSecurityEvent('face_verify_invalid_role', [
+        'username' => $data['username'] ?? '',
+        'invalid_role' => $role,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode([
         "success" => false,
         "message" => "❌ Invalid role!"
     ]);
     exit;
 }
+
+// Validate face image data
+$captured_base64 = $data['face_image'];
+if (empty($captured_base64) || !is_string($captured_base64)) {
+    SecuritySanitizer::logSecurityEvent('face_verify_invalid_image', [
+        'username' => $data['username'] ?? '',
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    echo json_encode(["success" => false, "message" => "Invalid face image data"]);
+    exit;
+}
+
+// Validate ID format based on role
+if ($role == 'student') {
+    $id = SecuritySanitizer::sanitize($id, 'id', 'STUDENT_ID');
+} else if ($role == 'teacher') {
+    $id = SecuritySanitizer::sanitize($id, 'username', 'TEACHER_USERNAME');
+}
+
+if (!$id) {
+    SecuritySanitizer::logSecurityEvent('face_verify_invalid_id', [
+        'username' => $data['username'] ?? '',
+        'role' => $role,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    echo json_encode(["success" => false, "message" => "Invalid user ID"]);
+    exit;
+}
+
+// Connect to MySQL and fetch stored face data
+if ($role == 'student') {
+    $stmt = $con->prepare("SELECT STUDENT_FACE FROM student WHERE STUDENT_ID = ?");
+} else if ($role == 'teacher') {
+    $stmt = $con->prepare("SELECT TEACHER_FACE FROM teacher WHERE TEACHER_USERNAME = ?");
+}
+
 $stmt->bind_param("s", $id);
 $stmt->execute();
 $stmt->bind_result($stored_base64);
 $stmt->fetch();
 $stmt->close();
-$con->close();
+
 if (!$stored_base64) {
+    SecuritySanitizer::logSecurityEvent('face_verify_user_not_found', [
+        'username' => $id,
+        'role' => $role,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode([
         "success" => false,
         "message" => "❌ User not found!"
     ]);
+    $con->close();
     exit;
 }
 
-$prefix = $_POST['mime_prefix'] ?? 'data:image/jpeg;base64';
+// Sanitize MIME prefix if provided via POST
+$prefix = 'data:image/jpeg;base64'; // Default safe value
+if (isset($_POST['mime_prefix'])) {
+    $providedPrefix = SecuritySanitizer::sanitize($_POST['mime_prefix'], 'name');
+    // Only allow specific image MIME types
+    $allowedPrefixes = [
+        'data:image/jpeg;base64',
+        'data:image/png;base64',
+        'data:image/jpg;base64'
+    ];
+    if (in_array($providedPrefix, $allowedPrefixes)) {
+        $prefix = $providedPrefix;
+    }
+}
 
 if (strpos($captured_base64, $prefix) !== 0) {
     $captured_base64 = $prefix . "," . $captured_base64;
@@ -81,14 +146,26 @@ if ($result && isset($result['verified']) && $result['verified']) {
 }
 
 if ($verified) {
+    SecuritySanitizer::logSecurityEvent('face_verify_success', [
+        'username' => $id,
+        'role' => $role,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode([
         "success" => true,
         "message" => "Face verified successfully"
     ]);
 } else {
+    SecuritySanitizer::logSecurityEvent('face_verify_failed', [
+        'username' => $id,
+        'role' => $role,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     echo json_encode([
         "success" => false,
         "message" => "Face verification failed"
     ]);
 }
+
+$con->close();
 ?>

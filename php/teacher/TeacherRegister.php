@@ -8,7 +8,7 @@ if (!isset($_SESSION['validTC'])) {
 	exit();
 }
 
-$id = $_SESSION['validTC'];
+$id = SecuritySanitizer::sanitize($_SESSION['validTC'], 'id', 'TEACHER_ID');
 
 $yearPrefix = substr($id, 0, 2);
 
@@ -25,7 +25,7 @@ $dayPrefix = substr($id, 4, 2);
 // Combine the variables to create $dobpredict
 $dobpredict = "$year-$monthPrefix-$dayPrefix";
 
-$query = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID=$id");
+$query = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID='$id'");
 
 while ($result = mysqli_fetch_assoc($query)) {
 	$res_id = $result['TEACHER_ID'];
@@ -33,26 +33,64 @@ while ($result = mysqli_fetch_assoc($query)) {
 
 if (isset($_POST['submit'])) {
 
-	$teachname = $_POST['teacherName'];
-	$gender = $_POST['gender'];
-	$dob = $_POST['dob'];
-	$address = $_POST['address'];
-	$phone = $_POST['phone'];
-	$email = $_POST['email'];
-	$Status = $_POST['status'];
+    try {
+        // Sanitize and validate all teacher data
+        $teachname = SecuritySanitizer::sanitizeForDB($_POST['teacherName'] ?? '', 'name', 'TEACHER_NAME');
+        $gender = SecuritySanitizer::sanitizeForDB($_POST['gender'] ?? '', 'enum', 'TEACHER_GENDER');
+        $dob = SecuritySanitizer::sanitizeForDB($_POST['dob'] ?? '', 'date', 'TEACHER_DOB');
+        $address = SecuritySanitizer::sanitizeForDB($_POST['address'] ?? '', 'address', 'TEACHER_ADDRESS');
+        $phone = SecuritySanitizer::sanitizeForDB($_POST['phone'] ?? '', 'phone', 'TEACHER_PHONENUM');
+        $email = SecuritySanitizer::sanitizeForDB($_POST['email'] ?? '', 'email', 'TEACHER_EMAIL');
+        $Status = SecuritySanitizer::sanitizeForDB($_POST['status'] ?? '', 'status', 'TEACHER_STATUS');
 
+        // Validate required fields
+        if (empty($teachname) || empty($gender) || empty($email)) {
+            throw new InvalidArgumentException("Required fields cannot be empty");
+        }
 
+        // Check for malicious input
+        $allInputs = [$teachname, $gender, $dob, $address, $phone, $email, $Status];
+        foreach ($allInputs as $input) {
+            if ($input && detectMaliciousInput($input)) {
+                SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                    'field' => 'teacher_registration',
+                    'teacher_id' => $res_id
+                ]);
+                throw new InvalidArgumentException("Invalid input detected");
+            }
+        }
 
-
-	mysqli_query($con, "UPDATE `teacher` SET `TEACHER_NAME`='$teachname', `TEACHER_GENDER`='$gender',
-	`TEACHER_DOB`='$dob', `TEACHER_ADDRESS`='$address', `TEACHER_PHONENUM`='$phone', `TEACHER_EMAIL`='$email',
-	`TEACHER_STATUS`='$Status'WHERE `TEACHER_ID`='$res_id'") or die("Error Occurred student " . mysqli_error($con));
-
-
-
-	header("Location: noti/noti_successTCReg.php");
-	exit();
-
+        // Update teacher record using prepared statement
+        $updateQuery = "UPDATE teacher SET TEACHER_NAME=?, TEACHER_GENDER=?, TEACHER_DOB=?, TEACHER_ADDRESS=?, TEACHER_PHONENUM=?, TEACHER_EMAIL=?, TEACHER_STATUS=? WHERE TEACHER_ID=?";
+        $stmt = mysqli_prepare($con, $updateQuery);
+        
+        if (!$stmt) {
+            throw new Exception("Database preparation failed");
+        }
+        
+        mysqli_stmt_bind_param($stmt, "ssssssss", $teachname, $gender, $dob, $address, $phone, $email, $Status, $res_id);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            SecuritySanitizer::logSecurityEvent('teacher_registration_completed', [
+                'teacher_id' => $res_id
+            ]);
+            mysqli_stmt_close($stmt);
+            header("Location: noti/noti_successTCReg.php");
+            exit();
+        } else {
+            SecuritySanitizer::logSecurityEvent('teacher_registration_failed', [
+                'teacher_id' => $res_id,
+                'error' => mysqli_error($con)
+            ]);
+            mysqli_stmt_close($stmt);
+            throw new Exception("Database update failed");
+        }
+        
+    } catch (InvalidArgumentException $e) {
+        $registration_error = $e->getMessage();
+    } catch (Exception $e) {
+        $registration_error = "Registration failed: " . $e->getMessage();
+    }
 }
 
 

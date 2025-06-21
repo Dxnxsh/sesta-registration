@@ -10,27 +10,42 @@ if (!isset($_SESSION['validTC'])) {
 <?php
 include("../config.php");
 
-$teacherId = $_SESSION['validTC'];
+$teacherId = SecuritySanitizer::sanitize($_SESSION['validTC'], 'id', 'TEACHER_ID');
 
-// Handle class search
+// Handle class search with prepared statements
 $searchCondition = "";
-$searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
+$searchType = SecuritySanitizer::sanitize($_GET['searchType'] ?? 'STUDENT_ID', 'name');
+$searchParams = [$teacherId];
+$searchTypes = "s";
 
-if (isset($_GET['searchBox'])) {
-    $searchValue = $_GET['searchBox'];
+if (isset($_GET['searchBox']) && !empty($_GET['searchBox'])) {
+    $searchValue = SecuritySanitizer::sanitize($_GET['searchBox'], 'name');
     if ($searchType === 'STUDENT_ID') {
-        $searchCondition = "AND s.STUDENT_ID LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_ID LIKE ?";
+        $searchParams[] = '%' . $searchValue . '%';
+        $searchTypes .= "s";
     } elseif ($searchType === 'STUDENT_NAME') {
-        $searchCondition = "AND s.STUDENT_NAME LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_NAME LIKE ?";
+        $searchParams[] = '%' . $searchValue . '%';
+        $searchTypes .= "s";
     }
 }
 
 $select = "SELECT s.* FROM student s 
            INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE 
-           WHERE c.TEACHER_ID = '$teacherId' 
+           WHERE c.TEACHER_ID = ? 
            AND s.CLASS_CODE IS NOT NULL 
            $searchCondition";
-$query = mysqli_query($con, $select);
+
+$stmt = mysqli_prepare($con, $select);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, $searchTypes, ...$searchParams);
+    mysqli_stmt_execute($stmt);
+    $query = mysqli_stmt_get_result($stmt);
+} else {
+    SecuritySanitizer::logSecurityEvent('SQL preparation failed in studentList.php', ['teacher_id' => $teacherId]);
+    $query = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,9 +1,18 @@
 <?php 
-            include("../config.php");
-           $query = mysqli_query($con, "SELECT * FROM student");
-           $query2 = mysqli_query($con, "SELECT * FROM teacher");
-           $query3 = mysqli_query($con, "SELECT * FROM class");
-           $query4 = mysqli_query($con, "SELECT * FROM payment");
+session_start();
+include("../config.php");
+
+// Check admin authorization
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'PDF summary access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+$query = mysqli_query($con, "SELECT * FROM student");
+$query2 = mysqli_query($con, "SELECT * FROM teacher");
+$query3 = mysqli_query($con, "SELECT * FROM class");
+$query4 = mysqli_query($con, "SELECT * FROM payment");
 
            if ($query) {
                 $rowCount = mysqli_num_rows($query);
@@ -224,9 +233,17 @@ $datetime=date('dmY_hms');
 $file_name = "INV_".$datetime.".pdf";
 ob_end_clean();
 
-if($_GET['ACTION']=='VIEW') 
-{
-	$pdf->Output($file_name, 'I'); // I means Inline view
+if(isset($_GET['ACTION'])) {
+    $action = SecuritySanitizer::sanitize($_GET['ACTION'], 'action');
+    if($action == 'VIEW') {
+        $pdf->Output($file_name, 'I'); // I means Inline view
+    } else {
+        SecuritySanitizer::logSecurityEvent('invalid_parameter', 'Invalid ACTION parameter in PDF summary: ' . $action);
+        die('Invalid action parameter');
+    }
+} else {
+    SecuritySanitizer::logSecurityEvent('missing_parameter', 'Missing ACTION parameter in PDF summary');
+    die('Missing action parameter');
 }
 //----- End Code for generate pdf
 	

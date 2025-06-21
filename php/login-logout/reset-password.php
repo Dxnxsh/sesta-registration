@@ -113,10 +113,33 @@
                 }
 
                 if (isset($_POST["email"]) && isset($_POST["action"]) && ($_POST["action"] == "update")) {
+                    
                     $error = "";
-                    $pass1 = $_POST["pass1"];
-                    $pass2 = $_POST["pass2"];
-                    $email = $_POST["email"];
+                    
+                    try {
+                        // Sanitize and validate input data
+                        $pass1 = SecuritySanitizer::sanitizeForDB($_POST["pass1"] ?? '', 'password', 'STUDENT_PWD');
+                        $pass2 = SecuritySanitizer::sanitizeForDB($_POST["pass2"] ?? '', 'password', 'STUDENT_PWD');
+                        $email = SecuritySanitizer::sanitizeForDB($_POST["email"] ?? '', 'email', 'STUDENT_EMAIL');
+
+                        // Validate required fields
+                        if (empty($pass1) || empty($pass2) || empty($email)) {
+                            $error .= "<p class='error'>All fields are required.<br /><br /></p>";
+                        }
+
+                        // Check for malicious input
+                        if (!$error && (detectMaliciousInput($pass1) || detectMaliciousInput($pass2) || detectMaliciousInput($email))) {
+                            SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                                'field' => 'password_reset',
+                                'email' => $email
+                            ]);
+                            $error .= "<p class='error'>Invalid input detected.<br /><br /></p>";
+                        }
+
+                    } catch (InvalidArgumentException $e) {
+                        $error .= "<p class='error'>Invalid input format: " . htmlspecialchars($e->getMessage()) . "<br /><br /></p>";
+                    }
+
                     $curDate = date("Y-m-d H:i:s");
 
                     if ($pass1 != $pass2) {
@@ -126,22 +149,60 @@
                     if ($error != "") {
                         echo $error;
                     } else {
-                        // Update the password in the database
-                        mysqli_query($con, "UPDATE `student` SET `STUDENT_PWD`='$pass1' WHERE `STUDENT_EMAIL`='$email'");
+                        // Update the password in the database using prepared statement
+                        $updateQuery = "UPDATE student SET STUDENT_PWD = ? WHERE STUDENT_EMAIL = ?";
+                        $stmt = mysqli_prepare($con, $updateQuery);
+                        
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "ss", $pass1, $email);
+                            
+                            if (mysqli_stmt_execute($stmt)) {
+                                // Remove the password reset entry using prepared statement
+                                $deleteQuery = "DELETE FROM password_reset_temp WHERE email = ?";
+                                $stmt2 = mysqli_prepare($con, $deleteQuery);
+                                
+                                if ($stmt2) {
+                                    mysqli_stmt_bind_param($stmt2, "s", $email);
+                                    mysqli_stmt_execute($stmt2);
+                                    mysqli_stmt_close($stmt2);
+                                }
 
-                        // Remove the password reset entry
-                        mysqli_query($con, "DELETE FROM `password_reset_temp` WHERE `email` = '$email'");
+                                SecuritySanitizer::logSecurityEvent('password_reset_completed', [
+                                    'email' => $email
+                                ]);
 
-                        echo '<div class="error"><p>Congratulations! Your password has been updated successfully.</p>';
-                        // Check if STUDENT_NAME is empty or null
-                        $studentQuery = mysqli_query($con, "SELECT * FROM `student` WHERE `STUDENT_EMAIL`='$email'");
-                        $studentRow = mysqli_fetch_assoc($studentQuery);
+                                echo '<div class="error"><p>Congratulations! Your password has been updated successfully.</p>';
+                                
+                                // Check if STUDENT_NAME is empty or null using prepared statement
+                                $studentQuery = "SELECT STUDENT_NAME FROM student WHERE STUDENT_EMAIL = ?";
+                                $stmt3 = mysqli_prepare($con, $studentQuery);
+                                
+                                if ($stmt3) {
+                                    mysqli_stmt_bind_param($stmt3, "s", $email);
+                                    mysqli_stmt_execute($stmt3);
+                                    $result = mysqli_stmt_get_result($stmt3);
+                                    $studentRow = mysqli_fetch_assoc($result);
+                                    mysqli_stmt_close($stmt3);
 
-                        if (empty($studentRow['STUDENT_NAME']) || is_null($studentRow['STUDENT_NAME'])) {
-                            header("Location: login.php"); // Redirect to login.php
-                            exit();
+                                    if (empty($studentRow['STUDENT_NAME']) || is_null($studentRow['STUDENT_NAME'])) {
+                                        echo "<a href='../student/StudentRegistration.php'><button class='btn'>Proceed to Registration</button>";
+                                    } else {
+                                        echo "<a href='login.php'><button class='btn'>Login Here</button>";
+                                    }
+                                    echo '</div>'; // Close the 'error' div
+                                } else {
+                                    echo "<p class='error'>Database error retrieving student information.</p>";
+                                }
+                            } else {
+                                SecuritySanitizer::logSecurityEvent('password_reset_failed', [
+                                    'email' => $email,
+                                    'error' => mysqli_error($con)
+                                ]);
+                                echo "<p class='error'>Error updating password. Please try again.</p>";
+                            }
+                            mysqli_stmt_close($stmt);
                         } else {
-                            echo "<a href='login.php'><button class='btn'>Go Back</button>";
+                            echo "<p class='error'>Database preparation error. Please try again.</p>";
                         }
                     }
                 }

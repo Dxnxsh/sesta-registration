@@ -1,41 +1,121 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in manageAds.php', 'HIGH');
     header("Location: ../login-logout/login.php");
     exit();
 }
 
 $adsFolder = "../../image/ads/";
 
-// Handle image deletion
+// Handle image deletion with proper validation
 if (isset($_POST['delete'])) {
-    $fileToDelete = $adsFolder . basename($_POST['delete']);
-    if (file_exists($fileToDelete)) {
-        unlink($fileToDelete);
-        echo "<script>alert('Image deleted successfully!');</script>";
+    $deleteRequest = SecuritySanitizer::sanitize($_POST['delete'], 'file_path');
+    
+    if (!$deleteRequest) {
+        SecuritySanitizer::logSecurityEvent("Invalid file deletion request by admin $adminId", 'MEDIUM');
+        echo "<script>alert('Invalid file name!');</script>";
     } else {
-        echo "<script>alert('File not found!');</script>";
+        // Only allow deletion of files in the ads folder and prevent directory traversal
+        $fileToDelete = $adsFolder . basename($deleteRequest);
+        
+        // Additional security: ensure the file is within the ads directory
+        $realAdsPath = realpath($adsFolder);
+        $realFilePath = realpath($fileToDelete);
+        
+        if ($realFilePath && strpos($realFilePath, $realAdsPath) === 0 && file_exists($fileToDelete)) {
+            // Validate file extension before deletion
+            $fileExtension = strtolower(pathinfo($fileToDelete, PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            
+            if (in_array($fileExtension, $allowedExtensions)) {
+                if (unlink($fileToDelete)) {
+                    SecuritySanitizer::logSecurityEvent("Ad image deleted: $deleteRequest by admin $adminId", 'INFO');
+                    echo "<script>alert('Image deleted successfully!');</script>";
+                } else {
+                    SecuritySanitizer::logSecurityEvent("Failed to delete ad image: $deleteRequest by admin $adminId", 'HIGH');
+                    echo "<script>alert('Error deleting file!');</script>";
+                }
+            } else {
+                SecuritySanitizer::logSecurityEvent("Attempt to delete invalid file type: $deleteRequest by admin $adminId", 'MEDIUM');
+                echo "<script>alert('Invalid file type!');</script>";
+            }
+        } else {
+            SecuritySanitizer::logSecurityEvent("Attempt to delete file outside ads directory: $deleteRequest by admin $adminId", 'HIGH');
+            echo "<script>alert('File not found or access denied!');</script>";
+        }
     }
 }
 
-// Handle image upload
+// Handle image upload with comprehensive security
 if (isset($_POST['upload'])) {
     if (isset($_FILES['newImage']) && $_FILES['newImage']['error'] == 0) {
-        $targetFile = $adsFolder . basename($_FILES['newImage']['name']);
-        $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-        // Validate file type
-        if (in_array($fileType, ['jpg', 'jpeg', 'png', 'webp'])) {
-            if (move_uploaded_file($_FILES['newImage']['tmp_name'], $targetFile)) {
-                echo "<script>alert('Image uploaded successfully!');</script>";
-            } else {
-                echo "<script>alert('Error uploading file!');</script>";
-            }
+        $originalFilename = $_FILES['newImage']['name'];
+        $tmpName = $_FILES['newImage']['tmp_name'];
+        $fileSize = $_FILES['newImage']['size'];
+        
+        // Sanitize filename
+        $filename = SecuritySanitizer::sanitize($originalFilename, 'file_path');
+        if (!$filename) {
+            SecuritySanitizer::logSecurityEvent("Invalid filename attempted for ad upload: $originalFilename by admin $adminId", 'MEDIUM');
+            echo "<script>alert('Invalid filename!');</script>";
         } else {
-            echo "<script>alert('Invalid file type! Only JPG, JPEG, PNG, and WEBP are allowed.');</script>";
+            // Check file size (max 2MB for ad images)
+            if ($fileSize > 2 * 1024 * 1024) {
+                SecuritySanitizer::logSecurityEvent("Ad image upload too large: $fileSize bytes by admin $adminId", 'LOW');
+                echo "<script>alert('File size must be less than 2MB!');</script>";
+            } else {
+                $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                
+                // Validate file type
+                if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    // Validate MIME type for additional security
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($finfo, $tmpName);
+                    finfo_close($finfo);
+                    
+                    $allowedMimes = [
+                        'image/jpeg', 'image/jpg', 'image/png', 'image/webp'
+                    ];
+                    
+                    if (in_array($mimeType, $allowedMimes)) {
+                        // Generate unique filename to prevent conflicts
+                        $uniqueFilename = uniqid('ad_', true) . '.' . $fileExtension;
+                        $targetFile = $adsFolder . $uniqueFilename;
+                        
+                        // Ensure upload directory exists
+                        if (!is_dir($adsFolder)) {
+                            mkdir($adsFolder, 0755, true);
+                        }
+                        
+                        if (move_uploaded_file($tmpName, $targetFile)) {
+                            SecuritySanitizer::logSecurityEvent("Ad image uploaded successfully: $uniqueFilename by admin $adminId", 'INFO');
+                            echo "<script>alert('Image uploaded successfully!');</script>";
+                        } else {
+                            SecuritySanitizer::logSecurityEvent("Failed to upload ad image by admin $adminId", 'HIGH');
+                            echo "<script>alert('Error uploading file!');</script>";
+                        }
+                    } else {
+                        SecuritySanitizer::logSecurityEvent("Invalid MIME type for ad upload: $mimeType by admin $adminId", 'MEDIUM');
+                        echo "<script>alert('Invalid file type detected!');</script>";
+                    }
+                } else {
+                    SecuritySanitizer::logSecurityEvent("Invalid file extension for ad upload: $fileExtension by admin $adminId", 'MEDIUM');
+                    echo "<script>alert('Invalid file type! Only JPG, JPEG, PNG, and WEBP are allowed.');</script>";
+                }
+            }
         }
     } else {
+        SecuritySanitizer::logSecurityEvent("No file selected for ad upload by admin $adminId", 'LOW');
         echo "<script>alert('No file selected or an error occurred!');</script>";
     }
 }

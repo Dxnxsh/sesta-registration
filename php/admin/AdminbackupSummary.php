@@ -1,8 +1,10 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
+    exit();
 }
 ?>
 <?php include "../header/adminHeader.php" ?>
@@ -283,48 +285,48 @@ if (!isset($_SESSION['adminID'])) {
             <tr>
                 <th>Total Student</th>
                 <td><b>
-                        <?php echo $rowCount ?> Student</td>
+                        <?php echo htmlspecialchars($rowCount) ?> Student</td>
             </tr>
             <tr>
                 <th class="th-ct">From 1</th>
                 <td><b>
-                        <?php echo $rowCount6 ?> Student</td>
+                        <?php echo htmlspecialchars($rowCount6) ?> Student</td>
             </tr>
             <tr>
                 <th class="th-ct">Form 4</th>
                 <td><b>
-                        <?php echo $rowCount7 ?> Student</td>
+                        <?php echo htmlspecialchars($rowCount7) ?> Student</td>
             </tr>
             <tr>
                 <th>Total Teacher</th>
                 <td><b>
-                        <?php echo $rowCount2 ?> Teacher</td>
+                        <?php echo htmlspecialchars($rowCount2) ?> Teacher</td>
             </tr>
             <tr>
                 <th class="th-ct"> Male</th>
                 <td><b>
-                        <?php echo $rowCount4 ?> Teacher</td>
+                        <?php echo htmlspecialchars($rowCount4) ?> Teacher</td>
             </tr>
             <tr>
                 <th class="th-ct">Female</th>
                 <td><b>
-                        <?php echo $rowCount5 ?> Teacher</td>
+                        <?php echo htmlspecialchars($rowCount5) ?> Teacher</td>
             </tr>
             <tr>
                 <th>Total Class</th>
                 <td><b>
-                        <?php echo $rowCount3 ?> Class</td>
+                        <?php echo htmlspecialchars($rowCount3) ?> Class</td>
             </tr>
             <tr>
                 <th>Total Paid Payment</th>
                 <td><b>RM
-                        <?php echo $totalAmount9 ?>
+                        <?php echo htmlspecialchars($totalAmount9) ?>
                 </td>
             </tr>
             <tr>
                 <th>Total Unpaid Payment</th>
                 <td><b>RM
-                        <?php echo $totalAmount8 ?>
+                        <?php echo htmlspecialchars($totalAmount8) ?>
                 </td>
             </tr>
         </table>

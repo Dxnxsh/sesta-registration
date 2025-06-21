@@ -113,11 +113,11 @@ $(document).ready(function() {
   <div class="container" id="blur">
   <?php include("../../config.php"); 
             
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID=$id");
+            $id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
+            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID='$id'");
+            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID='$id'");
             $queryParent  = mysqli_query($con,"SELECT student.*, parent.* FROM student INNER JOIN parent ON student.PARENT_ID = parent.PARENT_ID
-            WHERE student.STUDENT_ID = $id");
+            WHERE student.STUDENT_ID = '$id'");
             
 
             while($result = mysqli_fetch_assoc($query)){

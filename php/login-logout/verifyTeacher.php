@@ -20,38 +20,55 @@ session_start();
          session_start();
 
          include("../config.php");
+         
          if(isset($_POST['submit'])){
-            $no_ic = mysqli_real_escape_string($con,$_POST['no_ic']);
-                $result = mysqli_query($con,"SELECT * FROM teacher WHERE TEACHER_ID='$no_ic'") or die("Select Error");
-                $row = mysqli_fetch_assoc($result);
+            $no_ic = trim($_POST['no_ic']);
+            
+            // Sanitize and validate IC number
+            $no_ic = SecuritySanitizer::sanitize($no_ic, 'id', 'TEACHER_ID');
+            
+            if (!$no_ic) {
+                SecuritySanitizer::logSecurityEvent("Invalid IC number attempted in teacher verification: " . $_POST['no_ic'], 'MEDIUM');
+                header("Location: error/error_VerifyTc.php");
+                exit();
+            }
+            
+            // Use prepared statement to check teacher existence
+            $stmt = $con->prepare("SELECT * FROM teacher WHERE TEACHER_ID = ?");
+            $stmt->bind_param("s", $no_ic);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $stmt->close();
 
-                if(is_array($row) && !empty($row)){
-                    $_SESSION['validTC'] = $row['TEACHER_ID'];
-                }
-
-                $verify_query2 = mysqli_query($con, "SELECT TEACHER_USERNAME FROM teacher WHERE TEACHER_ID='$no_ic'");
-                $row2 = mysqli_fetch_assoc($verify_query2);
+            if($row && !empty($row)){
+                $_SESSION['validTC'] = $row['TEACHER_ID'];
+                
+                // Check if teacher already has username using prepared statement
+                $stmt2 = $con->prepare("SELECT TEACHER_USERNAME FROM teacher WHERE TEACHER_ID = ?");
+                $stmt2->bind_param("s", $no_ic);
+                $stmt2->execute();
+                $result2 = $stmt2->get_result();
+                $row2 = $result2->fetch_assoc();
+                $stmt2->close();
                 
                 if (!empty($row2['TEACHER_USERNAME'])) {
                     // User is already registered
+                    SecuritySanitizer::logSecurityEvent("Teacher verification attempt for already registered teacher: $no_ic", 'INFO');
                     header("Location: error/error_TCexist.php");
                     exit();
                 }
-
-            
-         //verifying the unique ic
-         $verify_query = mysqli_query($con,"SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID='$no_ic'");
-
-         if(mysqli_num_rows($verify_query) !=0 ){
-
-            header("Location: error/noti_successTC.php");
-            exit();
-         }
-         else{
-            // Redirect to the error page
-            header("Location: error/error_VerifyTc.php");
-            exit();
-         }
+                
+                // Teacher exists but not yet registered
+                SecuritySanitizer::logSecurityEvent("Teacher verification successful for: $no_ic", 'INFO');
+                header("Location: error/noti_successTC.php");
+                exit();
+            } else {
+                // Teacher not found
+                SecuritySanitizer::logSecurityEvent("Teacher verification failed - teacher not found: $no_ic", 'MEDIUM');
+                header("Location: error/error_VerifyTc.php");
+                exit();
+            }
 
          }else{
          

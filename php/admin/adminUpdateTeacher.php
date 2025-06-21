@@ -1,12 +1,35 @@
 <?php
 session_start();
 include("../config.php");
-if (!isset($_SESSION['adminID'])) {
+
+if (!isset($_SESSION['validAD'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin update teacher access without valid session');
     header("Location: ../login-logout/login.php");
     exit();
 }
 
-$id = $_GET['id'];
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Admin update teacher access without valid session');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+if (!isset($_GET['id'])) {
+    SecuritySanitizer::logSecurityEvent('invalid_access', 'Admin update teacher accessed without teacher ID');
+    header("Location: TeacherList.php");
+    exit();
+}
+
+$id = SecuritySanitizer::sanitize($_GET['id'], 'id');
+if (empty($id)) {
+    SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid teacher ID for update: ' . $_GET['id']);
+    header("Location: TeacherList.php");
+    exit();
+}
+
+// Initialize variables to prevent undefined variable warnings
+$names = $teachgender = $teachDOB = $teachAddress = $teachStat = $teachPhone = $teachEm = '';
+
 $yearPrefix = substr($id, 0, 2);
 
 // Add this block to adjust the year
@@ -24,17 +47,28 @@ $dobpredict = "$year-$monthPrefix-$dayPrefix";
 
 $selectTeachClass = "SELECT * FROM teacher s
 LEFT JOIN class c ON s.TEACHER_ID = c.TEACHER_ID
-WHERE s.TEACHER_ID = '$id'";
-$queryTeachClass = mysqli_query($con, $selectTeachClass);
+WHERE s.TEACHER_ID = ?";
+
+$stmt = mysqli_prepare($con, $selectTeachClass);
+if (!$stmt) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare teacher update query: ' . mysqli_error($con));
+    die('Database error occurred');
+}
+
+mysqli_stmt_bind_param($stmt, "s", $id);
+mysqli_stmt_execute($stmt);
+$queryTeachClass = mysqli_stmt_get_result($stmt);
 
 // Check for errors during the query execution
 if (!$queryTeachClass) {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Teacher update query failed: ' . mysqli_error($con));
     die('Error in SQL query: ' . mysqli_error($con));
 }
+
 // Fetch and process the results
-while ($row = mysqli_fetch_assoc($queryTeachClass)) {
+if ($row = mysqli_fetch_assoc($queryTeachClass)) {
     // Process each row of data
-    // $row contains the combined data from both "student" and "class" tables
+    // $row contains the combined data from both "teacher" and "class" tables
     $names = $row['TEACHER_NAME'];
     $teachgender = $row['TEACHER_GENDER'];
     $teachDOB = $row['TEACHER_DOB'];
@@ -42,7 +76,13 @@ while ($row = mysqli_fetch_assoc($queryTeachClass)) {
     $teachStat = $row['TEACHER_STATUS'];
     $teachPhone = $row['TEACHER_PHONENUM'];
     $teachEm = $row['TEACHER_EMAIL'];
+} else {
+    SecuritySanitizer::logSecurityEvent('invalid_access', 'Teacher ID not found for update: ' . $id);
+    header("Location: TeacherList.php");
+    exit();
 }
+
+mysqli_stmt_close($stmt);
 
 // Fetch the list of class who are not assigned to any teacher
 $selectClassTeacher = "SELECT CLASS_CODE, CLASS_NAME FROM class c

@@ -224,7 +224,9 @@ $datetime=date('dmY_hms');
 $file_name = "INV_".$datetime.".pdf";
 ob_end_clean();
 
-if($_GET['ACTION']=='VIEW') 
+$action = SecuritySanitizer::sanitize($_GET['ACTION'] ?? '', 'action');
+
+if($action=='VIEW') 
 {
 	$pdf->Output($file_name, 'I'); // I means Inline view
 }

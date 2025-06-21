@@ -1,8 +1,23 @@
 <?php
 session_start();
 include("../config.php");
-if (!isset($_SESSION['adminID'])) {
+
+if (!isset($_SESSION['validAD'])) {
+    SecuritySanitizer::logSecurityEvent('admin_class_unauthorized_access', [
+        'session_id' => session_id(),
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
     header("Location: ../login-logout/login.php");
+    exit();
+}
+
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('admin_class_missing_admin_id', [
+        'session_id' => session_id(),
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
 ?>
@@ -249,49 +264,137 @@ if (!isset($_SESSION['adminID'])) {
     </style>
     <?php
 include("../config.php");
-// Handle class deletion
+// Handle class deletion with proper sanitization
 if (isset($_GET['id'])) {
-    $classCode = $_GET['id'];
+    $classCode = SecuritySanitizer::sanitize($_GET['id'], 'id', 'CLASS_CODE');
+    
+    if (empty($classCode)) {
+        SecuritySanitizer::logSecurityEvent('admin_class_invalid_deletion_id', [
+            'invalid_id' => $_GET['id'] ?? '',
+            'admin_id' => $_SESSION['adminID'] ?? '',
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ]);
+    } else {
+        // Check if there are associated teachers in the class using prepared statements
+        $checkTeachersQuery = "SELECT COUNT(*) as teacherCount FROM teacher WHERE TEACHER_ID IN (SELECT TEACHER_ID FROM class WHERE CLASS_CODE = ?)";
+        $stmt = mysqli_prepare($con, $checkTeachersQuery);
+        
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $classCode);
+            mysqli_stmt_execute($stmt);
+            $checkTeachersResult = mysqli_stmt_get_result($stmt);
+            $teacherRow = mysqli_fetch_assoc($checkTeachersResult);
+            $teacherCount = $teacherRow['teacherCount'];
+            mysqli_stmt_close($stmt);
 
-    // Check if there are associated teachers in the class
-    $checkTeachersQuery = mysqli_query($con, "SELECT COUNT(*) as teacherCount FROM teacher WHERE TEACHER_ID IN (SELECT TEACHER_ID FROM class WHERE CLASS_CODE='$classCode')");
-    $checkTeachersResult = mysqli_fetch_assoc($checkTeachersQuery);
-    $teacherCount = $checkTeachersResult['teacherCount'];
+            if ($teacherCount > 0) {
+                // Display a popup if there are associated teachers
+                echo "<script>
+                        Swal.fire({
+                            title: 'Delete Denied',
+                            text: 'Revoke assigned teacher before deleting the class.',
+                            icon: 'error'
+                        }).then(function() {
+                            window.location.href = 'adminClass.php';
+                        });
+                    </script>";
+                exit; // Prevent further execution of the code
+            }
 
-    if ($teacherCount > 0) {
-        // Display a popup if there are associated teachers
-        echo "<script>
-                Swal.fire({
-                    title: 'Delete Denied',
-                    text: 'Revoke assigned teacher before deleting the class.',
-                    icon: 'error'
-                }).then(function() {
-                    window.location.href = 'adminClass.php';
-                });
-            </script>";
-        exit; // Prevent further execution of the code
+            // If no associated teachers, proceed with deletion using prepared statement
+            $deleteQuery = "DELETE FROM `class` WHERE `CLASS_CODE` = ?";
+            $deleteStmt = mysqli_prepare($con, $deleteQuery);
+            
+            if ($deleteStmt) {
+                mysqli_stmt_bind_param($deleteStmt, "s", $classCode);
+                $deleteResult = mysqli_stmt_execute($deleteStmt);
+                
+                if ($deleteResult) {
+                    SecuritySanitizer::logSecurityEvent('admin_class_deleted', [
+                        'class_code' => $classCode,
+                        'admin_id' => $_SESSION['adminID'] ?? '',
+                        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+                    ]);
+                } else {
+                    SecuritySanitizer::logSecurityEvent('admin_class_deletion_failed', [
+                        'class_code' => $classCode,
+                        'error' => mysqli_error($con),
+                        'admin_id' => $_SESSION['adminID'] ?? '',
+                        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+                    ]);
+                }
+                
+                mysqli_stmt_close($deleteStmt);
+            }
+        } else {
+            SecuritySanitizer::logSecurityEvent('admin_class_teacher_check_failed', [
+                'error' => mysqli_error($con),
+                'admin_id' => $_SESSION['adminID'] ?? '',
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            ]);
+        }
     }
-
-    // If no associated teachers, proceed with deletion
-    $delete = mysqli_query($con, "DELETE FROM `class` WHERE `CLASS_CODE`='$classCode'");
 }
-// Handle class search
-$searchCondition = "";
-$searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'CLASS_CODE';
+
+// Handle class search with proper sanitization
+$searchType = 'CLASS_CODE'; // Default search type
+$searchValue = '';
+
+if (isset($_GET['searchType'])) {
+    $searchType = SecuritySanitizer::sanitize($_GET['searchType'], 'name');
+    if (!in_array($searchType, ['CLASS_CODE', 'CLASS_NAME', 'TEACHER_ID'])) {
+        SecuritySanitizer::logSecurityEvent('admin_class_invalid_search_type', [
+            'search_type' => $_GET['searchType'],
+            'admin_id' => $_SESSION['adminID'] ?? '',
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ]);
+        $searchType = 'CLASS_CODE';
+    }
+}
 
 if (isset($_GET['searchBox'])) {
-    $searchValue = $_GET['searchBox'];
+    $searchValue = SecuritySanitizer::sanitize($_GET['searchBox'], 'name');
+}
+
+// Build the query with prepared statements
+$baseQuery = "SELECT * FROM class WHERE 1=1";
+$params = [];
+$types = "";
+
+if (!empty($searchValue)) {
     if ($searchType === 'CLASS_CODE') {
-        $searchCondition = "AND CLASS_CODE LIKE '%$searchValue%'";
+        $baseQuery .= " AND CLASS_CODE LIKE ?";
+        $params[] = $searchValue . "%";
+        $types .= "s";
     } elseif ($searchType === 'CLASS_NAME') {
-        $searchCondition = "AND CLASS_NAME LIKE '%$searchValue%'";
+        $baseQuery .= " AND CLASS_NAME LIKE ?";
+        $params[] = "%" . $searchValue . "%";
+        $types .= "s";
     } elseif ($searchType === 'TEACHER_ID') {
-        $searchCondition = "AND TEACHER_ID LIKE '%$searchValue%'";
+        $baseQuery .= " AND TEACHER_ID LIKE ?";
+        $params[] = $searchValue . "%";
+        $types .= "s";
     }
 }
 
-$select = "SELECT * FROM class WHERE 1 $searchCondition";
-$query = mysqli_query($con, $select);
+// Execute the search query using prepared statements
+$stmt = mysqli_prepare($con, $baseQuery);
+if ($stmt) {
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    $query = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
+} else {
+    SecuritySanitizer::logSecurityEvent('admin_class_query_failed', [
+        'error' => mysqli_error($con),
+        'admin_id' => $_SESSION['adminID'] ?? '',
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    // Fallback to basic query
+    $query = mysqli_query($con, "SELECT * FROM class");
+}
 ?>
 </head>
 
@@ -301,11 +404,11 @@ $query = mysqli_query($con, $select);
             <h1>Class Information</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
-                        <option value="CLASS_CODE">Class Code</option>
-                        <option value="CLASS_NAME">Class Name</option>
-                        <option value="TEACHER_ID">Teacher ID</option>
+                        <option value="CLASS_CODE"<?php echo ($searchType === 'CLASS_CODE') ? ' selected' : ''; ?>>Class Code</option>
+                        <option value="CLASS_NAME"<?php echo ($searchType === 'CLASS_NAME') ? ' selected' : ''; ?>>Class Name</option>
+                        <option value="TEACHER_ID"<?php echo ($searchType === 'TEACHER_ID') ? ' selected' : ''; ?>>Teacher ID</option>
                     </select></div>
-                <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
+                <input name="searchBox" type="text" id="searchBox" placeholder="Search..." value="<?php echo htmlspecialchars($searchValue); ?>">
                 <input name="submit" type="submit" id="submit" value="Search">
                 <a class="reset-button" href="adminClass.php">Show All</a>
             </div>
@@ -330,18 +433,27 @@ $query = mysqli_query($con, $select);
                 $num = mysqli_num_rows($query);
                 if ($num > 0) {
                     while ($result = mysqli_fetch_assoc($query)) {
+                        // Sanitize all outputs for safe display
+                        $classCode = SecuritySanitizer::sanitize($result["CLASS_CODE"], 'class_code');
+                        $className = SecuritySanitizer::sanitize($result["CLASS_NAME"], 'class_name');
+                        $classLevel = SecuritySanitizer::sanitize($result["CLASS_LEVEL"], 'class_level');
+                        $classBlock = SecuritySanitizer::sanitize($result["CLASS_BLOCK"], 'class_block');
+                        $classFloor = SecuritySanitizer::sanitize($result["CLASS_FLOOR"], 'floor');
+                        $classCat = SecuritySanitizer::sanitize($result["CLASS_CAT"], 'class_category');
+                        $teacherId = SecuritySanitizer::sanitize($result["TEACHER_ID"], 'id');
+                        
                         echo "
                     <tr>
-                        <td>" . $result["CLASS_CODE"] . "</td>
-                        <td>" . $result["CLASS_NAME"] . "</td>
-                        <td>" . $result["CLASS_LEVEL"] . "</td>
-                        <td>" . $result["CLASS_BLOCK"] . "</td>
-                        <td>" . $result["CLASS_FLOOR"] . "</td>
-                        <td>" . $result["CLASS_CAT"] . "</td>
-                        <td>" . $result["TEACHER_ID"] . "</td>
-                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewClass.php?id=" . $result["CLASS_CODE"] . "'>VIEW</a></td>
-                        <td class='manage-buttons'><a class='update-button' href='adminUpdateClass.php?id=" . $result["CLASS_CODE"] . "'>UPDATE</a></td>
-                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["CLASS_CODE"] . "\")'>DELETE</a></td>
+                        <td>" . htmlspecialchars($classCode) . "</td>
+                        <td>" . htmlspecialchars($className) . "</td>
+                        <td>" . htmlspecialchars($classLevel) . "</td>
+                        <td>" . htmlspecialchars($classBlock) . "</td>
+                        <td>" . htmlspecialchars($classFloor) . "</td>
+                        <td>" . htmlspecialchars($classCat) . "</td>
+                        <td>" . htmlspecialchars($teacherId) . "</td>
+                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewClass.php?id=" . urlencode($classCode) . "'>VIEW</a></td>
+                        <td class='manage-buttons'><a class='update-button' href='adminUpdateClass.php?id=" . urlencode($classCode) . "'>UPDATE</a></td>
+                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . htmlspecialchars($classCode) . "\")'>DELETE</a></td>
        
                         </tr>
 

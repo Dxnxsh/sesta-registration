@@ -1,40 +1,68 @@
 <?php session_start();
 
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
     exit();
 }
 
-// Handle url parameter
-if (isset($_GET['id'])) {
-    $classcode = $_GET['id'];
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in adminUpdateClass.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
+// Handle and sanitize URL parameter
+$classCode = '';
+$className = '';
+$classlvl = '';
+$blck = '';
+$flr = '';
+$cat = '';
 
 if (isset($_GET['id'])) {
-    $classCode = $_GET['id'];
-    $selectClass = "SELECT * FROM class
-  WHERE CLASS_CODE = '$classCode'";
-    $queryClass = mysqli_query($con, $selectClass);
-
-
-    // Fetch and process the results
-    while ($row = mysqli_fetch_assoc($queryClass)) {
-        // Process each row of data
-        // $row contains the combined data from both "teacher" and "class" tables
-        $className = $row['CLASS_NAME'];
-        $classlvl = $row['CLASS_LEVEL'];
-        $blck = $row['CLASS_BLOCK'];
-        $flr = $row['CLASS_FLOOR'];
-        $cat = $row['CLASS_CAT'];
+    $classCode = SecuritySanitizer::sanitize($_GET['id'], 'id', 'CLASS_CODE');
+    
+    if (!$classCode) {
+        SecuritySanitizer::logSecurityEvent("Invalid class code parameter in adminUpdateClass.php by admin $adminId", 'MEDIUM');
+        header("Location: adminClass.php");
+        exit();
     }
+    
+    // Use prepared statement to fetch class data
+    $stmt = $con->prepare("SELECT * FROM class WHERE CLASS_CODE = ?");
+    $stmt->bind_param("s", $classCode);
+    $stmt->execute();
+    $queryClass = $stmt->get_result();
+    
+    if ($queryClass->num_rows > 0) {
+        $row = $queryClass->fetch_assoc();
+        $className = SecuritySanitizer::sanitize($row['CLASS_NAME'], 'class_name');
+        $classlvl = SecuritySanitizer::sanitize($row['CLASS_LEVEL'], 'class_level');
+        $blck = SecuritySanitizer::sanitize($row['CLASS_BLOCK'], 'class_block');
+        $flr = SecuritySanitizer::sanitize($row['CLASS_FLOOR'], 'floor');
+        $cat = SecuritySanitizer::sanitize($row['CLASS_CAT'], 'class_category');
+        
+        SecuritySanitizer::logSecurityEvent("Admin $adminId accessed class update form for class $classCode", 'INFO');
+    } else {
+        SecuritySanitizer::logSecurityEvent("Admin $adminId attempted to access non-existent class $classCode", 'MEDIUM');
+        header("Location: adminClass.php");
+        exit();
+    }
+    $stmt->close();
+} else {
+    SecuritySanitizer::logSecurityEvent("Admin $adminId accessed adminUpdateClass.php without ID parameter", 'MEDIUM');
+    header("Location: adminClass.php");
+    exit();
 }
 
-// Fetch the list of teachers who are not assigned to any class
-$selectClassTeacher = "SELECT TEACHER_ID, TEACHER_NAME FROM teacher
-                      WHERE NOT EXISTS (SELECT 1 FROM class WHERE class.TEACHER_ID = teacher.TEACHER_ID)";
-$queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
+// Fetch the list of teachers who are not assigned to any class using prepared statement
+$stmt = $con->prepare("SELECT TEACHER_ID, TEACHER_NAME FROM teacher WHERE NOT EXISTS (SELECT 1 FROM class WHERE class.TEACHER_ID = teacher.TEACHER_ID)");
+$stmt->execute();
+$queryClassTeacher = $stmt->get_result(); ?>
 
 <?php include "../header/adminHeader.php" ?>
 <!DOCTYPE html>

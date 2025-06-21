@@ -2,36 +2,13 @@
   session_start();
   include "../header/adminHeader.php" ?>
 <?php require_once('../config.php'); 
-if (!function_exists("GetSQLValueString")) {
-    function GetSQLValueString($value, $type, $definedValue = "", $notDefinedValue = "") 
-    {
-        if (PHP_VERSION < 6) {
-            $value = get_magic_quotes_gpc() ? stripslashes($value) : $value;
-        }
 
-        $value = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($value) : mysql_escape_string($value);
-
-        switch ($type) {
-            case "text":
-                $value = ($value != "") ? "'" . $value . "'" : "NULL";
-                break;    
-            case "long":
-            case "int":
-                $value = ($value != "") ? intval($value) : "NULL";
-                break;
-            case "double":
-                $value = ($value != "") ? doubleval($value) : "NULL";
-                break;
-            case "date":
-                $value = ($value != "") ? "'" . $value . "'" : "NULL";
-                break;
-            case "defined":
-                $value = ($value != "") ? $definedValue : $notDefinedValue;
-                break;
-        }
-        return $value;
-    }
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Parent full report access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
+
 $query_rsParent = "SELECT * FROM parent";
 $rsParent = mysqli_query($con, $query_rsParent) or die(mysqli_error($con));
 $row_rsParent = mysqli_fetch_assoc($rsParent);
@@ -297,12 +274,12 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
             </tr>
             <?php do { ?>
     <tr class="tr-hover">
-        <td><?php echo $row_rsParent['PARENT_ID']; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_NAME']) ? $row_rsParent['PARENT_NAME'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_GENDER']) ? $row_rsParent['PARENT_GENDER'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_PHONENUM']) ? $row_rsParent['PARENT_PHONENUM'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_JOB']) ? $row_rsParent['PARENT_JOB'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_MONTHLY_INCOME']) ? $row_rsParent['PARENT_MONTHLY_INCOME'] : ''; ?></td>
+        <td><?php echo htmlspecialchars($row_rsParent['PARENT_ID']); ?></td>
+        <td><?php echo htmlspecialchars(isset($row_rsParent['PARENT_NAME']) ? $row_rsParent['PARENT_NAME'] : ''); ?></td>
+        <td><?php echo htmlspecialchars(isset($row_rsParent['PARENT_GENDER']) ? $row_rsParent['PARENT_GENDER'] : ''); ?></td>
+        <td><?php echo htmlspecialchars(isset($row_rsParent['PARENT_PHONENUM']) ? $row_rsParent['PARENT_PHONENUM'] : ''); ?></td>
+        <td><?php echo htmlspecialchars(isset($row_rsParent['PARENT_JOB']) ? $row_rsParent['PARENT_JOB'] : ''); ?></td>
+        <td><?php echo htmlspecialchars(isset($row_rsParent['PARENT_MONTHLY_INCOME']) ? $row_rsParent['PARENT_MONTHLY_INCOME'] : ''); ?></td>
     </tr>
 <?php } while ($row_rsParent = mysqli_fetch_assoc($rsParent)); ?>
 

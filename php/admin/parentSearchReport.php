@@ -1,44 +1,51 @@
 <?php
-  session_start();
-  include "../header/adminHeader.php" ?>
-<?php require_once('../config.php'); 
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  global $con;
-  $theValue = mysqli_real_escape_string($con, $theValue);
+session_start();
+include "../header/adminHeader.php";
+require_once('../config.php');
 
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
-}
+// Check admin session
+if (!isset($_SESSION['adminID'])) {
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
-$colname_rsSearchParent = "-1";
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in parentSearchReport.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Handle search with proper sanitization
+$searchTerm = '';
+$totalRows_rsSearchParent = 0;
+$rsSearchParent = null;
+
 if (isset($_POST['searchBox'])) {
-    $colname_rsSearchParent = $_POST['searchBox'];
+    $searchTerm = trim($_POST['searchBox']);
+    $searchTerm = SecuritySanitizer::sanitize($searchTerm, 'id', 'PARENT_ID');
+    
+    if ($searchTerm) {
+        // Use prepared statement for search
+        $stmt = $con->prepare("SELECT * FROM parent WHERE PARENT_ID LIKE ?");
+        $searchPattern = $searchTerm . "%";
+        $stmt->bind_param("s", $searchPattern);
+        $stmt->execute();
+        $rsSearchParent = $stmt->get_result();
+        $totalRows_rsSearchParent = $rsSearchParent->num_rows;
+        SecuritySanitizer::logSecurityEvent("Admin $adminId searched for parent: $searchTerm", 'INFO');
+    } else {
+        SecuritySanitizer::logSecurityEvent("Invalid parent search term by admin $adminId", 'MEDIUM');
+        // Set empty result for invalid search
+        $rsSearchParent = $con->query("SELECT * FROM parent WHERE 1=0");
+        $totalRows_rsSearchParent = 0;
+    }
+} else {
+    // Default: show all parents
+    $rsSearchParent = $con->query("SELECT * FROM parent");
+    $totalRows_rsSearchParent = $rsSearchParent->num_rows;
 }
-
-$query_rsSearchParent = sprintf("SELECT * FROM parent WHERE PARENT_ID LIKE %s", GetSQLValueString($colname_rsSearchParent . "%", "text"));
-$rsSearchParent = mysqli_query($con, $query_rsSearchParent) or die(mysqli_error($con));
-$row_rsSearchParent = mysqli_fetch_assoc($rsSearchParent);
-$totalRows_rsSearchParent = mysqli_num_rows($rsSearchParent);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -290,7 +297,7 @@ $totalRows_rsSearchParent = mysqli_num_rows($rsSearchParent);
         </form>
 
       <form id="form3" name="form3" method="post">
-        <p><b>Total Record Found: </b><?php echo $totalRows_rsSearchParent ?> </p>
+        <p><b>Total Record Found: </b><?php echo htmlspecialchars($totalRows_rsSearchParent, ENT_QUOTES, 'UTF-8') ?> </p>
         <table>
           <tr>
             <th>ID</th>
@@ -300,16 +307,30 @@ $totalRows_rsSearchParent = mysqli_num_rows($rsSearchParent);
             <th>JOB</th>
             <th>MONTHLY INCOME</th>
           </tr>
-          <?php do { ?>
-    <tr class="tr-hover">
-        <td><?php echo $row_rsSearchParent['PARENT_ID']; ?></td>
-        <td><?php echo isset($row_rsSearchParent['PARENT_NAME']) ? $row_rsSearchParent['PARENT_NAME'] : ''; ?></td>
-        <td><?php echo isset($row_rsSearchParent['PARENT_GENDER']) ? $row_rsSearchParent['PARENT_GENDER'] : ''; ?></td>
-        <td><?php echo isset($row_rsSearchParent['PARENT_PHONENUM']) ? $row_rsSearchParent['PARENT_PHONENUM'] : ''; ?></td>
-        <td><?php echo isset($row_rsSearchParent['PARENT_JOB']) ? $row_rsSearchParent['PARENT_JOB'] : ''; ?></td>
-        <td><?php echo isset($row_rsSearchParent['PARENT_MONTHLY_INCOME']) ? $row_rsSearchParent['PARENT_MONTHLY_INCOME'] : ''; ?></td>
-    </tr>
-<?php } while ($row_rsSearchParent = mysqli_fetch_assoc($rsSearchParent)); ?>
+          <?php 
+          if ($rsSearchParent && $totalRows_rsSearchParent > 0) {
+              while ($row_rsSearchParent = $rsSearchParent->fetch_assoc()) {
+                  // Sanitize all outputs for XSS protection
+                  $parentId = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_ID'], 'id');
+                  $parentName = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_NAME'], 'name');
+                  $parentGender = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_GENDER'], 'gender');
+                  $parentPhone = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_PHONENUM'], 'phone');
+                  $parentJob = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_JOB'], 'job');
+                  $parentIncome = SecuritySanitizer::sanitize($row_rsSearchParent['PARENT_MONTHLY_INCOME'], 'income');
+                  
+                  echo "<tr class='tr-hover'>
+                      <td>" . htmlspecialchars($parentId, ENT_QUOTES, 'UTF-8') . "</td>
+                      <td>" . htmlspecialchars($parentName, ENT_QUOTES, 'UTF-8') . "</td>
+                      <td>" . htmlspecialchars($parentGender, ENT_QUOTES, 'UTF-8') . "</td>
+                      <td>" . htmlspecialchars($parentPhone, ENT_QUOTES, 'UTF-8') . "</td>
+                      <td>" . htmlspecialchars($parentJob, ENT_QUOTES, 'UTF-8') . "</td>
+                      <td>" . htmlspecialchars($parentIncome, ENT_QUOTES, 'UTF-8') . "</td>
+                  </tr>";
+              }
+          } else {
+              echo "<tr><td colspan='6'>No parent records found.</td></tr>";
+          }
+          ?>
         </table>
         <p>&nbsp;</p>
       </form>

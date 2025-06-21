@@ -1,18 +1,43 @@
 <?php
-
 include(__DIR__ . '/../config.php');
 
-$id = $_SESSION['validTC'];
-$query = mysqli_query($con, "SELECT*FROM teacher WHERE TEACHER_ID=$id");
+// Sanitize and validate session ID
+$id = SecuritySanitizer::sanitize($_SESSION['validTC'] ?? '', 'id', 'TEACHER_ID');
 
-while ($result = mysqli_fetch_assoc($query)) {
-  $res_Name = $result['TEACHER_NAME'];
+if (empty($id)) {
+    SecuritySanitizer::logSecurityEvent('teacher_header_invalid_session', [
+        'session_id' => session_id(),
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    header("Location: ../login-logout/login.php");
+    exit();
 }
+
+// Use prepared statement for secure query
+$stmt = $con->prepare("SELECT TEACHER_NAME FROM teacher WHERE TEACHER_ID = ?");
+$stmt->bind_param("s", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    $res_Name = SecuritySanitizer::sanitize($row['TEACHER_NAME'], 'name');
+} else {
+    SecuritySanitizer::logSecurityEvent('teacher_header_user_not_found', [
+        'teacher_id' => $id,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    $res_Name = 'Unknown Teacher';
+}
+
+$stmt->close();
 
 function getBasePath()
 {
-  // Determine if we're on localhost or production
-  $isLocalhost = ($_SERVER['HTTP_HOST'] === 'localhost' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
+  // Determine if we're on localhost or production - secure host validation
+  $host = SecuritySanitizer::sanitize($_SERVER['HTTP_HOST'] ?? 'localhost', 'name');
+  $isLocalhost = ($host === 'localhost' || 
+                  strpos($host, '127.0.0.1') === 0 || 
+                  strpos($host, 'localhost:') === 0);
 
   if ($isLocalhost) {
     // On localhost, we're in a subdirectory

@@ -1,8 +1,18 @@
 <?php 
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in AssignClass.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
 ?>
@@ -252,13 +262,12 @@ if (!isset($_SESSION['adminID'])) {
 <?php
 include("../config.php");
 
+// Use prepared statement to get students without class assignment
+$stmt = $con->prepare("SELECT * FROM student WHERE CLASS_CODE IS NULL AND PARENT_ID IS NOT NULL");
+$stmt->execute();
+$query = $stmt->get_result();
 
-
-$select = "SELECT * FROM student 
-     WHERE CLASS_CODE IS NULL AND PARENT_ID IS NOT NULL";
-$query = mysqli_query($con, $select);
-
-$num = mysqli_num_rows($query);
+$num = $query->num_rows;
 
 if ($num === 0) {
     echo "<script>
@@ -277,11 +286,24 @@ if (isset($_POST['submit2'])) {
     // Check if the class_code array is set
     if (isset($_POST['class_code']) && is_array($_POST['class_code'])) {
         foreach ($_POST['class_code'] as $studentID => $selectedClassCode) {
+            // Sanitize inputs
+            $studentID = SecuritySanitizer::sanitize($studentID, 'id', 'STUDENT_ID');
+            $selectedClassCode = SecuritySanitizer::sanitize($selectedClassCode, 'id', 'CLASS_CODE');
+            
+            if (!$studentID || !$selectedClassCode) {
+                SecuritySanitizer::logSecurityEvent("Invalid class assignment inputs: studentID=$studentID, classCode=$selectedClassCode", 'MEDIUM');
+                continue;
+            }
+            
             // Check if the specific submit button is set
             if (isset($_POST['submit2'][$studentID])) {
-                // Update the class_code for each student
-                $updateQuery = mysqli_query($con, "UPDATE student SET CLASS_CODE='$selectedClassCode' WHERE STUDENT_ID='$studentID'");
-                if ($updateQuery) {
+                // Update the class_code for each student using prepared statement
+                $updateStmt = $con->prepare("UPDATE student SET CLASS_CODE = ? WHERE STUDENT_ID = ?");
+                $updateStmt->bind_param("ss", $selectedClassCode, $studentID);
+                
+                if ($updateStmt->execute()) {
+                    SecuritySanitizer::logSecurityEvent("Student $studentID assigned to class $selectedClassCode by admin $adminId", 'INFO');
+                    $updateStmt->close();
                     echo "<script>
                         Swal.fire({
                             title: 'Assigned!',
@@ -293,6 +315,8 @@ if (isset($_POST['submit2'])) {
                     </script>";
                 } else {
                     // Handle the error scenario
+                    SecuritySanitizer::logSecurityEvent("Failed to assign student $studentID to class $selectedClassCode by admin $adminId", 'HIGH');
+                    $updateStmt->close();
                     echo "<script>
                         Swal.fire({
                             title: 'Error!',
@@ -324,27 +348,39 @@ if (isset($_POST['submit2'])) {
                     <th colspan="6">MANAGE</th>
                 </tr>
                 <?php
-                $num = mysqli_num_rows($query);
+                $num = $query->num_rows;
                 if ($num > 0) {
-                    while ($result = mysqli_fetch_assoc($query)) {
+                    while ($result = $query->fetch_assoc()) {
+                        // Sanitize all outputs for XSS protection
+                        $studentName = SecuritySanitizer::sanitize($result["STUDENT_NAME"], 'name');
+                        $studentId = SecuritySanitizer::sanitize($result["STUDENT_ID"], 'id');
+                        $studentLevel = SecuritySanitizer::sanitize($result["STUDENT_LEVEL"], 'class_level');
+                        
                         echo "
                         <tr>
-                            <td>" . $result["STUDENT_NAME"] . "</td>
-                            <td>" . $result["STUDENT_ID"] . "</td>
-                            <td>" . $result["STUDENT_LEVEL"] . " </td>
+                            <td>" . htmlspecialchars($studentName, ENT_QUOTES, 'UTF-8') . "</td>
+                            <td>" . htmlspecialchars($studentId, ENT_QUOTES, 'UTF-8') . "</td>
+                            <td>" . htmlspecialchars($studentLevel, ENT_QUOTES, 'UTF-8') . " </td>
                             <td>
-                                <select name='class_code[" . $result["STUDENT_ID"] . "]'>
+                                <select name='class_code[" . htmlspecialchars($studentId, ENT_QUOTES, 'UTF-8') . "]'>
                                     <option value='' selected disabled>Select Class</option>";
 
-                        // Fetch and display class codes
-                        $classQuery = mysqli_query($con, "SELECT * FROM class");
-                        while ($classResult = mysqli_fetch_assoc($classQuery)) {
-                            echo "<option value='" . $classResult["CLASS_CODE"] . "'>" . $classResult["CLASS_CODE"] . "</option>";
+                        // Fetch and display class codes using prepared statement
+                        $classStmt = $con->prepare("SELECT * FROM class");
+                        $classStmt->execute();
+                        $classQuery = $classStmt->get_result();
+                        
+                        while ($classResult = $classQuery->fetch_assoc()) {
+                            $classCode = SecuritySanitizer::sanitize($classResult["CLASS_CODE"], 'id');
+                            echo "<option value='" . htmlspecialchars($classCode, ENT_QUOTES, 'UTF-8') . "'>" . 
+                                 htmlspecialchars($classCode, ENT_QUOTES, 'UTF-8') . "</option>";
                         }
+                        $classStmt->close();
+                        
                         echo "</select>
                             </td>
                             <td class='manage-buttons' style='text-align: justify'>
-                                <input class='button' type='submit' name='submit2[" . $result["STUDENT_ID"] . "]' value='Assign Students'>
+                                <input class='button' type='submit' name='submit2[" . htmlspecialchars($studentId, ENT_QUOTES, 'UTF-8') . "]' value='Assign Students'>
                             </td>
                         </tr>";
                     }

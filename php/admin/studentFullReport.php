@@ -1,36 +1,18 @@
 <?php
-  session_start();
-  include "../header/adminHeader.php" ?>
+session_start();
+include "../header/adminHeader.php"; ?>
 <?php require_once('../config.php'); 
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  if (PHP_VERSION < 6) {
-    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-  }
 
-  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
+if (!isset($_SESSION['validAD'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Student full report access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
+
+if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Student full report access without admin session');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
 $query_rsStudent = "SELECT * FROM student";
@@ -308,19 +290,19 @@ $totalRows_rsStudent = mysqli_num_rows($rsStudent);
       </tr>
 		<?php do { ?>
       <tr class="tr-hover">
-        <td><?php echo $row_rsStudent['STUDENT_ID']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_NAME']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_GENDER']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DOB']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_POB']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_RELIGION']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_RACE']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_NATIONALITY']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_ADDRESS']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DISEASE']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DISABILITY']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_STATUS']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_PWD']; ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_ID']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_NAME']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_GENDER']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DOB']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_POB']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_RELIGION']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_RACE']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_NATIONALITY']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_ADDRESS']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DISEASE']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_DISABILITY']); ?></td>
+        <td><?php echo htmlspecialchars($row_rsStudent['STUDENT_STATUS']); ?></td>
+        <td>****** (Hidden for security)</td>
       </tr>
 		<?php } while ($row_rsStudent = mysqli_fetch_assoc($rsStudent)); ?>
     </tbody>

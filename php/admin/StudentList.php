@@ -1,35 +1,85 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
+    SecuritySanitizer::logSecurityEvent('unauthorized_access', 'Student list access without admin session');
     header("Location: ../login-logout/login.php");
+    exit();
 }
 
 ?>
 <?php include "../header/adminHeader.php" ?>
 <?php
 include("../config.php");
-// Handle student deletion
+
+// Handle student deletion with proper sanitization
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $delete = mysqli_query($con, "DELETE FROM `student` WHERE `STUDENT_ID`='$id'");
-}
-
-// Handle student search
-$searchCondition = "";
-$searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
-
-if (isset($_GET['searchBox'])) {
-    $searchValue = $_GET['searchBox'];
-    if ($searchType === 'STUDENT_ID') {
-        $searchCondition = "AND STUDENT_ID LIKE '%$searchValue%'";
-    } elseif ($searchType === 'STUDENT_NAME') {
-        $searchCondition = "AND STUDENT_NAME LIKE '%$searchValue%'";
+    $id = SecuritySanitizer::sanitize($_GET['id'], 'id', 'STUDENT_ID');
+    if (!empty($id)) {
+        $deleteQuery = "DELETE FROM `student` WHERE `STUDENT_ID` = ?";
+        $stmt = mysqli_prepare($con, $deleteQuery);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $id);
+            $deleteResult = mysqli_stmt_execute($stmt);
+            if ($deleteResult) {
+                SecuritySanitizer::logSecurityEvent('student_deletion', 'Student deleted: ' . $id);
+            } else {
+                SecuritySanitizer::logSecurityEvent('sql_error', 'Student deletion failed: ' . mysqli_error($con));
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare delete statement: ' . mysqli_error($con));
+        }
+    } else {
+        SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid student ID for deletion: ' . $_GET['id']);
     }
 }
 
-$select = "SELECT * FROM student WHERE 1 $searchCondition AND PARENT_ID IS NOT NULL"; // Include search condition here
-$query = mysqli_query($con, $select);
+// Handle student search with proper sanitization
+$searchType = 'STUDENT_ID'; // Default search type
+$searchValue = '';
+
+if (isset($_GET['searchType'])) {
+    $searchType = SecuritySanitizer::sanitize($_GET['searchType'], 'name');
+    if (!in_array($searchType, ['STUDENT_ID', 'STUDENT_NAME'])) {
+        SecuritySanitizer::logSecurityEvent('invalid_input', 'Invalid search type: ' . $_GET['searchType']);
+        $searchType = 'STUDENT_ID';
+    }
+}
+
+if (isset($_GET['searchBox'])) {
+    $searchValue = SecuritySanitizer::sanitize($_GET['searchBox'], 'name');
+}
+
+// Build the query with prepared statements
+$baseQuery = "SELECT * FROM student WHERE PARENT_ID IS NOT NULL";
+$params = [];
+$types = "";
+
+if (!empty($searchValue)) {
+    if ($searchType === 'STUDENT_ID') {
+        $baseQuery .= " AND STUDENT_ID LIKE ?";
+        $params[] = $searchValue . "%";
+        $types .= "s";
+    } elseif ($searchType === 'STUDENT_NAME') {
+        $baseQuery .= " AND STUDENT_NAME LIKE ?";
+        $params[] = "%" . $searchValue . "%";
+        $types .= "s";
+    }
+}
+
+$stmt = mysqli_prepare($con, $baseQuery);
+if ($stmt) {
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    $query = mysqli_stmt_get_result($stmt);
+} else {
+    SecuritySanitizer::logSecurityEvent('sql_error', 'Failed to prepare student list query: ' . mysqli_error($con));
+    die('Database error occurred');
+}
 ?>
 
 
@@ -308,15 +358,15 @@ $query = mysqli_query($con, $select);
                     while ($result = mysqli_fetch_assoc($query)) {
                         echo "
                     <tr>
-                        <td>" . $result["STUDENT_NAME"] . "</td>
-                        <td>" . $result["STUDENT_ID"] . "</td>              
-                        <td>" . $result["CLASS_CODE"] . "</td>
-                        <td>" . $result["STUDENT_LEVEL"] . "</td>
-                        <td>" . $result["STUDENT_EMAIL"] . "</td>
+                        <td>" . htmlspecialchars($result["STUDENT_NAME"]) . "</td>
+                        <td>" . htmlspecialchars($result["STUDENT_ID"]) . "</td>              
+                        <td>" . htmlspecialchars($result["CLASS_CODE"]) . "</td>
+                        <td>" . htmlspecialchars($result["STUDENT_LEVEL"]) . "</td>
+                        <td>" . htmlspecialchars($result["STUDENT_EMAIL"]) . "</td>
     
-                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewStudent.php?id=" . $result["STUDENT_ID"] . "'>VIEW</a></td>
-                        <td class='manage-buttons'><a class='update-button' href='adminUpdateStudent.php?id=" . $result["STUDENT_ID"] . "'>UPDATE</a></td>
-                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["STUDENT_ID"] . "\")'>DELETE</a></td>
+                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewStudent.php?id=" . urlencode($result["STUDENT_ID"]) . "'>VIEW</a></td>
+                        <td class='manage-buttons'><a class='update-button' href='adminUpdateStudent.php?id=" . urlencode($result["STUDENT_ID"]) . "'>UPDATE</a></td>
+                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . htmlspecialchars($result["STUDENT_ID"], ENT_QUOTES) . "\")'>DELETE</a></td>
        
                         </tr>
 

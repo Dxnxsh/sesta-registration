@@ -2,8 +2,13 @@
 if (!function_exists('getBasePath')) {
   function getBasePath()
   {
-    // Determine if we're on localhost or production
-    $isLocalhost = ($_SERVER['HTTP_HOST'] === 'localhost' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
+    // Determine if we're on localhost or production - secure host validation
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    // Basic sanitization for host header to prevent header injection
+    $host = filter_var($host, FILTER_SANITIZE_STRING);
+    $isLocalhost = ($host === 'localhost' || 
+                    strpos($host, '127.0.0.1') === 0 || 
+                    strpos($host, 'localhost:') === 0);
 
     if ($isLocalhost) {
       // On localhost, we're in a subdirectory

@@ -1,45 +1,51 @@
 <?php
-  session_start();
-  include "../header/adminHeader.php" ?>
-<?php require_once('../config.php'); 
+session_start();
+include "../header/adminHeader.php";
+require_once('../config.php');
 
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  global $con;
-  $theValue = mysqli_real_escape_string($con, $theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
-}
+// Check admin session
+if (!isset($_SESSION['adminID'])) {
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
-$colname_rsSearchStudent = "-1";
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in studentSearchReport.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Handle search with proper sanitization
+$searchTerm = '';
+$totalRows_rsSearchStudent = 0;
+$rsSearchStudent = null;
+
 if (isset($_POST['searchBox'])) {
-    $colname_rsSearchStudent = $_POST['searchBox'];
+    $searchTerm = trim($_POST['searchBox']);
+    $searchTerm = SecuritySanitizer::sanitize($searchTerm, 'id', 'STUDENT_ID');
+    
+    if ($searchTerm) {
+        // Use prepared statement for search
+        $stmt = $con->prepare("SELECT * FROM student WHERE STUDENT_ID LIKE ?");
+        $searchPattern = $searchTerm . "%";
+        $stmt->bind_param("s", $searchPattern);
+        $stmt->execute();
+        $rsSearchStudent = $stmt->get_result();
+        $totalRows_rsSearchStudent = $rsSearchStudent->num_rows;
+        SecuritySanitizer::logSecurityEvent("Admin $adminId searched for student: $searchTerm", 'INFO');
+    } else {
+        SecuritySanitizer::logSecurityEvent("Invalid student search term by admin $adminId", 'MEDIUM');
+        // Set empty result for invalid search
+        $rsSearchStudent = $con->query("SELECT * FROM student WHERE 1=0");
+        $totalRows_rsSearchStudent = 0;
+    }
+} else {
+    // Default: show all students
+    $rsSearchStudent = $con->query("SELECT * FROM student");
+    $totalRows_rsSearchStudent = $rsSearchStudent->num_rows;
 }
-
-$query_rsSearchStudent = sprintf("SELECT * FROM student WHERE STUDENT_ID LIKE %s", GetSQLValueString($colname_rsSearchStudent . "%", "text"));
-$rsSearchStudent = mysqli_query($con, $query_rsSearchStudent) or die(mysqli_error($con));
-$row_rsSearchStudent = mysqli_fetch_assoc($rsSearchStudent);
-$totalRows_rsSearchStudent = mysqli_num_rows($rsSearchStudent);
 ?>
 <!doctype html>
 <html>

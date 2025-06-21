@@ -1,8 +1,18 @@
 <?php
 session_start();
 include("../config.php");
+
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
+    exit();
+}
+
+// Sanitize admin session ID
+$adminId = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+if (!$adminId) {
+    SecuritySanitizer::logSecurityEvent('Invalid admin session ID in adminList.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
 }
 
 ?>
@@ -227,40 +237,72 @@ if (!isset($_SESSION['adminID'])) {
 </head>
 <?php
 include("../config.php");
-// Handle class deletion
-if (isset($_GET['adminID'])) {
-    $adminID = $_GET['adminID'];
 
-    // Check if the admin being deleted is the same as the currently logged-in admin
-    if ($_SESSION['adminID'] == $adminID) {
-        // Display a popup notifying the user they cannot delete themselves
-        echo '<script>
-                Swal.fire({
-                    title: "Cannot Delete Yourself",
-                    text: "You cannot delete your own admin account.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-              </script>';
+// Handle admin deletion with proper sanitization
+if (isset($_GET['adminID'])) {
+    $deleteAdminID = SecuritySanitizer::sanitize($_GET['adminID'], 'id', 'ADMIN_ID');
+    
+    if (!$deleteAdminID) {
+        SecuritySanitizer::logSecurityEvent("Invalid admin ID for deletion by admin $adminId", 'MEDIUM');
     } else {
-        // Proceed with the deletion
-        $delete = mysqli_query($con, "DELETE FROM `admin` WHERE `ADMIN_ID`='$adminID'");
-        mysqli_query($con, "UPDATE `class` SET `ADMIN_ID`='' WHERE `ADMIN_ID`='$adminID'");
-        mysqli_query($con, "UPDATE `teacher` SET `ADMIN_ID`='' WHERE `ADMIN_ID`='$adminID'");
+        // Check if the admin being deleted is the same as the currently logged-in admin
+        if ($adminId == $deleteAdminID) {
+            SecuritySanitizer::logSecurityEvent("Admin $adminId attempted to delete themselves", 'MEDIUM');
+            echo '<script>
+                    Swal.fire({
+                        title: "Cannot Delete Yourself",
+                        text: "You cannot delete your own admin account.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                  </script>';
+        } else {
+            // Use prepared statements for deletion
+            $deleteStmt = $con->prepare("DELETE FROM admin WHERE ADMIN_ID = ?");
+            $deleteStmt->bind_param("s", $deleteAdminID);
+            
+            if ($deleteStmt->execute()) {
+                // Update related records
+                $updateStmt1 = $con->prepare("UPDATE class SET ADMIN_ID = NULL WHERE ADMIN_ID = ?");
+                $updateStmt1->bind_param("s", $deleteAdminID);
+                $updateStmt1->execute();
+                $updateStmt1->close();
+                
+                $updateStmt2 = $con->prepare("UPDATE teacher SET ADMIN_ID = NULL WHERE ADMIN_ID = ?");
+                $updateStmt2->bind_param("s", $deleteAdminID);
+                $updateStmt2->execute();
+                $updateStmt2->close();
+                
+                SecuritySanitizer::logSecurityEvent("Admin $deleteAdminID deleted by admin $adminId", 'INFO');
+            } else {
+                SecuritySanitizer::logSecurityEvent("Failed to delete admin $deleteAdminID by admin $adminId", 'HIGH');
+            }
+            $deleteStmt->close();
+        }
     }
 }
 
-
-
-// Handle class search
-$searchCondition = "";
+// Handle search with proper sanitization
+$searchTerm = '';
 if (isset($_GET['searchBox'])) {
-    $searchClassCode = $_GET['searchBox'];
-    $searchCondition = "AND ADMIN_ID LIKE '%$searchClassCode%'";
+    $searchTerm = trim($_GET['searchBox']);
+    $searchTerm = SecuritySanitizer::sanitize($searchTerm, 'id', 'ADMIN_ID');
+    
+    if ($searchTerm) {
+        SecuritySanitizer::logSecurityEvent("Admin $adminId searched for admin: $searchTerm", 'INFO');
+        $stmt = $con->prepare("SELECT * FROM admin WHERE ADMIN_ID LIKE ?");
+        $searchPattern = "%" . $searchTerm . "%";
+        $stmt->bind_param("s", $searchPattern);
+        $stmt->execute();
+        $query = $stmt->get_result();
+    } else {
+        SecuritySanitizer::logSecurityEvent("Invalid admin search term by admin $adminId", 'MEDIUM');
+        $query = $con->query("SELECT * FROM admin WHERE 1=0");
+    }
+} else {
+    // Default: show all admins
+    $query = $con->query("SELECT * FROM admin");
 }
-
-$select = "SELECT * FROM admin WHERE 1 $searchCondition";
-$query = mysqli_query($con, $select);
 ?>
 <body>
     <div class="container">
@@ -286,25 +328,27 @@ $query = mysqli_query($con, $select);
                     <th colspan="4">MANAGE</th>
                 </tr>
                 <?php
-                $num = mysqli_num_rows($query);
+                $num = $query->num_rows;
                 if ($num > 0) {
-                    while ($result = mysqli_fetch_assoc($query)) {
+                    while ($result = $query->fetch_assoc()) {
+                        // Sanitize all outputs for XSS protection
+                        $adminIdOutput = SecuritySanitizer::sanitize($result["ADMIN_ID"], 'id');
+                        $adminUsername = SecuritySanitizer::sanitize($result["ADMIN_USERNAME"], 'username');
+                        $adminName = SecuritySanitizer::sanitize($result["ADMIN_NAME"], 'name');
+                        $adminPhone = SecuritySanitizer::sanitize($result["ADMIN_PHONE"], 'phone');
+                        
                         echo "
                     <tr>
-                        <td>".$result["ADMIN_ID"]."</td>
-                        <td>".$result["ADMIN_USERNAME"]."</td>
-                        <td>".$result["ADMIN_NAME"]."</td>
-                        <td colspan='3' >".$result["ADMIN_PHONE"]."</td>
-                        <td class='manage-buttons'><a class='update-button' href='AdminUpdateAdmin.php?id=".$result["ADMIN_ID"]."'>UPDATE</a></td>
-                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"".$result["ADMIN_ID"]."\")'>DELETE</a></td>
+                        <td>" . htmlspecialchars($adminIdOutput, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td>" . htmlspecialchars($adminUsername, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td>" . htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td colspan='3'>" . htmlspecialchars($adminPhone, ENT_QUOTES, 'UTF-8') . "</td>
+                        <td class='manage-buttons'><a class='update-button' href='AdminUpdateAdmin.php?id=" . htmlspecialchars($adminIdOutput, ENT_QUOTES, 'UTF-8') . "'>UPDATE</a></td>
+                        <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . htmlspecialchars($adminIdOutput, ENT_QUOTES, 'UTF-8') . "\")'>DELETE</a></td>
        
-                        </tr>
-
-                    ";
-
+                        </tr>";
                     }
                 }
-
                 ?>    
             </table>
         </form>

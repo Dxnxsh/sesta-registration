@@ -8,11 +8,11 @@
 ?>
 <?php include("../../config.php"); 
             
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID=$id");
+            $id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
+            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID='$id'");
+            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID='$id'");
             $queryParent  = mysqli_query($con,"SELECT student.*, parent.* FROM student INNER JOIN parent ON student.PARENT_ID = parent.PARENT_ID
-            WHERE student.STUDENT_ID = $id");
+            WHERE student.STUDENT_ID = '$id'");
             
 
             while($result = mysqli_fetch_assoc($query)){
@@ -190,15 +190,17 @@ $datetime=date('dmY_hms');
 $file_name = "INV_".$datetime.".pdf";
 ob_end_clean();
 
-if($_GET['ACTION']=='VIEW') 
+$action = SecuritySanitizer::sanitize($_GET['ACTION'] ?? '', 'action');
+
+if($action=='VIEW') 
 {
 	$pdf->Output($file_name, 'I'); // I means Inline view
 } 
-else if($_GET['ACTION']=='DOWNLOAD')
+else if($action=='DOWNLOAD')
 {
 	$pdf->Output($file_name, 'D'); // D means download
 }
-else if ($_GET['ACTION'] == 'EMAIL') {
+else if ($action == 'EMAIL') {
     $pdf->Output($file_location . $file_name, 'F');
 
     include_once '../../config/email_config.php';

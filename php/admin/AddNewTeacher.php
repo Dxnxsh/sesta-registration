@@ -26,46 +26,116 @@ if (!isset($_SESSION['adminID'])) {
             include("../config.php");
 
             $id = $_SESSION['adminID'];
-            $query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$id");
-
-            while ($result = mysqli_fetch_assoc($query)) {
-                $res_id = $result['ADMIN_ID'];
-            }
+            
+            // Use prepared statement to get admin info
+            $query = "SELECT ADMIN_ID FROM admin WHERE ADMIN_ID = ?";
+            $stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($stmt, "s", $id);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $admin = mysqli_fetch_assoc($result);
+            $res_id = $admin['ADMIN_ID'] ?? null;
+            mysqli_stmt_close($stmt);
 
             if (isset($_POST['submit'])) {
-                $TeachID = $_POST['TeacherID'];
+                try {
+                    // Sanitize and validate Teacher ID
+                    $TeachID = SecuritySanitizer::sanitizeForDB($_POST['TeacherID'] ?? '', 'id', 'TEACHER_ID');
 
-                //verifying the unique Teacher iD
+                    if (empty($TeachID)) {
+                        throw new InvalidArgumentException("Teacher ID is required");
+                    }
 
-                $verify_query = mysqli_query($con, "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID='$TeachID'");
+                    // Check for malicious input
+                    if (detectMaliciousInput($TeachID)) {
+                        SecuritySanitizer::logSecurityEvent('malicious_input_detected', [
+                            'field' => 'teacher_creation',
+                            'admin_id' => $id
+                        ]);
+                        throw new InvalidArgumentException("Invalid input detected");
+                    }
 
-                if (mysqli_num_rows($verify_query) != 0) {
+                } catch (InvalidArgumentException $e) {
                     echo "<script>
                         document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Registration Failed',
-                                text: 'Teacher already registered!',
+                                title: 'Invalid Input',
+                                text: '" . htmlspecialchars($e->getMessage()) . "',
                                 confirmButtonText: 'OK'
                             });
                         });
                     </script>";
-                } else {
-                    $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
+                    $TeachID = null;
+                }
 
-                    if ($insert_query) {
-                        header("Location: noti/noti_AddTeach.php");
-                    } else {
+                if ($TeachID) {
+                    // Check if teacher ID already exists using prepared statement
+                    $verify_query = "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID = ?";
+                    $stmt = mysqli_prepare($con, $verify_query);
+                    mysqli_stmt_bind_param($stmt, "s", $TeachID);
+                    mysqli_stmt_execute($stmt);
+                    $verify_result = mysqli_stmt_get_result($stmt);
+                    
+                    if (mysqli_num_rows($verify_result) != 0) {
+                        mysqli_stmt_close($stmt);
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Database Error',
-                                    text: 'Error occurred: " . mysqli_error($con) . "',
+                                    title: 'Registration Failed',
+                                    text: 'Teacher already registered!',
                                     confirmButtonText: 'OK'
                                 });
                             });
                         </script>";
+                    } else {
+                        mysqli_stmt_close($stmt);
+                        
+                        // Insert new teacher using prepared statement
+                        $insert_query = "INSERT INTO teacher (TEACHER_ID, ADMIN_ID) VALUES (?, ?)";
+                        $stmt = mysqli_prepare($con, $insert_query);
+                        
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "ss", $TeachID, $res_id);
+                            
+                            if (mysqli_stmt_execute($stmt)) {
+                                SecuritySanitizer::logSecurityEvent('teacher_created', [
+                                    'teacher_id' => $TeachID,
+                                    'created_by' => $id
+                                ]);
+                                header("Location: noti/noti_AddTeach.php");
+                                exit();
+                            } else {
+                                SecuritySanitizer::logSecurityEvent('teacher_creation_failed', [
+                                    'teacher_id' => $TeachID,
+                                    'admin_id' => $id,
+                                    'error' => mysqli_error($con)
+                                ]);
+                                echo "<script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Database Error',
+                                            text: 'Error occurred during registration.',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    });
+                                </script>";
+                            }
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            echo "<script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Database Error',
+                                        text: 'Database preparation error.',
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>";
+                        }
                     }
                 }
             }

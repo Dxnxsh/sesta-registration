@@ -294,19 +294,19 @@
   <div class="container">
     <?php 
             
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID=$id");
+            $id = SecuritySanitizer::sanitize($_SESSION['valid'], 'id', 'STUDENT_ID');
+            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID='$id'");
+            $query2 = mysqli_query($con,"SELECT*FROM payment WHERE STUDENT_ID='$id'");
 
             while($result = mysqli_fetch_assoc($query)){
-                $res_Name = $result['STUDENT_NAME'];
-                $res_IC = $result['STUDENT_ID'];
+                $res_Name = SecuritySanitizer::sanitize($result['STUDENT_NAME'], 'name');
+                $res_IC = SecuritySanitizer::sanitize($result['STUDENT_ID'], 'id');
             }
 
             while($result = mysqli_fetch_assoc($query2)){
-              $res_type = $result['PAYMENT_TYPE'];
-              $res_amount = $result['PAYMENT_AMOUNT'];
-              $res_stts = $result['PAYMENT_STATUS'];
+              $res_type = SecuritySanitizer::sanitize($result['PAYMENT_TYPE'], 'enum');
+              $res_amount = SecuritySanitizer::sanitize($result['PAYMENT_AMOUNT'], 'decimal');
+              $res_stts = SecuritySanitizer::sanitize($result['PAYMENT_STATUS'], 'enum');
 
               // Check if the payment type is "SCHOOL FEES"
                if ($res_type == "SCHOOL FEES") {
@@ -323,6 +323,13 @@
               $res_stts2 = $res_stts;
               }
             }
+            
+            // Log the billing page access
+            SecuritySanitizer::logSecurityEvent('student_billing_page_access', [
+                'student_id' => $res_IC ?? '',
+                'student_name' => $res_Name ?? '',
+                'access_time' => date('Y-m-d H:i:s')
+            ]);
             ?>
     <div class="logo">
     <img src="../../../image/icon/logoSESTA2.png" alt="Logo">

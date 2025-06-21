@@ -2,43 +2,59 @@
 session_start();
 include "../config.php";
 
-$name = $_POST['name'];
-$level = $_POST['level'];
-$block = $_POST['block'];
-$floor = $_POST['floor'];
-$category = $_POST['category'];
-$teacherID = ($_POST['teacherID'] === "") ? NULL : $_POST['teacherID'];
-$adminID = $_SESSION['adminID']; // Corrected syntax
-$classCode = $_POST['cCode'];
+// Sanitize input data
+$name = SecuritySanitizer::sanitizeForDB($_POST['name'] ?? '', 'class_name', 'CLASS_NAME');
+$level = SecuritySanitizer::sanitizeForDB($_POST['level'] ?? '', 'class_level', 'CLASS_LEVEL');
+$block = SecuritySanitizer::sanitizeForDB($_POST['block'] ?? '', 'class_block', 'CLASS_BLOCK');
+$floor = SecuritySanitizer::sanitizeForDB($_POST['floor'] ?? '', 'floor', 'CLASS_FLOOR');
+$category = SecuritySanitizer::sanitizeForDB($_POST['category'] ?? '', 'class_category', 'CLASS_CAT');
+$teacherID = ($_POST['teacherID'] === "") ? NULL : SecuritySanitizer::sanitizeForDB($_POST['teacherID'], 'id', 'TEACHER_ID');
+$adminID = SecuritySanitizer::sanitize($_SESSION['adminID'], 'id', 'ADMIN_ID');
+$classCode = SecuritySanitizer::sanitizeForDB($_POST['cCode'] ?? '', 'class_code', 'CLASS_CODE');
 
 // If assigning a teacher, check if teacher is already assigned to another class
 if ($teacherID !== NULL) {
-    $checkTeacherQuery = "SELECT CLASS_CODE FROM class WHERE TEACHER_ID = '$teacherID' AND CLASS_CODE != '$classCode'";
-    $checkResult = mysqli_query($con, $checkTeacherQuery);
+    $stmt = $con->prepare("SELECT CLASS_CODE FROM class WHERE TEACHER_ID = ? AND CLASS_CODE != ?");
+    $stmt->bind_param("ss", $teacherID, $classCode);
+    $stmt->execute();
+    $checkResult = $stmt->get_result();
     
-    if (mysqli_num_rows($checkResult) > 0) {
+    if ($checkResult->num_rows > 0) {
+        SecuritySanitizer::logSecurityEvent('teacher_multiple_class_attempt', [
+            'teacher_id' => $teacherID,
+            'existing_class' => $checkResult->fetch_assoc()['CLASS_CODE'],
+            'attempted_class' => $classCode,
+            'admin_id' => $adminID
+        ]);
         echo json_encode(['success' => false, 'error' => 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.']);
         exit();
     }
+    $stmt->close();
 }
 
-// Perform the update query
-$updateQuery = "UPDATE `class` SET `CLASS_NAME`='$name', `CLASS_LEVEL`='$level', `CLASS_FLOOR`='$floor',
-                `CLASS_BLOCK`='$block', `CLASS_CAT`='$category', `TEACHER_ID`=" . ($teacherID === NULL ? "NULL" : "'$teacherID'") . ", `ADMIN_ID`='$adminID' WHERE `CLASS_CODE`='$classCode'";
+// Perform the update query with prepared statement
+$stmt = $con->prepare("UPDATE `class` SET `CLASS_NAME`=?, `CLASS_LEVEL`=?, `CLASS_FLOOR`=?, `CLASS_BLOCK`=?, `CLASS_CAT`=?, `TEACHER_ID`=?, `ADMIN_ID`=? WHERE `CLASS_CODE`=?");
+$stmt->bind_param("ssssssss", $name, $level, $floor, $block, $category, $teacherID, $adminID, $classCode);
 
-// Log the query for debugging
-error_log($updateQuery);
-
-if (mysqli_query($con, $updateQuery)) {
+if ($stmt->execute()) {
+    SecuritySanitizer::logSecurityEvent('class_updated', [
+        'class_code' => $classCode,
+        'admin_id' => $adminID,
+        'teacher_id' => $teacherID
+    ]);
     echo json_encode(['success' => true]);
 } else {
-    $error = mysqli_error($con);
+    $error = SecuritySanitizer::sanitize($stmt->error, 'name');
+    SecuritySanitizer::logSecurityEvent('class_update_failed', [
+        'class_code' => $classCode,
+        'admin_id' => $adminID,
+        'error' => $error
+    ]);
     if (strpos($error, 'unique_teacher') !== false) {
         echo json_encode(['success' => false, 'error' => 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.']);
     } else {
-        echo json_encode(['success' => false, 'error' => $error]);
+        echo json_encode(['success' => false, 'error' => 'Database error occurred.']);
     }
 }
+$stmt->close();
 ?>
-    echo json_encode(['success' => false, 'error' => mysqli_error($con)]);
-}

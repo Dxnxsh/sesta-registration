@@ -1,5 +1,6 @@
 <?php 
    session_start();
+   include("../../config.php");
 ?>
 <!-- error_page.php -->
 <!DOCTYPE html>

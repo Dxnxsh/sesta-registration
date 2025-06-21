@@ -1,48 +1,96 @@
 <?php 
-	session_start();
-   if(!isset($_SESSION['validTC'])){
+session_start();
+include("../config.php");
+
+if(!isset($_SESSION['validTC'])){
     header("Location: ../login-logout/login.php");
-   }
+    exit();
+}
+
+// Sanitize teacher session ID
+$teacherId = SecuritySanitizer::sanitize($_SESSION['validTC'], 'id', 'TEACHER_ID');
+if (!$teacherId) {
+    SecuritySanitizer::logSecurityEvent('Invalid teacher session ID in TeacherBilling.php', 'HIGH');
+    header("Location: ../login-logout/login.php");
+    exit();
+}
 ?>
 
 <?php include "../header/teacherHeader.php"; ?>
 <?php 
-    include("../config.php");
-
-   // Handle search form submission
-   $sql = "";  // Initialize $sql
-   $teacherId = $_SESSION['validTC'];
+// Handle search form submission with proper sanitization
+$result = null;
 
 if (isset($_GET['submit'])) {
-    $searchOption = isset($_GET['searchOption']) ? $_GET['searchOption'] : '';
-    $searchTerm = isset($_GET['searchBox']) ? $_GET['searchBox'] : '';
+    $searchOption = isset($_GET['searchOption']) ? SecuritySanitizer::sanitize($_GET['searchOption'], 'name') : '';
+    $searchTerm = isset($_GET['searchBox']) ? trim($_GET['searchBox']) : '';
+    
+    // Validate search option
+    $validOptions = ['name', 'ic'];
+    if (!in_array($searchOption, $validOptions)) {
+        $searchOption = 'name'; // Default to name search
+    }
     
     if (!empty($searchTerm)) {
         if ($searchOption == 'name') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_NAME LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
+            $searchTerm = SecuritySanitizer::sanitize($searchTerm, 'name');
+            if ($searchTerm) {
+                $stmt = $con->prepare("SELECT * FROM payment 
+                                     INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID 
+                                     INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
+                                     WHERE class.TEACHER_ID = ? AND student.STUDENT_NAME LIKE ? AND STUDENT_NAME IS NOT NULL");
+                $searchPattern = "%" . $searchTerm . "%";
+                $stmt->bind_param("ss", $teacherId, $searchPattern);
+                SecuritySanitizer::logSecurityEvent("Teacher $teacherId searched for student by name: $searchTerm", 'INFO');
+            }
         } elseif ($searchOption == 'ic') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_ID LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
+            $searchTerm = SecuritySanitizer::sanitize($searchTerm, 'id', 'STUDENT_ID');
+            if ($searchTerm) {
+                $stmt = $con->prepare("SELECT * FROM payment 
+                                     INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID 
+                                     INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
+                                     WHERE class.TEACHER_ID = ? AND student.STUDENT_ID LIKE ? AND STUDENT_NAME IS NOT NULL");
+                $searchPattern = "%" . $searchTerm . "%";
+                $stmt->bind_param("ss", $teacherId, $searchPattern);
+                SecuritySanitizer::logSecurityEvent("Teacher $teacherId searched for student by ID: $searchTerm", 'INFO');
+            }
+        }
+        
+        if (isset($stmt) && $stmt) {
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stmt->close();
         } else {
-            // Default query without search but filtered by teacher's classes
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
+            SecuritySanitizer::logSecurityEvent("Invalid search term by teacher $teacherId", 'MEDIUM');
+            $result = $con->query("SELECT * FROM payment WHERE 1=0"); // Empty result
         }
     } else {
         // If search box is empty, retrieve all data for teacher's classes
-        $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
+        $stmt = $con->prepare("SELECT * FROM payment 
+                             INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID 
+                             INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
+                             WHERE class.TEACHER_ID = ? AND STUDENT_NAME IS NOT NULL");
+        $stmt->bind_param("s", $teacherId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
     }
-    
-    
 } else {
     // Default query without search but filtered by teacher's classes
-    $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
+    $stmt = $con->prepare("SELECT * FROM payment 
+                         INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID 
+                         INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
+                         WHERE class.TEACHER_ID = ? AND STUDENT_NAME IS NOT NULL");
+    $stmt->bind_param("s", $teacherId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
 }
-
-
-$result = $con->query($sql);
 
 // Check if the query was successful
 if (!$result) {
-    die("Error in SQL query: " . $con->error);
+    SecuritySanitizer::logSecurityEvent("Database query failed in TeacherBilling.php for teacher $teacherId", 'HIGH');
+    die("Error in database query");
 }
 
 ?>
@@ -89,11 +137,16 @@ if (!$result) {
 
 <?php include("../config.php");
 
-$queryParent = mysqli_query($con, "SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
+// Get student information using prepared statement
+$stmt = $con->prepare("SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
+$stmt->execute();
+$queryParent = $stmt->get_result();
 
-while ($resultStud = mysqli_fetch_assoc($queryParent)) {
-    $studentInfo[$resultStud['STUDENT_ID']] = $resultStud['STUDENT_NAME'];
+$studentInfo = [];
+while ($resultStud = $queryParent->fetch_assoc()) {
+    $studentInfo[$resultStud['STUDENT_ID']] = SecuritySanitizer::sanitize($resultStud['STUDENT_NAME'], 'name');
 }
+$stmt->close();
 ?>
 	<div class="container">
          <h1>View Billing</h1>
@@ -125,12 +178,15 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                     // Display the uploaded files and download links
                     if ($result->num_rows > 0) {
                          while ($row = $result->fetch_assoc()) {
-                            $file_path = "../image/" . $row['PAYMENT_RECEIPT'];
-                            $res_paymentType = $row['PAYMENT_TYPE'];
-							$res_paymentAmount = $row['PAYMENT_AMOUNT'];
-							$res_paymentID = $row['PAYMENT_ID'];
-							$res_paymentStatus = $row['PAYMENT_STATUS'];
-							$res_StudId = $row['STUDENT_ID'];
+                            // Sanitize all outputs for XSS protection
+                            $res_paymentID = SecuritySanitizer::sanitize($row['PAYMENT_ID'], 'id');
+                            $res_paymentType = SecuritySanitizer::sanitize($row['PAYMENT_TYPE'], 'enum');
+                            $res_paymentAmount = SecuritySanitizer::sanitize($row['PAYMENT_AMOUNT'], 'decimal');
+                            $res_paymentStatus = SecuritySanitizer::sanitize($row['PAYMENT_STATUS'], 'enum');
+                            $res_StudId = SecuritySanitizer::sanitize($row['STUDENT_ID'], 'id');
+                            $paymentReceipt = SecuritySanitizer::sanitize($row['PAYMENT_RECEIPT'], 'file_path');
+                            
+                            $file_path = "../image/" . $paymentReceipt;
 
 							if (array_key_exists($res_StudId, $studentInfo)) {
            					 	$res_StudName = $studentInfo[$res_StudId];
@@ -139,14 +195,14 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
         					}
         
                             // Check if the file path is not empty and the file exists
-                            if (!empty($row['PAYMENT_RECEIPT']) && file_exists($file_path)) {
+                            if (!empty($paymentReceipt) && file_exists($file_path)) {
                             ?>
                             <tr>
-                                <td><?php echo $res_paymentID ?></td>
-                                <td><?php echo $res_StudName ?></td>
-	       						<td><?php echo $res_StudId ?></td>
-								<td><?php echo $res_paymentType ?></td>
-	        					<td>RM <?php echo $res_paymentAmount ?></td>
+                                <td><?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?php echo htmlspecialchars($res_StudName, ENT_QUOTES, 'UTF-8') ?></td>
+	       						<td><?php echo htmlspecialchars($res_StudId, ENT_QUOTES, 'UTF-8') ?></td>
+								<td><?php echo htmlspecialchars($res_paymentType, ENT_QUOTES, 'UTF-8') ?></td>
+	        					<td>RM <?php echo htmlspecialchars($res_paymentAmount, ENT_QUOTES, 'UTF-8') ?></td>
 								<td style="text-align: center; color: <?php 
           							if ($res_paymentStatus == 'UNPAID') {
              							echo 'red';
@@ -155,17 +211,17 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
           							} else {
              							echo 'green';
           							}
-            						?>;"><B><?php echo $res_paymentStatus ?></B></td>
+            						?>;"><B><?php echo htmlspecialchars($res_paymentStatus, ENT_QUOTES, 'UTF-8') ?></B></td>
                                 </tr>
                             <?php
                             } else {
                              ?>
                             <tr>
-                                <td><?php echo $res_paymentID ?></td>
-                                <td><?php echo $res_StudName ?></td>
-	       						<td><?php echo $res_StudId ?></td>
-								<td><?php echo $res_paymentType ?></td>
-	        					<td>RM <?php echo $res_paymentAmount ?></td>
+                                <td><?php echo htmlspecialchars($res_paymentID, ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?php echo htmlspecialchars($res_StudName, ENT_QUOTES, 'UTF-8') ?></td>
+	       						<td><?php echo htmlspecialchars($res_StudId, ENT_QUOTES, 'UTF-8') ?></td>
+								<td><?php echo htmlspecialchars($res_paymentType, ENT_QUOTES, 'UTF-8') ?></td>
+	        					<td>RM <?php echo htmlspecialchars($res_paymentAmount, ENT_QUOTES, 'UTF-8') ?></td>
 								<td style="text-align: center; color: <?php 
           							if ($res_paymentStatus == 'UNPAID') {
              							echo 'red';
@@ -174,7 +230,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
           							} else {
              							echo 'green';
           							}
-            						?>;"><B><?php echo $res_paymentStatus ?></B></td>
+            						?>;"><B><?php echo htmlspecialchars($res_paymentStatus, ENT_QUOTES, 'UTF-8') ?></B></td>
                             </tr>
                 <?php
                 }
