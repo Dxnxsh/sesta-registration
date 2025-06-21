@@ -6,12 +6,6 @@ if (!isset($_SESSION['adminID'])) {
     exit();
 }
 
-// Add debug output at the very top
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log("POST request received");
-    error_log("POST data: " . print_r($_POST, true));
-}
-
 $id = $_GET['id'];
 $yearPrefix = substr($id, 0, 2);
 
@@ -57,8 +51,6 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 
 if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
-    error_log("Form submitted - confirmed parameter received");
-    
     // Sanitize and validate input data
     $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
     $gender = mysqli_real_escape_string($con, $_POST['gender']);
@@ -68,12 +60,9 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     $email = mysqli_real_escape_string($con, trim($_POST['email']));
     $Status = mysqli_real_escape_string($con, $_POST['status']);
     $id = mysqli_real_escape_string($con, $id);
-    
-    error_log("Data received: Name=$teachname, ID=$id");
 
     // Validate required fields
     if (empty($teachname) || empty($gender) || empty($dob) || empty($phone) || empty($email) || empty($Status)) {
-        error_log("Validation failed - missing required fields");
         $_SESSION['message'] = array('type' => 'error', 'text' => 'Please fill in all required fields.');
     } else {
         $updateQuery = "UPDATE `teacher` SET 
@@ -86,27 +75,21 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
             `TEACHER_STATUS`='$Status' 
             WHERE `TEACHER_ID`='$id'";
         
-        error_log("Executing query: $updateQuery");
         $result = mysqli_query($con, $updateQuery);
 
         if ($result) {
             $affected_rows = mysqli_affected_rows($con);
-            error_log("Query executed successfully. Affected rows: $affected_rows");
             
             if ($affected_rows > 0) {
-                error_log("Update successful - will show success message");
                 $_SESSION['message'] = array(
                     'type' => 'success', 
                     'text' => 'Teacher information updated successfully.',
                     'redirect' => 'TeacherList.php'
                 );
             } else {
-                error_log("No rows affected - no changes made");
                 $_SESSION['message'] = array('type' => 'info', 'text' => 'No changes were made to the teacher information.');
             }
         } else {
-            $error = mysqli_error($con);
-            error_log("MySQL Error in adminUpdateTeacher.php: $error");
             $_SESSION['message'] = array('type' => 'error', 'text' => 'An error occurred while updating teacher information. Please try again.');
         }
     }
