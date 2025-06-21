@@ -52,7 +52,8 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 
 if (isset($_POST['update_teacher'])) {
-
+    error_log("Form submitted - update_teacher parameter received");
+    
     // Sanitize and validate input data
     $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
     $gender = mysqli_real_escape_string($con, $_POST['gender']);
@@ -62,9 +63,12 @@ if (isset($_POST['update_teacher'])) {
     $email = mysqli_real_escape_string($con, trim($_POST['email']));
     $Status = mysqli_real_escape_string($con, $_POST['status']);
     $id = mysqli_real_escape_string($con, $id);
+    
+    error_log("Data received: Name=$teachname, ID=$id");
 
     // Validate required fields
     if (empty($teachname) || empty($gender) || empty($dob) || empty($phone) || empty($email) || empty($Status)) {
+        error_log("Validation failed - missing required fields");
         echo "<script>
             Swal.fire({
                 icon: 'error',
@@ -83,11 +87,16 @@ if (isset($_POST['update_teacher'])) {
             `TEACHER_EMAIL`='$email',
             `TEACHER_STATUS`='$Status' 
             WHERE `TEACHER_ID`='$id'";
-
+        
+        error_log("Executing query: $updateQuery");
         $result = mysqli_query($con, $updateQuery);
 
         if ($result) {
-            if (mysqli_affected_rows($con) > 0) {
+            $affected_rows = mysqli_affected_rows($con);
+            error_log("Query executed successfully. Affected rows: $affected_rows");
+            
+            if ($affected_rows > 0) {
+                error_log("Update successful - redirecting to TeacherList.php");
                 echo "<script>
                     Swal.fire({
                         icon: 'success',
@@ -99,6 +108,7 @@ if (isset($_POST['update_teacher'])) {
                     });
                 </script>";
             } else {
+                error_log("No rows affected - no changes made");
                 echo "<script>
                     Swal.fire({
                         icon: 'info',
@@ -109,7 +119,8 @@ if (isset($_POST['update_teacher'])) {
                 </script>";
             }
         } else {
-            error_log("MySQL Error in adminUpdateTeacher.php: " . mysqli_error($con));
+            $error = mysqli_error($con);
+            error_log("MySQL Error in adminUpdateTeacher.php: $error");
 
             echo "<script>
                 Swal.fire({
@@ -139,7 +150,7 @@ if (isset($_POST['update_teacher'])) {
 <body>
     <div class="container">
         <div class='btn'><a class='btn btn-back' href='TeacherList.php'>Go Back</a></div>
-        <form name="teacherRegister" method="post" id="teacherRegister">
+        <form name="teacherRegister" method="post" id="teacherRegister" onsubmit="return confirmUpdate()">
             <h1><img src="../../image/icon/teacher.png" alt="Search Icon" width="50" height="45" class="img-icon">
                 Teacher Update Details</h1>
             <div class="container2">
@@ -181,25 +192,22 @@ if (isset($_POST['update_teacher'])) {
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
             <script>
-                document
-                    .getElementById('teacherRegister')
-                    .addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const form = this;
-                        Swal.fire({
-                            title: 'Confirm Update',
-                            text: 'Are you sure you want to update this teacher\'s information?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, update it!'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
+                function confirmUpdate() {
+                    Swal.fire({
+                        title: 'Confirm Update',
+                        text: 'Are you sure you want to update this teacher\'s information?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, update it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('teacherRegister').submit();
+                        }
                     });
+                    return false; 
+                }
             </script>
         </form>
     </div>
