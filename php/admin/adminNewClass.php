@@ -217,6 +217,86 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
         saveButton.addEventListener('click', function (event) {
             event.preventDefault();
 
+            // Form validation
+            const code = document.getElementById('code').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const level = document.getElementById('level').value;
+            const block = document.getElementById('block').value;
+            const floor = document.getElementById('floor').value;
+            const category = document.getElementById('category').value;
+            const teacherID = document.querySelector('select[name="teacherID"]').value;
+
+            // Check for empty fields
+            if (!code) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please enter a class code.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!name) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please enter a class name.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!level) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please select a study level.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!block) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please select a block.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!floor) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please select a floor.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!category) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please select a category.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+
+            if (!teacherID) {
+                Swal.fire({
+                    title: 'Incomplete Form',
+                    text: 'Please select a teacher.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
+                return;
+            }
+            
             // Gather form data
             const formData = new FormData(form);
 
@@ -259,6 +339,12 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
             })
             .catch(error => {
                 console.error('Error:', error);
+                Swal.fire({
+                    title: 'Unexpected Error',
+                    text: 'An unexpected error occurred. Please try again or contact the administrator.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF0004',
+                });
             });
         });
     });
