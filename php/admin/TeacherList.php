@@ -382,7 +382,7 @@ if (!$query) {
     </div>
 
     <script>
-        function confirmDelete(classCode) {
+        function confirmDelete(teacherID) {
             Swal.fire({
                 title: 'Are you sure',
                 text: 'You won\'t be able to revert this!',
@@ -393,7 +393,15 @@ if (!$query) {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'TeacherList.php?id=' + classCode;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Teacher has been successfully deleted.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // then trigger the actual delete via redirect-with-id
+                        window.location.href = 'TeacherList.php?id=' + teacherID;
+                    });
                 }
             });
         }
