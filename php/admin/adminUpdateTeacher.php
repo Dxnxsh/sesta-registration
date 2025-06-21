@@ -56,8 +56,8 @@ $selectClassTeacher = "SELECT CLASS_CODE, CLASS_NAME FROM class c
 $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 
-if (isset($_POST['update_teacher']) && isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
-    error_log("Form submitted - update_teacher parameter received and confirmed");
+if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
+    error_log("Form submitted - confirmed parameter received");
     
     // Sanitize and validate input data
     $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
