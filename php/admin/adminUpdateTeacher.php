@@ -6,6 +6,11 @@ if (!isset($_SESSION['adminID'])) {
     exit();
 }
 
+// Add debug output at the very top
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log("POST request received");
+    error_log("POST data: " . print_r($_POST, true));
+}
 
 $id = $_GET['id'];
 $yearPrefix = substr($id, 0, 2);
@@ -51,8 +56,8 @@ $selectClassTeacher = "SELECT CLASS_CODE, CLASS_NAME FROM class c
 $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 
-if (isset($_POST['update_teacher'])) {
-    error_log("Form submitted - update_teacher parameter received");
+if (isset($_POST['update_teacher']) && isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
+    error_log("Form submitted - update_teacher parameter received and confirmed");
     
     // Sanitize and validate input data
     $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
@@ -97,24 +102,31 @@ if (isset($_POST['update_teacher'])) {
             
             if ($affected_rows > 0) {
                 error_log("Update successful - redirecting to TeacherList.php");
+                // Try both approaches
                 echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Teacher information updated successfully.',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        window.location.href = 'TeacherList.php';
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Teacher information updated successfully.',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = 'TeacherList.php';
+                        });
                     });
                 </script>";
+                // Backup redirect
+                echo "<meta http-equiv='refresh' content='2;url=TeacherList.php'>";
             } else {
                 error_log("No rows affected - no changes made");
                 echo "<script>
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Changes',
-                        text: 'No changes were made to the teacher information.',
-                        confirmButtonText: 'OK'
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'No Changes',
+                            text: 'No changes were made to the teacher information.',
+                            confirmButtonText: 'OK'
+                        });
                     });
                 </script>";
             }
@@ -123,11 +135,13 @@ if (isset($_POST['update_teacher'])) {
             error_log("MySQL Error in adminUpdateTeacher.php: $error");
 
             echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Update Failed',
-                    text: 'An error occurred while updating teacher information. Please try again.',
-                    confirmButtonText: 'OK'
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: 'An error occurred while updating teacher information. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
                 });
             </script>";
         }
@@ -151,6 +165,7 @@ if (isset($_POST['update_teacher'])) {
     <div class="container">
         <div class='btn'><a class='btn btn-back' href='TeacherList.php'>Go Back</a></div>
         <form name="teacherRegister" method="post" id="teacherRegister" onsubmit="return confirmUpdate()">
+            <input type="hidden" id="confirmed" name="confirmed" value="0">
             <h1><img src="../../image/icon/teacher.png" alt="Search Icon" width="50" height="45" class="img-icon">
                 Teacher Update Details</h1>
             <div class="container2">
@@ -193,6 +208,12 @@ if (isset($_POST['update_teacher'])) {
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
             <script>
                 function confirmUpdate() {
+                    // Check if already confirmed
+                    if (document.getElementById('confirmed').value === '1') {
+                        return true; // Allow form submission
+                    }
+                    
+                    // Show confirmation dialog
                     Swal.fire({
                         title: 'Confirm Update',
                         text: 'Are you sure you want to update this teacher\'s information?',
@@ -203,10 +224,12 @@ if (isset($_POST['update_teacher'])) {
                         confirmButtonText: 'Yes, update it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Set confirmed flag and submit
+                            document.getElementById('confirmed').value = '1';
                             document.getElementById('teacherRegister').submit();
                         }
                     });
-                    return false; 
+                    return false; // Prevent initial submission
                 }
             </script>
         </form>
