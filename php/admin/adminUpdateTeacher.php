@@ -51,7 +51,7 @@ $selectClassTeacher = "SELECT CLASS_CODE, CLASS_NAME FROM class c
 $queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['update_teacher'])) {
 
     // Sanitize and validate input data
     $teachname = mysqli_real_escape_string($con, trim($_POST['teacherName']));
@@ -177,7 +177,7 @@ if (isset($_POST['submit'])) {
                 </div>
             </div>
             <div class="button-container">
-                <button type="submit" name="submit" class="btn btn-admin">Save</button>
+                <button type="submit" name="update_teacher" class="btn btn-admin">Save</button>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
             <script>
