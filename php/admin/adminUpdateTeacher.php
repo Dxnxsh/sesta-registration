@@ -94,10 +94,12 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
             error_log("Query executed successfully. Affected rows: $affected_rows");
             
             if ($affected_rows > 0) {
-                error_log("Update successful - redirecting to TeacherList.php");
-                $_SESSION['message'] = array('type' => 'success', 'text' => 'Teacher information updated successfully.');
-                header("Location: TeacherList.php");
-                exit();
+                error_log("Update successful - will show success message");
+                $_SESSION['message'] = array(
+                    'type' => 'success', 
+                    'text' => 'Teacher information updated successfully.',
+                    'redirect' => 'TeacherList.php'
+                );
             } else {
                 error_log("No rows affected - no changes made");
                 $_SESSION['message'] = array('type' => 'info', 'text' => 'No changes were made to the teacher information.');
@@ -129,6 +131,12 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
                 title: '<?php echo ucfirst($_SESSION['message']['type']); ?>',
                 text: '<?php echo $_SESSION['message']['text']; ?>',
                 confirmButtonText: 'OK'
+            }).then((result) => {
+                <?php if (isset($_SESSION['message']['redirect'])): ?>
+                if (result.isConfirmed) {
+                    window.location.href = '<?php echo $_SESSION['message']['redirect']; ?>';
+                }
+                <?php endif; ?>
             });
         });
     </script>
