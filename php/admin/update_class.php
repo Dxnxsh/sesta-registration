@@ -2,13 +2,16 @@
 session_start();
 include "../config.php";
 
+// Set content type to JSON
+header('Content-Type: application/json');
+
 $name = $_POST['name'];
 $level = $_POST['level'];
 $block = $_POST['block'];
 $floor = $_POST['floor'];
 $category = $_POST['category'];
 $teacherID = ($_POST['teacherID'] === "") ? NULL : $_POST['teacherID'];
-$adminID = $_SESSION['adminID']; // Corrected syntax
+$adminID = $_SESSION['adminID'];
 $classCode = $_POST['cCode'];
 
 // If assigning a teacher, check if teacher is already assigned to another class
@@ -40,5 +43,3 @@ if (mysqli_query($con, $updateQuery)) {
     }
 }
 ?>
-    echo json_encode(['success' => false, 'error' => mysqli_error($con)]);
-}

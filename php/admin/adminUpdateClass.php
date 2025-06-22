@@ -243,10 +243,16 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        // Check if response is ok
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         // Log the response for debugging
-                        console.log(data);
+                        console.log('Response data:', data);
 
                         // Handle the response from the server
                         if (data.success) {
@@ -280,7 +286,13 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
+                        console.error('Fetch error:', error);
+                        Swal.fire({
+                            title: 'Network Error',
+                            text: 'Failed to connect to server. Please check your connection and try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#d14529',
+                        });
                     });
             });
         });
