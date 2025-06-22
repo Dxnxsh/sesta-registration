@@ -41,18 +41,12 @@ if (isset($_POST['submit'])) {
 	$email = $_POST['email'];
 	$Status = $_POST['status'];
 
-
-
-
 	mysqli_query($con, "UPDATE `teacher` SET `TEACHER_NAME`='$teachname', `TEACHER_GENDER`='$gender',
 	`TEACHER_DOB`='$dob', `TEACHER_ADDRESS`='$address', `TEACHER_PHONENUM`='$phone', `TEACHER_EMAIL`='$email',
 	`TEACHER_STATUS`='$Status'WHERE `TEACHER_ID`='$res_id'") or die("Error Occurred student " . mysqli_error($con));
 
-
-
 	header("Location: noti/noti_successTCReg.php");
 	exit();
-
 }
 
 
@@ -122,9 +116,9 @@ if (isset($_POST['submit'])) {
 	<script>
 		document.getElementById('teacherRegister').addEventListener('submit', function(e) {
 			e.preventDefault(); // Prevent default form submission
-			
+
 			const form = this;
-			
+
 			Swal.fire({
 				title: 'Are you sure?',
 				text: 'Do you want to register this teacher?',
@@ -136,16 +130,7 @@ if (isset($_POST['submit'])) {
 				cancelButtonColor: '#d33'
 			}).then(result => {
 				if (result.isConfirmed) {
-					// On Yes → success alert, then submit
-					Swal.fire({
-						title: 'Registered!',
-						text: 'Teacher has been registered successfully.',
-						icon: 'success',
-						confirmButtonText: 'OK',
-						confirmButtonColor: '#3085d6'
-					}).then(() => {
-						form.submit();
-					});
+					form.submit();
 				}
 			});
 		});
