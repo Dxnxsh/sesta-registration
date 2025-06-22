@@ -117,6 +117,39 @@ if (isset($_POST['submit'])) {
 		</form>
 
 	</div>
+
+	<script src="../../js/sweetalert2.all.min.js"></script>
+	<script>
+		document.getElementById('teacherRegister').addEventListener('submit', function(e) {
+			e.preventDefault(); // Prevent default form submission
+			
+			const form = this;
+			
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'Do you want to register this teacher?',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Yes, register!',
+				cancelButtonText: 'No, go back',
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33'
+			}).then(result => {
+				if (result.isConfirmed) {
+					// On Yes → success alert, then submit
+					Swal.fire({
+						title: 'Registered!',
+						text: 'Teacher has been registered successfully.',
+						icon: 'success',
+						confirmButtonText: 'OK',
+						confirmButtonColor: '#3085d6'
+					}).then(() => {
+						form.submit();
+					});
+				}
+			});
+		});
+	</script>
 </body>
 
 </html>
