@@ -30,7 +30,7 @@ if (!function_exists('getBasePath')) {
     <div class="push"></div>
   </div>
   <footer class="footer">
-	  &copy;<span id="year"> </span><span> Titan Company. All rights reserved.</span>
+	  &copy;<span id="year"> </span><span> Byte Buddies. All rights reserved.</span>
   </footer>
 </body>
 </html>
