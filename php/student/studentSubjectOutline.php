@@ -32,7 +32,7 @@ if (!isset($_SESSION['valid'])) {
     <!-- Search & Back Button -->
     <div id="search-box-container">
       <div class="button-container">
-        <button type="button" class="proceed-payment-button" onclick="window.location.href = '../php/student/student_home.php';">
+        <button type="button" class="proceed-payment-button" onclick="window.location.href = '../student_home.php';">
           <i class="fas fa-arrow-left"></i> Back
         </button>
       </div>
