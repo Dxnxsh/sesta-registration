@@ -31,7 +31,6 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
       border-radius: 3px;
       overflow: hidden;
-      position: relative;
     }
 
     .container:hover::before {
