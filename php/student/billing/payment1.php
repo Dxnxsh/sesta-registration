@@ -41,7 +41,9 @@
     }
 
     .logo {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding: 20px;
     }
 
@@ -326,7 +328,7 @@
     <div class="logo">
       <img src="../../../image/icon/logoSESTA2.png" alt="Logo">
     </div>
-    
+
     <h2>
       <i class="fas fa-money-bill"></i> BILLING
     </h2>
