@@ -344,7 +344,15 @@ $query = mysqli_query($con, $select);
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'StudentList.php?id=' + studentCode;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Student has been successfully deleted.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // then trigger the actual delete via redirect-with-id
+                        window.location.href = 'StudentList.php?id=' + studentCode;
+                    });
                 }
             });
         }

@@ -109,7 +109,13 @@ function registerFace(id) {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a face image.");
+        Swal.fire({
+            title: 'No Image Selected',
+            text: 'Please select a face image to continue.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#ffc107'
+        });
         return;
     }
 
@@ -130,12 +136,43 @@ function registerFace(id) {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = '../login-logout/login.php';
-                    console.log("Face verification successful!");
+                    // Show success popup with SweetAlert2
+                    Swal.fire({
+                        title: 'Registration Successful!',
+                        text: 'Your face has been registered successfully. You can now login.',
+                        icon: 'success',
+                        confirmButtonText: 'Continue to Login',
+                        confirmButtonColor: '#28a745',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '../login-logout/login.php';
+                        }
+                    });
                 } else {
-                    alert("Face verification failed!");
-                    openModal(activeForm);
+                    Swal.fire({
+                        title: 'Registration Failed!',
+                        text: data.message || 'Face verification failed. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again',
+                        confirmButtonColor: '#dc3545'
+                    }).then(() => {
+                        openModal(activeForm);
+                    });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Network Error!',
+                    text: 'Unable to connect to the server. Please check your connection and try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#dc3545'
+                }).then(() => {
+                    openModal(activeForm);
+                });
             });
     };
     reader.readAsDataURL(file);
@@ -153,7 +190,13 @@ function submitFace() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a face image.");
+        Swal.fire({
+            title: 'No Image Selected',
+            text: 'Please select a face image to continue.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#ffc107'
+        });
         return;
     }
 
@@ -192,9 +235,29 @@ function submitFace() {
                     actualForm.submit();
                 } else {
                     loadingOverlay.classList.remove('show');
-                    alert("Face verification failed!");
-                    openModal(activeForm);
+                    Swal.fire({
+                        title: 'Face Verification Failed!',
+                        text: data.message || 'Face verification failed. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again',
+                        confirmButtonColor: '#dc3545'
+                    }).then(() => {
+                        openModal(activeForm);
+                    });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingOverlay.classList.remove('show');
+                Swal.fire({
+                    title: 'Network Error!',
+                    text: 'Unable to connect to the server. Please check your connection and try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#dc3545'
+                }).then(() => {
+                    openModal(activeForm);
+                });
             });
     };
     reader.readAsDataURL(file);

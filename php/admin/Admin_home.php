@@ -172,6 +172,13 @@ if (!isset($_SESSION['adminID'])) {
 								</a>
 							</li>
 							<li class="list">
+								<a href="manageAds.php"
+									class="nav-link">
+									<i class='bx bxs-file icon'></i>
+									<span class="link">Advertisement</span>
+								</a>
+							</li>
+							<li class="list">
 								<a href="AdminbackupSummary.php" class="nav-link">
 									<i class='bx bxs-pie-chart-alt-2 icon'></i>
 									<span class="link">System Summary</span>

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/modal.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Register Student</title>
 </head>
 
@@ -63,7 +64,7 @@
 
                 <div class="field input">
                     <label for="email">Email</label>
-                    <input type="text" name="email" id="email" autocomplete="off" required>
+                    <input type="email" name="email" id="email" autocomplete="off" required>
                 </div>
 
                 <div class="field input">

@@ -243,10 +243,16 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        // Check if response is ok
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         // Log the response for debugging
-                        console.log(data);
+                        console.log('Response data:', data);
 
                         // Handle the response from the server
                         if (data.success) {
@@ -261,16 +267,32 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
                                 }
                             });
                         } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Failed to update class record. Please check the console for details.',
-                                icon: 'error',
-                                confirmButtonColor: '#d14529',
-                            });
+                            // Check if it's a teacher assignment error
+                            if (data.error && data.error.includes('Teacher is already assigned')) {
+                                Swal.fire({
+                                    title: 'Teacher Assignment Error',
+                                    text: data.error,
+                                    icon: 'error',
+                                    confirmButtonColor: '#d14529',
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.error || 'Failed to update class record. Please check the console for details.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#d14529',
+                                });
+                            }
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
+                        console.error('Fetch error:', error);
+                        Swal.fire({
+                            title: 'Network Error',
+                            text: 'Failed to connect to server. Please check your connection and try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#d14529',
+                        });
                     });
             });
         });

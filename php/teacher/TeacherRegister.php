@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
 						<label for="phone">Phone No. :</label>
 						<input type="text" id="phone" name="phone" required>
 						<label for="phone">Email :</label>
-						<input type="text" id="email" name="email" required>
+						<input type="email" id="email" name="email" required>
 
 
 

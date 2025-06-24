@@ -287,11 +287,31 @@ if (mysqli_num_rows($query) == 0) {
 if (isset($_POST['submit2'])) {
     // Check if the teacher_id array is set
     if (isset($_POST['teacher_id']) && is_array($_POST['teacher_id'])) {
-        foreach ($_POST['teacher_id'] as $classID => $selectedClassCode) {
+        foreach ($_POST['teacher_id'] as $classID => $selectedTeacherID) {
             // Check if the specific submit button is set
             if (isset($_POST['submit2'][$classID])) {
+                
+                // Check if teacher is already assigned to another class
+                if (!empty($selectedTeacherID)) {
+                    $checkTeacherQuery = "SELECT CLASS_CODE FROM class WHERE TEACHER_ID = '$selectedTeacherID'";
+                    $checkResult = mysqli_query($con, $checkTeacherQuery);
+                    
+                    if (mysqli_num_rows($checkResult) > 0) {
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.',
+                                icon: 'error'
+                            }).then(function() {
+                                window.location.href = 'assignTeacher.php';
+                            });
+                        </script>";
+                        exit;
+                    }
+                }
+                
                 // Update the teacher_id for each class
-                $updateQuery = mysqli_query($con, "UPDATE class SET TEACHER_ID='$selectedClassCode' WHERE CLASS_CODE='$classID'");
+                $updateQuery = mysqli_query($con, "UPDATE class SET TEACHER_ID='$selectedTeacherID' WHERE CLASS_CODE='$classID'");
                 $updateQuery2 = mysqli_query($con, "UPDATE class SET ADMIN_ID='" . $_SESSION['adminID'] . "' WHERE CLASS_CODE='$classID'");
                   if ($updateQuery && $updateQuery2) {
                     echo "<script>
@@ -305,15 +325,28 @@ if (isset($_POST['submit2'])) {
                     </script>";
                 } else {
                     // Handle the error scenario
-                    echo "<script>
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Selected class already have Teacher.',
-                            icon: 'error'
-                        }).then(function() {
-                            window.location.href = 'assignTeacher.php';
-                        });
-                    </script>";
+                    $error = mysqli_error($con);
+                    if (strpos($error, 'unique_teacher') !== false) {
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.',
+                                icon: 'error'
+                            }).then(function() {
+                                window.location.href = 'assignTeacher.php';
+                            });
+                        </script>";
+                    } else {
+                        echo "<script>
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to assign teacher.',
+                                icon: 'error'
+                            }).then(function() {
+                                window.location.href = 'assignTeacher.php';
+                            });
+                        </script>";
+                    }
                 }
             }
         }
@@ -349,17 +382,17 @@ if (isset($_POST['submit2'])) {
                             <td>" . $result["CLASS_CAT"] . " </td>
                             <td>
                                 <select name='teacher_id[" . $result["CLASS_CODE"] . "]'>
-                                    <option value='' selected disabled>Select Class</option>";
+                                    <option value='' selected disabled>Select Teacher</option>";
 
-                        // Fetch and display teacher codes
-                        $teacherQuery = mysqli_query($con, "SELECT * FROM teacher");
+                        // Fetch and display teacher codes (only unassigned teachers)
+                        $teacherQuery = mysqli_query($con, "SELECT * FROM teacher WHERE TEACHER_ID NOT IN (SELECT TEACHER_ID FROM class WHERE TEACHER_ID IS NOT NULL)");
                         while ($teacherResult = mysqli_fetch_assoc($teacherQuery)) {
-                            echo "<option value='" . $teacherResult["TEACHER_ID"] . "'>" . $teacherResult["TEACHER_ID"] . "</option>";
+                            echo "<option value='" . $teacherResult["TEACHER_ID"] . "'>" . $teacherResult["TEACHER_ID"] . " - " . $teacherResult["TEACHER_NAME"] . "</option>";
                         }
                         echo "</select>
                             </td>
                             <td class='manage-buttons' style='text-align: justify'>
-                                <input class='button' type='submit' name='submit2[" . $result["CLASS_CODE"] . "]' value='Assign Students'>
+                                <input class='button' type='submit' name='submit2[" . $result["CLASS_CODE"] . "]' value='Assign Teachers'>
                             </td>
                         </tr>";
                     }

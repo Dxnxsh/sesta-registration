@@ -61,51 +61,76 @@ while ($row = mysqli_fetch_assoc($queryStudParent)) {
 
 
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
+    // Sanitize and validate input data
+    $studname = mysqli_real_escape_string($con, trim($_POST['studentName']));
+    $studGender = mysqli_real_escape_string($con, $_POST['gender']);
+    $studLevel = mysqli_real_escape_string($con, $_POST['level']);
+    $studDOB = mysqli_real_escape_string($con, $_POST['dob']);
+    $studPOB = mysqli_real_escape_string($con, trim($_POST['placeOfBirth']));
+    $studReligion = mysqli_real_escape_string($con, trim($_POST['religion']));
+    $studRace = mysqli_real_escape_string($con, trim($_POST['race']));
+    $studNationality = mysqli_real_escape_string($con, trim($_POST['nationality']));
+    $studAddress = mysqli_real_escape_string($con, trim($_POST['address']));
+    $studDisease = mysqli_real_escape_string($con, trim($_POST['disease']));
+    $studDisable = mysqli_real_escape_string($con, trim($_POST['disability']));
+    $studStatus = mysqli_real_escape_string($con, $_POST['status']);
 
-    $studname = $_POST['studentName'];
-    $studGender = $_POST['gender'];
-    $studLevel = $_POST['level'];
-    $studDOB = $_POST['dob'];
-    $studPOB = $_POST['placeOfBirth'];
-    $studReligion = $_POST['religion'];
-    $studRace = $_POST['race'];
-    $studNationality = $_POST['nationality'];
-    $studAddress = $_POST['address'];
-    $studDisease = $_POST['disease'];
-    $studDisable = $_POST['disability'];
-    $studStatus = $_POST['status'];
+    $parIC = mysqli_real_escape_string($con, trim($_POST['parentIC']));
+    $parName = mysqli_real_escape_string($con, trim($_POST['parentName']));
+    $parGender = mysqli_real_escape_string($con, $_POST['parentGender']);
+    $parPhone = mysqli_real_escape_string($con, trim($_POST['parentPhone']));
+    $parJob = mysqli_real_escape_string($con, trim($_POST['parentJob']));
+    $parSalary = mysqli_real_escape_string($con, trim($_POST['parentIncome']));
+    $id = mysqli_real_escape_string($con, $id);
 
-    echo $oldparIC;
-    $parIC = $_POST['parentIC'];
-    $parName = $_POST['parentName'];
-    $parGender = $_POST['parentGender'];
-    $parPhone = $_POST['parentPhone'];
-    $parJob = $_POST['parentJob'];
-    $parSalary = $_POST['parentIncome'];
+    // Validate required fields
+    if (empty($studname) || empty($studGender) || empty($studLevel) || empty($studDOB) || empty($studPOB) || 
+        empty($studReligion) || empty($studStatus) || empty($parIC) || empty($parName) || empty($parGender) || empty($parPhone)) {
+        $_SESSION['message'] = array('type' => 'error', 'text' => 'Please fill in all required fields.');
+    } else {
+        // Modify $studLevel based on student level to be insert into db
+        if ($studLevel == "Form 4") {
+            $studLevel = "4";
+        } elseif ($studLevel == "Form 1") {
+            $studLevel = "1";
+        }
 
+        // Update parent information
+        $updateParentQuery = "UPDATE `parent` SET `PARENT_ID`='$parIC',`PARENT_NAME`='$parName', `PARENT_GENDER`='$parGender', 
+            `PARENT_PHONENUM`='$parPhone', `PARENT_JOB`='$parJob', `PARENT_MONTHLY_INCOME`='$parSalary' 
+            WHERE `PARENT_ID`='$oldparIC'";
+        $parentResult = mysqli_query($con, $updateParentQuery);
 
-    // Modify $studLevel based on student level to be insert into db
-    if ($studLevel == "Form 4") {
-        $studLevel = "4";
-    } elseif ($studLevel == "Form 1") {
-        $studLevel = "1";
+        if (!$parentResult) {
+            $_SESSION['message'] = array('type' => 'error', 'text' => 'An error occurred while updating parent information. Please try again.');
+        } else {
+            // Update student information
+            $updateStudentQuery = "UPDATE `student` SET `STUDENT_NAME`='$studname', `STUDENT_GENDER`='$studGender', 
+                `STUDENT_LEVEL`='$studLevel', `STUDENT_DOB`='$studDOB', `STUDENT_POB`='$studPOB', 
+                `STUDENT_RELIGION`='$studReligion', `STUDENT_RACE`='$studRace', `STUDENT_NATIONALITY`='$studNationality',
+                `STUDENT_ADDRESS`='$studAddress', `STUDENT_DISEASE`='$studDisease', 
+                `STUDENT_DISABILITY`='$studDisable', `STUDENT_STATUS`='$studStatus' 
+                WHERE `STUDENT_ID`='$id'";
+            $studentResult = mysqli_query($con, $updateStudentQuery);
+
+            if (!$studentResult) {
+                $_SESSION['message'] = array('type' => 'error', 'text' => 'An error occurred while updating student information. Please try again.');
+            } else {
+                $affected_rows = mysqli_affected_rows($con);
+                
+                if ($affected_rows > 0) {
+                    $_SESSION['message'] = array(
+                        'type' => 'success', 
+                        'text' => 'Student information updated successfully.',
+                        'redirect' => 'StudentList.php'
+                    );
+                } else {
+                    $_SESSION['message'] = array('type' => 'info', 'text' => 'No changes were made to the student information.');
+                }
+            }
+        }
     }
-
-    mysqli_query($con, "UPDATE `parent` SET `PARENT_ID`='$parIC',`PARENT_NAME`='$parName', `PARENT_GENDER`='$parGender', 
-        `PARENT_PHONENUM`='$parPhone', `PARENT_JOB`='$parJob', `PARENT_MONTHLY_INCOME`='$parSalary' 
-        WHERE `PARENT_ID`='$oldparIC'") or die("Error Occurred parent " . mysqli_error($con));
-
-    mysqli_query($con, "UPDATE `student` SET `STUDENT_NAME`='$studname', `STUDENT_GENDER`='$studGender', 
-        `STUDENT_LEVEL`='$studLevel', `STUDENT_DOB`='$studDOB', `STUDENT_POB`='$studPOB', 
-        `STUDENT_RELIGION`='$studReligion', `STUDENT_RACE`='$studRace', `STUDENT_NATIONALITY`='$studNationality',
-        `STUDENT_ADDRESS`='$studAddress', `STUDENT_DISEASE`='$studDisease', 
-        `STUDENT_DISABILITY`='$studDisable', `STUDENT_STATUS`='$studStatus' 
-        WHERE `STUDENT_ID`='$id'") or die("Error Occurred student " . mysqli_error($con));
-
-    // Redirect to student_home.php after processing the form data
-    header("Location: StudentList.php");
-    exit();
 }
 
 
@@ -123,6 +148,24 @@ if (isset($_POST['submit'])) {
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Student Update details</title>
+    <?php if (isset($_SESSION['message'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: '<?php echo $_SESSION['message']['type']; ?>',
+                title: '<?php echo ucfirst($_SESSION['message']['type']); ?>',
+                text: '<?php echo $_SESSION['message']['text']; ?>',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                <?php if (isset($_SESSION['message']['redirect'])): ?>
+                if (result.isConfirmed) {
+                    window.location.href = '<?php echo $_SESSION['message']['redirect']; ?>';
+                }
+                <?php endif; ?>
+            });
+        });
+    </script>
+    <?php unset($_SESSION['message']); endif; ?>
 
 
 </head>
@@ -130,7 +173,8 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class='btn'><a class='btn btn-back' href='StudentList.php'>Go Back</a></div>
-        <form name="studentRegister" method="post" id="studentRegister">
+        <form name="studentRegister" method="post" id="studentRegister" onsubmit="return confirmUpdate()">
+            <input type="hidden" id="confirmed" name="confirmed" value="0">
             <h1><img src="../../image/icon/student.png" alt="Search Icon" width="50" height="45" class="img-icon">
                 Student Registration</h1>
             <div class="container2">
@@ -249,9 +293,37 @@ if (isset($_POST['submit'])) {
                 </div>
             </div>
             <div class="button-container">
-                <button type="submit" name="submit" class="btn btn-admin">Save</button>
+                <button type="submit" name="update_student" class="btn btn-admin">Save</button>
             </div>
         </form>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            function confirmUpdate() {
+                // Check if already confirmed
+                if (document.getElementById('confirmed').value === '1') {
+                    return true; // Allow form submission
+                }
+                
+                // Show confirmation dialog
+                Swal.fire({
+                    title: 'Confirm Update',
+                    text: 'Are you sure you want to update this student\'s information?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Set confirmed flag and submit
+                        document.getElementById('confirmed').value = '1';
+                        document.getElementById('studentRegister').submit();
+                    }
+                });
+                return false; // Prevent initial submission
+            }
+        </script>
 
     </div>
 </body>

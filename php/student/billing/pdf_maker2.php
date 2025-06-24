@@ -55,15 +55,14 @@
 
 <?php                
  
-include_once('../../../tcpdf/tcpdf.php');
-
-	$inv_mst_data_row = mysqli_fetch_array($inv_mst_results, MYSQLI_ASSOC);
+// Include Composer autoloader to load tcpdf
+require_once('../../../vendor/autoload.php');
 
 	//----- Code for generate pdf
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->SetCreator(PDF_CREATOR);  
 	//$pdf->SetTitle("Export HTML Table data to PDF using TCPDF in PHP");  
-	$pdf->SetHeaderData('', '', PDF_HEADER_TITLE, PDF_HEADER_STRING);  
+	$pdf->SetHeaderData('', 0, PDF_HEADER_TITLE, PDF_HEADER_STRING);  
 	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));  
 	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));  
 	$pdf->SetDefaultMonospacedFont('helvetica');  
@@ -184,7 +183,7 @@ include_once('../../../tcpdf/tcpdf.php');
 ';
 $pdf->writeHTML($content);
 
-$file_location = $_SERVER['DOCUMENT_ROOT'] . "/sesta-registration/pdf"; //add your full path of your server
+$file_location = $_SERVER['DOCUMENT_ROOT'] . "pdf/"; //add your full path of your server
 //$file_location = "/opt/lampp/htdocs/examples/generate_pdf/pdf/"; //for local xampp server
 
 $datetime=date('dmY_hms');
@@ -202,7 +201,7 @@ else if($_GET['ACTION']=='DOWNLOAD')
 else if ($_GET['ACTION'] == 'EMAIL') {
     $pdf->Output($file_location . $file_name, 'F');
 
-    include_once '../../../PHPMailer/PHPMailerAutoload.php';
+    include_once '../../config/email_config.php';
 
     $body = '<html>
         <head>
@@ -223,32 +222,20 @@ else if ($_GET['ACTION'] == 'EMAIL') {
         </body>
     </html>';
 
-    $mail = new PHPMailer();
-    $mail->CharSet = 'UTF-8';
-    $mail->IsSMTP();
+    $result = EmailConfig::sendEmailWithAttachment(
+        $res_Email, 
+        'Invoice details', 
+        $body, 
+        $file_location . $file_name,
+        $file_name
+    );
     
-    // Configure SMTP settings if using SMTP
-    // $mail->Host = 'your-smtp-host';
-    // $mail->Port = 587; // Adjust the port accordingly
-    // $mail->SMTPSecure = 'tls'; // Use 'ssl' or 'tls' depending on your server
-    // $mail->SMTPAuth = true;
-    // $mail->Username = 'your-smtp-username';
-    // $mail->Password = 'your-smtp-password';
-
-    $mail->Subject = 'Invoice details';
-    $mail->From = 'mail@sesta.com';
-    $mail->FromName = 'SEKOLAH MENENGAH SAINS TAPAH';
-    $mail->IsHTML(true);
-    $mail->AddAddress($res_Email);
-    $mail->AddAttachment($file_location . $file_name);
-    $mail->MsgHTML($body);
-    $mail->WordWrap = 50;
-    if ($mail->Send()) {
+    if ($result['success']) {
         // Email sent successfully
         echo '<script>alert("Email sent successfully!");</script>';
     } else {
         // Email sending failed
-        echo '<script>alert("Email could not be sent.");</script>';
+        echo '<script>alert("Email could not be sent: ' . $result['message'] . '");</script>';
     }
 
     // Redirect back to the original page

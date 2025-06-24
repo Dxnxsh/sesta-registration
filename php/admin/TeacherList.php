@@ -193,6 +193,29 @@ if (!$query) {
             margin-top: 30px;
         }
 
+        /* Styling for teacher assignment status */
+        .teacher-assigned {
+            background-color: #f8f9fa !important;
+            border-left: 4px solid #28a745;
+        }
+
+        .teacher-unassigned {
+            background-color: #fff !important;
+            border-left: 4px solid #ffc107;
+        }
+
+        .assignment-status {
+            font-weight: bold;
+        }
+
+        .assignment-status.assigned {
+            color: #28a745;
+        }
+
+        .assignment-status.unassigned {
+            color: #ffc107;
+        }
+
         @keyframes buttonHover {
             0% {
                 transform: translateY(0);
@@ -282,12 +305,26 @@ if (!$query) {
 
 <body>
     <div class="container">
+        <?php
+        // Calculate assignment statistics
+        $totalTeachers = mysqli_num_rows($query);
+        $assignedCount = 0;
+        mysqli_data_seek($query, 0); // Reset pointer to beginning
+        while ($result = mysqli_fetch_assoc($query)) {
+            if (!empty($result["CLASS_CODE"])) {
+                $assignedCount++;
+            }
+        }
+        $unassignedCount = $totalTeachers - $assignedCount;
+        mysqli_data_seek($query, 0); // Reset pointer again for main display
+        ?>
+        
         <form id="form2" name="form2" method="get">
             <h1>Teacher List</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
-                        <option value="TEACHER_ID">teacher ID</option>
-                        <option value="TEACHER_NAME">teacher NAME</option>
+                        <option value="TEACHER_ID">Teacher ID</option>
+                        <option value="TEACHER_NAME">Teacher Name</option>
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
@@ -313,11 +350,16 @@ if (!$query) {
                 if ($num > 0) {
                     while ($result = mysqli_fetch_assoc($query)) {
                         $classCode = $result["CLASS_CODE"];
+                        $isAssigned = !empty($classCode);
+                        $rowClass = $isAssigned ? 'teacher-assigned' : 'teacher-unassigned';
+                        $statusClass = $isAssigned ? 'assigned' : 'unassigned';
+                        $statusText = $isAssigned ? $classCode : 'Not Assigned';
+                        
                         echo "
-            <tr>
+            <tr class='$rowClass'>
                 <td>" . $result["TEACHER_NAME"] . "</td>
                 <td>" . $result["TEACHER_ID"] . "</td>              
-                <td>" . ($classCode ? $classCode : 'Not Assigned') . "</td>
+                <td><span class='assignment-status $statusClass'>$statusText</span></td>
                 <td>" . $result["TEACHER_PHONENUM"] . "</td>
                 <td>" . $result["TEACHER_EMAIL"] . "</td>
 
@@ -340,7 +382,7 @@ if (!$query) {
     </div>
 
     <script>
-        function confirmDelete(classCode) {
+        function confirmDelete(teacherID) {
             Swal.fire({
                 title: 'Are you sure',
                 text: 'You won\'t be able to revert this!',
@@ -351,7 +393,15 @@ if (!$query) {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'TeacherList.php?id=' + classCode;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Teacher has been successfully deleted.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // then trigger the actual delete via redirect-with-id
+                        window.location.href = 'TeacherList.php?id=' + teacherID;
+                    });
                 }
             });
         }

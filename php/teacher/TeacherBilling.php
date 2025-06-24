@@ -11,6 +11,7 @@
 
    // Handle search form submission
    $sql = "";  // Initialize $sql
+   $teacherId = $_SESSION['validTC'];
 
 if (isset($_GET['submit'])) {
     $searchOption = isset($_GET['searchOption']) ? $_GET['searchOption'] : '';
@@ -18,22 +19,22 @@ if (isset($_GET['submit'])) {
     
     if (!empty($searchTerm)) {
         if ($searchOption == 'name') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID WHERE student.STUDENT_NAME LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
+            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_NAME LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
         } elseif ($searchOption == 'ic') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID WHERE student.STUDENT_ID LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
+            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_ID LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
         } else {
-            // Default query without search
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID WHERE student.STUDENT_ID AND STUDENT_NAME IS NOT NULL";
+            // Default query without search but filtered by teacher's classes
+            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
         }
     } else {
-        // If search box is empty, retrieve all data
-        $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID WHERE student.STUDENT_ID AND STUDENT_NAME IS NOT NULL";
+        // If search box is empty, retrieve all data for teacher's classes
+        $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
     }
     
     
 } else {
-    // Default query without search
-    $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID WHERE student.STUDENT_ID AND STUDENT_NAME IS NOT NULL";
+    // Default query without search but filtered by teacher's classes
+    $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
 }
 
 
@@ -181,7 +182,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                 } else {
                 ?>
                 <tr>
-                    <td colspan="2">No files uploaded yet.</td>
+                    <td colspan="6">No records found..</td>
                 </tr>
                 <?php
                 }

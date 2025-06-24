@@ -16,6 +16,17 @@ $floor = $_POST['floor'];
 $category = $_POST['category'];
 $teacherID = $_POST['teacherID'];
 
+// Check if teacher is already assigned to another class
+if (!empty($teacherID)) {
+    $checkTeacherQuery = "SELECT CLASS_CODE FROM class WHERE TEACHER_ID = '$teacherID'";
+    $checkResult = mysqli_query($con, $checkTeacherQuery);
+    
+    if (mysqli_num_rows($checkResult) > 0) {
+        echo json_encode(['success' => false, 'error' => 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.']);
+        exit();
+    }
+}
+
 // Perform the insert query
 $insertQuery = "INSERT INTO class (CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_BLOCK, CLASS_FLOOR, CLASS_CAT, TEACHER_ID, ADMIN_ID) 
                 VALUES ('$code', '$name', '$level', '$block', '$floor', '$category', '$teacherID', '$_SESSION[adminID]')";
@@ -23,6 +34,11 @@ $insertQuery = "INSERT INTO class (CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_BL
 if (mysqli_query($con, $insertQuery)) {
     echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false]);
+    $error = mysqli_error($con);
+    if (strpos($error, 'unique_teacher') !== false) {
+        echo json_encode(['success' => false, 'error' => 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.']);
+    } else {
+        echo json_encode(['success' => false, 'error' => $error]);
+    }
 }
 ?>

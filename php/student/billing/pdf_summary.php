@@ -1,5 +1,5 @@
 <?php 
-            include("config.php");
+            include("../../config.php");
            $query = mysqli_query($con, "SELECT * FROM student");
            $query2 = mysqli_query($con, "SELECT * FROM teacher");
            $query3 = mysqli_query($con, "SELECT * FROM class");
@@ -70,15 +70,25 @@
 
 <?php                
  
-include_once('../tcpdf_6_2_13/tcpdf/tcpdf.php');
+// Include Composer autoloader to load tcpdf
+require_once('../../../vendor/autoload.php');
 
-	$inv_mst_data_row = mysqli_fetch_array($inv_mst_results, MYSQLI_ASSOC);
+	// Define missing TCPDF constants if not already defined
+	if (!defined('PDF_HEADER_TITLE')) define('PDF_HEADER_TITLE', 'School System Summary');
+	if (!defined('PDF_HEADER_STRING')) define('PDF_HEADER_STRING', 'System Summary Report');
+	if (!defined('PDF_MARGIN_FOOTER')) define('PDF_MARGIN_FOOTER', 15);
+	if (!defined('PDF_MARGIN_LEFT')) define('PDF_MARGIN_LEFT', 15);
+	if (!defined('PDF_MARGIN_RIGHT')) define('PDF_MARGIN_RIGHT', 15);
+	if (!defined('PDF_FONT_NAME_MAIN')) define('PDF_FONT_NAME_MAIN', 'helvetica');
+	if (!defined('PDF_FONT_SIZE_MAIN')) define('PDF_FONT_SIZE_MAIN', 12);
+	if (!defined('PDF_FONT_NAME_DATA')) define('PDF_FONT_NAME_DATA', 'helvetica');
+	if (!defined('PDF_FONT_SIZE_DATA')) define('PDF_FONT_SIZE_DATA', 8);
 
 	//----- Code for generate pdf
 	$pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->SetCreator(PDF_CREATOR);  
 	//$pdf->SetTitle("Export HTML Table data to PDF using TCPDF in PHP");  
-	$pdf->SetHeaderData('', '', PDF_HEADER_TITLE, PDF_HEADER_STRING);  
+	$pdf->SetHeaderData('', 0, PDF_HEADER_TITLE, PDF_HEADER_STRING);  
 	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));  
 	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));  
 	$pdf->SetDefaultMonospacedFont('helvetica');  
@@ -207,7 +217,7 @@ include_once('../tcpdf_6_2_13/tcpdf/tcpdf.php');
 ';
 $pdf->writeHTML($content);
 
-$file_location =  "D:/xamp/htdocs/school-registration 2/pdf"; //add your full path of your server
+$file_location = $_SERVER['DOCUMENT_ROOT'] . "/sesta-registration/pdf"; //add your full path of your server
 //$file_location = "/opt/lampp/htdocs/examples/generate_pdf/pdf/"; //for local xampp server
 
 $datetime=date('dmY_hms');

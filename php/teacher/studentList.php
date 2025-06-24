@@ -10,6 +10,8 @@ if (!isset($_SESSION['validTC'])) {
 <?php
 include("../config.php");
 
+$teacherId = $_SESSION['validTC'];
+
 // Handle class search
 $searchCondition = "";
 $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
@@ -17,13 +19,17 @@ $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
 if (isset($_GET['searchBox'])) {
     $searchValue = $_GET['searchBox'];
     if ($searchType === 'STUDENT_ID') {
-        $searchCondition = "AND STUDENT_ID LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_ID LIKE '%$searchValue%'";
     } elseif ($searchType === 'STUDENT_NAME') {
-        $searchCondition = "AND STUDENT_NAME LIKE '%$searchValue%'";
+        $searchCondition = "AND s.STUDENT_NAME LIKE '%$searchValue%'";
     }
 }
 
-$select = "SELECT * FROM student WHERE 1 $searchCondition AND CLASS_CODE IS NOT NULL";
+$select = "SELECT s.* FROM student s 
+           INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE 
+           WHERE c.TEACHER_ID = '$teacherId' 
+           AND s.CLASS_CODE IS NOT NULL 
+           $searchCondition";
 $query = mysqli_query($con, $select);
 ?>
 <!DOCTYPE html>
@@ -33,7 +39,7 @@ $query = mysqli_query($con, $select);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Class Information</title>
+    <title>Student Information</title>
     <style>
         body {
             background-image: url("../../image/teacher.png");
@@ -270,7 +276,7 @@ $query = mysqli_query($con, $select);
 <body>
     <div class="container">
         <form id="form2" name="form2" method="get">
-            <h1>Class Information</h1>
+            <h1>Student Information</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="STUDENT_ID">STUDENT ID</option>
@@ -311,6 +317,13 @@ $query = mysqli_query($con, $select);
                     ";
 
                     }
+                } else {
+                    // Display message when no students found
+                    echo "
+                    <tr>
+                        <td colspan='6' style='text-align: center; padding: 20px;'>No students found.</td>
+                    </tr>
+                    ";
                 }
 
                 ?>

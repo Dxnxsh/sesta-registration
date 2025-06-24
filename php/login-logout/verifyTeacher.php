@@ -49,7 +49,7 @@ session_start();
          }
          else{
             // Redirect to the error page
-            header("Location: error/error_verifyTC.php");
+            header("Location: error/error_VerifyTc.php");
             exit();
          }
 
@@ -61,7 +61,7 @@ session_start();
             <form action="" method="post">
                 <div class="field input">
                     <label for="no_ic">IC Number</label>
-                    <input type="text" name="no_ic" id="no_ic" autocomplete="off" required>
+                    <input type="text" name="no_ic" id="no_ic" maxlength="12" autocomplete="off" pattern="\d{12}" required>
                 </div>
 
                 <div class="field">
