@@ -1,10 +1,10 @@
-<?php 
-   session_start();
+<?php
+session_start();
 
-   include("config.php");
-   if(!isset($_SESSION['valid'])){
-    header("Location: loginStudent.php");
-   }
+include("../config.php");
+if (!isset($_SESSION['valid'])) {
+    header("Location: ../login-logout/login.php");
+}
 ?>
 
 <?php include "../header/studentHeader.php" ?>

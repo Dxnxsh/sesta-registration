@@ -95,7 +95,7 @@
         <div class="button">
             <ul>
                 <li>
-                <a href="../../html/subject.html">
+                <a href="studentSubjectOutline.php">
                         <img src="../../image/icon/subjectOutline.png" alt="Subject Outline">
                 </a>
                 </li>
