@@ -33,6 +33,8 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
       border-radius: 3px;
       overflow: hidden;
+      padding-left: 30px;
+      padding-right: 30px;
     }
 
     .container:hover::before {
@@ -58,140 +60,52 @@
     }
 
     table {
-      border-collapse: separate;
-      border-spacing: 10px; /* Adjust the spacing between cells */
       width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
 
     th, td {
-      padding: 20px;
+      padding: 16px 20px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    /* Default center for table content */
+    table th,
+    table td {
+      text-align: center;
+    }
+
+    /* LEFT-align for name and IC rows only */
+    table tr:nth-child(1) th,
+    table tr:nth-child(1) td,
+    table tr:nth-child(2) th,
+    table tr:nth-child(2) td {
       text-align: left;
-      color: #333;
-      border-radius: 0; /* Remove border-radius for squared corners */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow to each cell */
     }
 
     th {
-      font-weight: bold;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
       background-color: #233858;
       color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
     td {
-      background-color: #ffffff;
+      background-color: #f9f9f9;
     }
 
-    /* Add border to each table row */
-    tr {
-      border: 2px solid #ddd;
-      border-radius: 10px;
+    tr:hover td {
+      background-color: #f1f1f1;
     }
 
-    /* Add shadow to each table row */
-    tr {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    tr:not(:last-child) {
+      border-bottom: 2px solid #ddd;
     }
 
-    /* Remove border and shadow for specific cells */
-    th:nth-child(1),
-    th:nth-child(2),
-    td:nth-child(1),
-    td:nth-child(2) {
-      border-right: 1px solid #ddd;
-    }
-
-    /* Remove border-right for the last cell in each row */
-    .payment-type-row th:last-child,
-    .amount-row th:last-child,
-    .status-row th:last-child,
-    .payment-type-row td:last-child,
-    .amount-row td:last-child,
-    .status-row td:last-child {
-      border-right: 0;
-    }
-
-    .responsive-table {
-      display: none;
-    }
-
-    .responsive-table .col {
-      position: relative;
-    }
-
-    .responsive-table .col:not(:last-child) {
-      border-right: 1px solid #ddd;
-    }
-
-    @media all and (max-width: 767px) {
-      .container {
-        border-radius: 0;
-        box-shadow: none;
-      }
-
-      table:not(.responsive-table) {
-        display: none;
-      }
-
-      .responsive-table {
-        display: block;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .responsive-table li {
-        border-radius: 3px;
-        padding: 20px;
-        margin-bottom: 20px;
-        background-color: #fff;
-        box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      .responsive-table .col {
-        flex-basis: 32%;
-        display: flex;
-        padding: 10px 0;
-        position: relative;
-      }
-
-      .responsive-table .col:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 1px;
-        background-color: #ddd;
-      }
-
-      .responsive-table .col:last-child:after {
-        content: none;
-      }
-
-      .responsive-table .col:before {
-        color: #233858;
-        padding-right: 10px;
-        content: attr(data-label);
-        flex-basis: 50%;
-        text-align: right;
-      }
-    }
-
-    .payment-type-row,
-    .amount-row,
-    .status-row {
-      background-color: #233858;
-      color: #fff;
-    }
-
-    tr {
-      margin-bottom: 30px;
+    tr.payment-type-row th {
+      background-color: #1a2a45;
     }
 
     /* Button styling */
