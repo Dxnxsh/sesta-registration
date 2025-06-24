@@ -71,7 +71,7 @@ function loadAsset($type, $path)
                   </a>
                 </li>
                 <li class="list">
-                  <a href="<?php echo getBasePath(); ?>html/subject.html" class="nav-link">
+                  <a href="<?php echo getBasePath(); ?>php/student/studentSubjectOutline.php" class="nav-link">
                     <i class='bx bxs-book icon'></i>
                     <span class="link">Subject Outline</span>
                   </a>
