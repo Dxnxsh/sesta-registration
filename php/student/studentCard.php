@@ -129,13 +129,13 @@ if (!isset($_SESSION['valid'])) {
 
         .student-photo {
             width: 120px;
-            height: 160px;
+            height: 150px;
             object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid white;
-            position: absolute;
-            top: 120px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            margin-top: -60px;
         }
+
 
         .front-bottom {
             position: absolute;
@@ -200,7 +200,7 @@ if (!isset($_SESSION['valid'])) {
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                            <img src="../../image/student_face/<?php echo $res_Face; ?>" alt="Student Face" class="student-photo">
+                            <img src="data:image/jpeg;base64,<?php echo $res_Face; ?>" class="student-photo" alt="Student Face">
                             <div class="front-bottom">
                                 <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
