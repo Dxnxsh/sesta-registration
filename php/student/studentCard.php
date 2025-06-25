@@ -38,15 +38,16 @@ if (!isset($_SESSION['valid'])) {
         }
 
         header {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            /* You can use a specific width like 80% or 1200px */
-            margin: 0 auto;
-            /* Center the header horizontally */
-            z-index: 1000;
-            /* Adjust the value based on your needs */
-        }
+        width: 100%; /* You can use a specific width like 80% or 1200px */
+        margin: 0 auto; /* Center the header horizontally */
+        z-index: 1000; /* Adjust the value based on your needs */
+    }
+
+    footer {
+        width: 100%; /* You can use a specific width like 80% or 1200px */
+        margin: 0 auto; /* Center the header horizontally */
+        z-index: 1000; /* Adjust the value based on your needs */
+    }
 
         .container {
             width: 1000px;
@@ -172,35 +173,36 @@ if (!isset($_SESSION['valid'])) {
         }
     </style>
 </head>
-<?php include("../config.php");
-
-$id = $_SESSION['valid'];
-$query = mysqli_query($con, "SELECT*FROM student WHERE STUDENT_ID=$id");
-$queryClass  = mysqli_query($con, "SELECT student.*, class.* FROM student INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE
+<?php include("../config.php"); 
+            
+            $id = $_SESSION['valid'];
+            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
+            $queryClass  = mysqli_query($con,"SELECT student.*, class.* FROM student INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE
             WHERE student.STUDENT_ID = $id");
 
-// Initialize $res_Class with a default value
-$res_Class = '';
-while ($result = mysqli_fetch_assoc($query)) {
-    $res_IC = $result['STUDENT_ID'];
-    $res_Name = $result['STUDENT_NAME'];
-    $res_DOB = $result['STUDENT_DOB'];
-}
+            // Initialize $res_Class with a default value
+    		$res_Class = '';
+            while($result = mysqli_fetch_assoc($query)){
+                $res_IC = $result['STUDENT_ID'];
+				$res_Name = $result['STUDENT_NAME'];
+                $res_DOB = $result['STUDENT_DOB'];
+				
+            }
 
-while ($result = mysqli_fetch_assoc($queryClass)) {
-    $res_Class = $result['CLASS_NAME'];
-}
+			while($result = mysqli_fetch_assoc($queryClass)){
+                $res_Class = $result['CLASS_NAME'];
+				
+            }
 
-if ($res_Class == '') {
-    $res_Class = 'not assigned';
-}
-
+			if($res_Class==''){
+				$res_Class='not assigned';
+			}
+            
 ?>
-
 <body>
-    <header>
-        <?php include "../header/studentHeader.php" ?>
-    </header>
+<header >
+    <?php include "../header/studentHeader.php" ?>
+</header>
 
 
 
@@ -219,7 +221,7 @@ if ($res_Class == '') {
                         <div class="text"><?php echo $res_Name ?></div>
                         <div class="text"><?php echo $res_IC ?></div>
                         <div class="text">Class <?php echo $res_Class ?></div>
-
+                        
                     </div>
                 </div>
             </div>
