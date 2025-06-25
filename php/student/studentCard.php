@@ -9,7 +9,6 @@ if (!isset($_SESSION['valid'])) {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Student Card</title>
@@ -20,12 +19,34 @@ if (!isset($_SESSION['valid'])) {
             --background-rgb: 15 15 15;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             padding: 0;
             margin: 0;
             font-family: 'Poppins', sans-serif;
             background: url("../../image/student_bg.png") no-repeat center center fixed;
             background-size: cover;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
         }
 
         .container {
@@ -37,14 +58,13 @@ if (!isset($_SESSION['valid'])) {
             border: 2px solid #fff;
             border-radius: 20px;
             overflow: hidden;
-            position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            margin: 20px auto;
-			
+            position: relative;
+			margin-top: 20px;
+			margin-bottom: 20px;
         }
 
         .container-text {
-            font: 700 3em/1 'Poppins', sans-serif;
             font-size: 24px;
             font-weight: bold;
             color: #fff;
@@ -56,7 +76,6 @@ if (!isset($_SESSION['valid'])) {
         }
 
         .title {
-            font: 700 4em/1 'Poppins', sans-serif;
             font-size: 36px;
             font-weight: bold;
             color: #fff;
@@ -149,6 +168,16 @@ if (!isset($_SESSION['valid'])) {
             color: #fff;
             white-space: nowrap;
         }
+
+        svg#h1 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -184,38 +213,38 @@ if (!isset($_SESSION['valid'])) {
         <?php include "../header/studentHeader.php" ?>
     </header>
 
-    <div class="container">
-        <div class="container-text">STUDENT CARD</div>
-        <div class="title">STUDENT CARD</div>
+    <div class="main-content">
+        <div class="container">
+            <div class="container-text">STUDENT CARD</div>
+            <div class="title">STUDENT CARD</div>
 
-        <div class="card-container">
-            <div class="card">
-                <div class="card-inner">
-                    <div class="logo">
-                        <img src="../../image/icon/logoSESTA2.png" alt="Logo" style="width: 100%; height: auto; border-radius: 10px;">
-                    </div>
-                    <div class="middle-container">
-                        <div class="text"><?php echo $res_Name ?></div>
-                        <div class="text"><?php echo $res_IC ?></div>
-                        <div class="text">Class <?php echo $res_Class ?></div>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-inner">
+                        <div class="logo">
+                            <img src="../../image/icon/logoSESTA2.png" alt="Logo" style="width: 100%; height: auto; border-radius: 10px;">
+                        </div>
+                        <div class="middle-container">
+                            <div class="text"><?php echo $res_Name ?></div>
+                            <div class="text"><?php echo $res_IC ?></div>
+                            <div class="text">Class <?php echo $res_Class ?></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <svg id="h1" viewBox="0 0 1000 1000"
-        style="position: absolute; height: 100%; width: 100%; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: pointer;">
-        <defs>
-            <filter id='blur' color-interpolation-filters="sRGB">
-                <feDropShadow dx="5" dy="5" stdDeviation="5" flood-opacity="0.5" />
-            </filter>
-        </defs>
-    </svg>
+        <svg id="h1" viewBox="0 0 1000 1000">
+            <defs>
+                <filter id='blur' color-interpolation-filters="sRGB">
+                    <feDropShadow dx="5" dy="5" stdDeviation="5" flood-opacity="0.5" />
+                </filter>
+            </defs>
+        </svg>
+    </div>
 
     <footer>
         <?php include "../header/footer.php" ?>
     </footer>
 </body>
-
 </html>
