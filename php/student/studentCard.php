@@ -52,38 +52,13 @@ if (!isset($_SESSION['valid'])) {
         .container {
             width: 1000px;
             height: 700px;
-            background: linear-gradient(90deg, rgba(var(--background-rgb), 0.8) 0%, rgba(50, 50, 50, 1) 100%),
-                url("../../image/student_bg.png") no-repeat center center fixed;
-            background-size: cover;
             border: 2px solid #fff;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             position: relative;
-			margin-top: 20px;
-			margin-bottom: 20px;
-        }
-
-        .container-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            color: #fff;
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .card-container {
@@ -101,14 +76,13 @@ if (!isset($_SESSION['valid'])) {
             cursor: pointer;
             transform-style: preserve-3d;
             transition: transform 1s;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             border: 5px solid #fff;
             border-radius: 15px;
             position: relative;
         }
 
         .card:hover {
-            transform: rotateY(-180deg);
+            transform: rotateY(180deg);
         }
 
         .card-inner {
@@ -117,66 +91,75 @@ if (!isset($_SESSION['valid'])) {
             position: relative;
             transform-style: preserve-3d;
             transition: transform 1s;
-            background: linear-gradient(90deg, rgba(140, 82, 255, 0.8) 35%, rgba(92, 225, 230, 0.8) 100%);
-            border: 2px solid #fff;
             border-radius: 15px;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 20px;
+            color: #000;
+        }
+
+        .card-front {
+            background: url('../../image/studentCardFront.png') no-repeat center center;
+            background-size: cover;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .card-inner::before,
-        .card-inner::after {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 2px;
-            background-color: #fff;
+        .card-back {
+            background: url('../../image/studentCardBack.png') no-repeat center center;
+            background-size: cover;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 100px;
         }
 
-        .card-inner::before {
-            top: 20%;
-        }
-
-        .card-inner::after {
-            top: 90%;
-        }
-
-        .logo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: calc(100% - 20px);
-            height: auto;
+        .student-photo {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
             border-radius: 10px;
-            z-index: 1;
+            border: 2px solid white;
+            position: absolute;
+            top: 120px;
         }
 
-        .middle-container {
-            text-align: center;
-            color: #fff;
+        .front-bottom {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
+            top: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .text {
-            font-size: 18px;
-            color: #fff;
-            white-space: nowrap;
+            margin: 2px 20px;
+            text-align: left;
+            color: black;
         }
 
-        svg#h1 {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            pointer-events: none;
+        .text.front-name {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .text.back-detail {
+            font-size: 8px;
+        }
+
+        .text b {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -186,25 +169,17 @@ if (!isset($_SESSION['valid'])) {
 
     $id = $_SESSION['valid'];
     $query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
-    $queryClass = mysqli_query($con, "SELECT student.*, class.* 
-                                      FROM student 
-                                      INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
-                                      WHERE student.STUDENT_ID = $id");
-
-    $res_Class = '';
 
     while ($result = mysqli_fetch_assoc($query)) {
         $res_IC = $result['STUDENT_ID'];
         $res_Name = $result['STUDENT_NAME'];
         $res_DOB = $result['STUDENT_DOB'];
-    }
-
-    while ($result = mysqli_fetch_assoc($queryClass)) {
-        $res_Class = $result['CLASS_NAME'];
-    }
-
-    if ($res_Class == '') {
-        $res_Class = 'not assigned';
+        $res_Email = $result['STUDENT_EMAIL'];
+        $res_Gender = $result['STUDENT_GENDER'];
+        $res_Religion = $result['STUDENT_RELIGION'];
+        $res_Race = $result['STUDENT_RACE'];
+        $res_Nationality = $result['STUDENT_NATIONALITY'];
+        $res_Face = $result['STUDENT_FACE'];
     }
 ?>
 
@@ -215,32 +190,37 @@ if (!isset($_SESSION['valid'])) {
 
     <div class="main-content">
         <div class="container">
-            <div class="container-text">STUDENT CARD</div>
-            <div class="title">STUDENT CARD</div>
-
             <div class="card-container">
                 <div class="card">
                     <div class="card-inner">
-                        <div class="logo">
-                            <img src="../../image/icon/logoSESTA2.png" alt="Logo" style="width: 100%; height: auto; border-radius: 10px;">
+                        <!-- Front Side -->
+                        <div class="card-face card-front">
+                            <!-- Uncomment to enable student face image -->
+                            <!-- <img src="../../image/student_face/<?php echo $res_Face; ?>" alt="Student Face" class="student-photo"> -->
+
+                            <div class="front-bottom">
+                                <div class="text front-name"><?php echo $res_Name; ?></div>
+                                <div style="margin-top: 10px;">
+                                    <img alt="Barcode" src="https://barcode.tec-it.com/barcode.ashx?data=<?php echo urlencode($res_IC); ?>&translate-esc=on" style="width: 180px; height: 50px;">
+                                </div>
+                            </div>
                         </div>
-                        <div class="middle-container">
-                            <div class="text"><?php echo $res_Name ?></div>
-                            <div class="text"><?php echo $res_IC ?></div>
-                            <div class="text">Class <?php echo $res_Class ?></div>
+
+                        <!-- Back Side -->
+                        <div class="card-face card-back">
+                            <div class="text back-detail"><b>Name:</b> <?php echo $res_Name; ?></div>
+                            <div class="text back-detail"><b>ID:</b> <?php echo $res_IC; ?></div>
+                            <div class="text back-detail"><b>Gender:</b> <?php echo $res_Gender; ?></div>
+                            <div class="text back-detail"><b>DOB:</b> <?php echo $res_DOB; ?></div>
+                            <div class="text back-detail"><b>Email:</b> <?php echo $res_Email; ?></div>
+                            <div class="text back-detail"><b>Religion:</b> <?php echo $res_Religion; ?></div>
+                            <div class="text back-detail"><b>Race:</b> <?php echo $res_Race; ?></div>
+                            <div class="text back-detail"><b>Nationality:</b> <?php echo $res_Nationality; ?></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <svg id="h1" viewBox="0 0 1000 1000">
-            <defs>
-                <filter id='blur' color-interpolation-filters="sRGB">
-                    <feDropShadow dx="5" dy="5" stdDeviation="5" flood-opacity="0.5" />
-                </filter>
-            </defs>
-        </svg>
     </div>
 
     <footer>
