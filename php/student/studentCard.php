@@ -43,16 +43,22 @@ if (!isset($_SESSION['valid'])) {
         .main-content {
             flex: 1;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             position: relative;
             z-index: 1;
         }
 
+        .title-text {
+            margin-top: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
         .container {
             width: 1000px;
             height: 700px;
-            border: 2px solid #fff;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
@@ -62,12 +68,12 @@ if (!isset($_SESSION['valid'])) {
         }
 
         .card-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             perspective: 1000px;
-            z-index: 1;
         }
 
         .card {
@@ -76,7 +82,6 @@ if (!isset($_SESSION['valid'])) {
             cursor: pointer;
             transform-style: preserve-3d;
             transition: transform 1s;
-            border: 5px solid #fff;
             border-radius: 15px;
             position: relative;
         }
@@ -104,14 +109,13 @@ if (!isset($_SESSION['valid'])) {
             color: #000;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .card-front {
             background: url('../../image/studentCardFront.png') no-repeat center center;
             background-size: cover;
-            align-items: center;
-            justify-content: center;
-            position: relative;
         }
 
         .card-back {
@@ -119,7 +123,8 @@ if (!isset($_SESSION['valid'])) {
             background-size: cover;
             transform: rotateY(180deg);
             justify-content: flex-start;
-            padding-top: 80px;
+            padding-top: 100px;
+            align-items: flex-start;
         }
 
         .student-photo {
@@ -154,7 +159,7 @@ if (!isset($_SESSION['valid'])) {
 
         .text.back-detail {
             font-size: 8px;
-            margin: 2px 0;
+            margin: 2px 20px;
         }
 
         .text b {
@@ -188,13 +193,14 @@ if (!isset($_SESSION['valid'])) {
     </header>
 
     <div class="main-content">
+        <div class="title-text">Student Card</div>
         <div class="container">
             <div class="card-container">
                 <div class="card">
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                            <!-- <img src="../../image/student_face/<?php echo $res_Face; ?>" alt="Student Face" class="student-photo"> -->
+                            <img src="../../image/student_face/<?php echo $res_Face; ?>" alt="Student Face" class="student-photo">
                             <div class="front-bottom">
                                 <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
