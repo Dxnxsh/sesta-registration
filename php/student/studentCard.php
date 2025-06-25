@@ -102,13 +102,13 @@ if (!isset($_SESSION['valid'])) {
             border-radius: 15px;
             padding: 20px;
             color: #000;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-front {
             background: url('../../image/studentCardFront.png') no-repeat center center;
             background-size: cover;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
@@ -118,10 +118,8 @@ if (!isset($_SESSION['valid'])) {
             background: url('../../image/studentCardBack.png') no-repeat center center;
             background-size: cover;
             transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
             justify-content: flex-start;
-            padding-top: 100px;
+            padding-top: 80px;
         }
 
         .student-photo {
@@ -156,6 +154,7 @@ if (!isset($_SESSION['valid'])) {
 
         .text.back-detail {
             font-size: 8px;
+            margin: 2px 0;
         }
 
         .text b {
@@ -195,9 +194,7 @@ if (!isset($_SESSION['valid'])) {
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                            <!-- Uncomment to enable student face image -->
                             <!-- <img src="../../image/student_face/<?php echo $res_Face; ?>" alt="Student Face" class="student-photo"> -->
-
                             <div class="front-bottom">
                                 <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
@@ -217,6 +214,7 @@ if (!isset($_SESSION['valid'])) {
                             <div class="text back-detail"><b>Race:</b> <?php echo $res_Race; ?></div>
                             <div class="text back-detail"><b>Nationality:</b> <?php echo $res_Nationality; ?></div>
                         </div>
+
                     </div>
                 </div>
             </div>
