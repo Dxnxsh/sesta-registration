@@ -4,46 +4,6 @@ session_start();
 include("../config.php");
 if (!isset($_SESSION['valid'])) {
     header("Location: ../login-logout/login.php");
-    exit();
-}
-
-$id = $_SESSION['valid'];
-$query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
-
-if (!$query) {
-    die("Database query failed: " . mysqli_error($con));
-}
-
-$student = mysqli_fetch_assoc($query);
-if (!$student) {
-    die("Student not found");
-}
-
-// Prepare all student data
-$res_IC = $student['STUDENT_ID'];
-$res_Name = $student['STUDENT_NAME'];
-$res_DOB = $student['STUDENT_DOB'];
-$res_Email = $student['STUDENT_EMAIL'];
-$res_Gender = $student['STUDENT_GENDER'];
-$res_Religion = $student['STUDENT_RELIGION'];
-$res_Race = $student['STUDENT_RACE'];
-$res_Nationality = $student['STUDENT_NATIONALITY'];
-$res_Face = $student['STUDENT_FACE'];
-
-// Handle missing or invalid image
-$imageSrc = "../../image/default_face.jpg"; // Default image path
-if (!empty($res_Face)) {
-    // Check if the data is already base64 encoded
-    if (base64_encode(base64_decode($res_Face, true)) === $res_Face) {
-        $imageSrc = "data:image/jpeg;base64," . $res_Face;
-    } else {
-        // For binary data
-        $imageInfo = getimagesizefromstring($res_Face);
-        if ($imageInfo !== false) {
-            $mime = $imageInfo['mime'];
-            $imageSrc = "data:" . $mime . ";base64," . base64_encode($res_Face);
-        }
-    }
 }
 ?>
 
@@ -174,9 +134,8 @@ if (!empty($res_Face)) {
             border-radius: 8px;
             margin-bottom: 10px;
             margin-top: -60px;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
 
         .front-bottom {
             position: absolute;
@@ -196,14 +155,11 @@ if (!empty($res_Face)) {
             font-size: 16px;
             font-weight: bold;
             text-align: center;
-            color: #333;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
 
         .text.back-detail {
             font-size: 8px;
             margin: 2px 20px;
-            color: #333;
         }
 
         .text b {
@@ -211,6 +167,25 @@ if (!empty($res_Face)) {
         }
     </style>
 </head>
+
+<?php 
+    include("../config.php");
+
+    $id = $_SESSION['valid'];
+    $query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
+
+    while ($result = mysqli_fetch_assoc($query)) {
+        $res_IC = $result['STUDENT_ID'];
+        $res_Name = $result['STUDENT_NAME'];
+        $res_DOB = $result['STUDENT_DOB'];
+        $res_Email = $result['STUDENT_EMAIL'];
+        $res_Gender = $result['STUDENT_GENDER'];
+        $res_Religion = $result['STUDENT_RELIGION'];
+        $res_Race = $result['STUDENT_RACE'];
+        $res_Nationality = $result['STUDENT_NATIONALITY'];
+        $res_Face = $result['STUDENT_FACE'];
+    }
+?>
 
 <body>
     <header>
@@ -225,9 +200,9 @@ if (!empty($res_Face)) {
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                            <img src="<?php echo $imageSrc; ?>" class="student-photo" alt="Student Face" onerror="this.src='../../image/default_face.jpg'">
+                        <img src="data:image/jpeg;base64,<?php echo base64_encode($res_Face); ?>" class="student-photo" alt="Student Face">
                             <div class="front-bottom">
-                                <div class="text front-name"><?php echo htmlspecialchars($res_Name); ?></div>
+                                <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
                                     <img alt="Barcode" src="https://barcode.tec-it.com/barcode.ashx?data=<?php echo urlencode($res_IC); ?>&translate-esc=on" style="width: 180px; height: 50px;">
                                 </div>
@@ -236,15 +211,16 @@ if (!empty($res_Face)) {
 
                         <!-- Back Side -->
                         <div class="card-face card-back">
-                            <div class="text back-detail"><b>Name:</b> <?php echo htmlspecialchars($res_Name); ?></div>
-                            <div class="text back-detail"><b>ID:</b> <?php echo htmlspecialchars($res_IC); ?></div>
-                            <div class="text back-detail"><b>Gender:</b> <?php echo htmlspecialchars($res_Gender); ?></div>
-                            <div class="text back-detail"><b>DOB:</b> <?php echo htmlspecialchars($res_DOB); ?></div>
-                            <div class="text back-detail"><b>Email:</b> <?php echo htmlspecialchars($res_Email); ?></div>
-                            <div class="text back-detail"><b>Religion:</b> <?php echo htmlspecialchars($res_Religion); ?></div>
-                            <div class="text back-detail"><b>Race:</b> <?php echo htmlspecialchars($res_Race); ?></div>
-                            <div class="text back-detail"><b>Nationality:</b> <?php echo htmlspecialchars($res_Nationality); ?></div>
+                            <div class="text back-detail"><b>Name:</b> <?php echo $res_Name; ?></div>
+                            <div class="text back-detail"><b>ID:</b> <?php echo $res_IC; ?></div>
+                            <div class="text back-detail"><b>Gender:</b> <?php echo $res_Gender; ?></div>
+                            <div class="text back-detail"><b>DOB:</b> <?php echo $res_DOB; ?></div>
+                            <div class="text back-detail"><b>Email:</b> <?php echo $res_Email; ?></div>
+                            <div class="text back-detail"><b>Religion:</b> <?php echo $res_Religion; ?></div>
+                            <div class="text back-detail"><b>Race:</b> <?php echo $res_Race; ?></div>
+                            <div class="text back-detail"><b>Nationality:</b> <?php echo $res_Nationality; ?></div>
                         </div>
+
                     </div>
                 </div>
             </div>
