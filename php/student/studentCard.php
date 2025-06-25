@@ -20,34 +20,13 @@ if (!isset($_SESSION['valid'])) {
             --background-rgb: 15 15 15;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            height: 100vh;
-            display: grid;
-            place-items: center;
-            /*overflow: hidden;*/
+            padding: 0;
             margin: 0;
             font-family: 'Poppins', sans-serif;
             background: url("../../image/student_bg.png") no-repeat center center fixed;
             background-size: cover;
         }
-
-        header {
-        width: 100%; /* You can use a specific width like 80% or 1200px */
-        margin: 0 auto; /* Center the header horizontally */
-        z-index: 1000; /* Adjust the value based on your needs */
-    }
-
-    footer {
-        width: 100%; /* You can use a specific width like 80% or 1200px */
-        margin: 0 auto; /* Center the header horizontally */
-        z-index: 1000; /* Adjust the value based on your needs */
-    }
 
         .container {
             width: 1000px;
@@ -60,7 +39,8 @@ if (!isset($_SESSION['valid'])) {
             overflow: hidden;
             position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            margin: 20px;
+            margin: 20px auto;
+			
         }
 
         .container-text {
@@ -125,8 +105,6 @@ if (!isset($_SESSION['valid'])) {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* Decorative lines */
-            position: relative;
         }
 
         .card-inner::before,
@@ -173,38 +151,38 @@ if (!isset($_SESSION['valid'])) {
         }
     </style>
 </head>
-<?php include("../config.php"); 
-            
-            $id = $_SESSION['valid'];
-            $query = mysqli_query($con,"SELECT*FROM student WHERE STUDENT_ID=$id");
-            $queryClass  = mysqli_query($con,"SELECT student.*, class.* FROM student INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE
-            WHERE student.STUDENT_ID = $id");
 
-            // Initialize $res_Class with a default value
-    		$res_Class = '';
-            while($result = mysqli_fetch_assoc($query)){
-                $res_IC = $result['STUDENT_ID'];
-				$res_Name = $result['STUDENT_NAME'];
-                $res_DOB = $result['STUDENT_DOB'];
-				
-            }
+<?php 
+    include("../config.php");
 
-			while($result = mysqli_fetch_assoc($queryClass)){
-                $res_Class = $result['CLASS_NAME'];
-				
-            }
+    $id = $_SESSION['valid'];
+    $query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
+    $queryClass = mysqli_query($con, "SELECT student.*, class.* 
+                                      FROM student 
+                                      INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE 
+                                      WHERE student.STUDENT_ID = $id");
 
-			if($res_Class==''){
-				$res_Class='not assigned';
-			}
-            
+    $res_Class = '';
+
+    while ($result = mysqli_fetch_assoc($query)) {
+        $res_IC = $result['STUDENT_ID'];
+        $res_Name = $result['STUDENT_NAME'];
+        $res_DOB = $result['STUDENT_DOB'];
+    }
+
+    while ($result = mysqli_fetch_assoc($queryClass)) {
+        $res_Class = $result['CLASS_NAME'];
+    }
+
+    if ($res_Class == '') {
+        $res_Class = 'not assigned';
+    }
 ?>
+
 <body>
-<header >
-    <?php include "../header/studentHeader.php" ?>
-</header>
-
-
+    <header>
+        <?php include "../header/studentHeader.php" ?>
+    </header>
 
     <div class="container">
         <div class="container-text">STUDENT CARD</div>
@@ -214,14 +192,12 @@ if (!isset($_SESSION['valid'])) {
             <div class="card">
                 <div class="card-inner">
                     <div class="logo">
-                        <img src="../../image/icon/logoSESTA2.png" alt="Logo"
-                            style="width: 100%; height: auto; border-radius: 10px;">
+                        <img src="../../image/icon/logoSESTA2.png" alt="Logo" style="width: 100%; height: auto; border-radius: 10px;">
                     </div>
                     <div class="middle-container">
                         <div class="text"><?php echo $res_Name ?></div>
                         <div class="text"><?php echo $res_IC ?></div>
                         <div class="text">Class <?php echo $res_Class ?></div>
-                        
                     </div>
                 </div>
             </div>
@@ -236,8 +212,10 @@ if (!isset($_SESSION['valid'])) {
             </filter>
         </defs>
     </svg>
-    <footer><?php include "../header/footer.php" ?></footer>
-</body>
 
+    <footer>
+        <?php include "../header/footer.php" ?>
+    </footer>
+</body>
 
 </html>
