@@ -9,6 +9,7 @@ if (!isset($_SESSION['valid'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Student Card</title>
@@ -168,23 +169,23 @@ if (!isset($_SESSION['valid'])) {
     </style>
 </head>
 
-<?php 
-    include("../config.php");
+<?php
+include("../config.php");
 
-    $id = $_SESSION['valid'];
-    $query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
+$id = $_SESSION['valid'];
+$query = mysqli_query($con, "SELECT * FROM student WHERE STUDENT_ID = $id");
 
-    while ($result = mysqli_fetch_assoc($query)) {
-        $res_IC = $result['STUDENT_ID'];
-        $res_Name = $result['STUDENT_NAME'];
-        $res_DOB = $result['STUDENT_DOB'];
-        $res_Email = $result['STUDENT_EMAIL'];
-        $res_Gender = $result['STUDENT_GENDER'];
-        $res_Religion = $result['STUDENT_RELIGION'];
-        $res_Race = $result['STUDENT_RACE'];
-        $res_Nationality = $result['STUDENT_NATIONALITY'];
-        $res_Face = $result['STUDENT_FACE'];
-    }
+while ($result = mysqli_fetch_assoc($query)) {
+    $res_IC = $result['STUDENT_ID'];
+    $res_Name = $result['STUDENT_NAME'];
+    $res_DOB = $result['STUDENT_DOB'];
+    $res_Email = $result['STUDENT_EMAIL'];
+    $res_Gender = $result['STUDENT_GENDER'];
+    $res_Religion = $result['STUDENT_RELIGION'];
+    $res_Race = $result['STUDENT_RACE'];
+    $res_Nationality = $result['STUDENT_NATIONALITY'];
+    $res_Face = $result['STUDENT_FACE'];
+}
 ?>
 
 <body>
@@ -200,7 +201,13 @@ if (!isset($_SESSION['valid'])) {
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                        <img src="data:image/jpeg;base64,<?php echo base64_encode($res_Face); ?>" class="student-photo" alt="Student Face">
+                            <?php if (!empty($res_Face)): ?>
+                                <img src="<?php echo $res_Face; ?>" class="student-photo" alt="Student Face">
+                            <?php else: ?>
+                                <div class="student-photo" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #666;">
+                                    No Photo
+                                </div>
+                            <?php endif; ?>
                             <div class="front-bottom">
                                 <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
@@ -226,9 +233,7 @@ if (!isset($_SESSION['valid'])) {
             </div>
         </div>
     </div>
-
-    <footer>
-        <?php include "../header/footer.php" ?>
-    </footer>
+    <?php include "../header/footer.php" ?>
 </body>
+
 </html>

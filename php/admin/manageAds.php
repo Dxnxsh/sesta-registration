@@ -7,15 +7,60 @@ if (!isset($_SESSION['adminID'])) {
 }
 
 $adsFolder = "../../image/ads/";
+// Ensure the ads folder exists
+if (!is_dir($adsFolder)) {
+    mkdir($adsFolder, 0755, true);
+}
 
 // Handle image deletion
 if (isset($_POST['delete'])) {
-    $fileToDelete = $adsFolder . basename($_POST['delete']);
+    $fileName = basename($_POST['delete']);
+    $fileToDelete = $adsFolder . $fileName;
+    
+    // Debug: Check if file exists and path is correct
     if (file_exists($fileToDelete)) {
-        unlink($fileToDelete);
-        echo "<script>alert('Image deleted successfully!');</script>";
+        // Check if file is writable
+        if (is_writable($fileToDelete)) {
+            if (unlink($fileToDelete)) {
+                echo "<script>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Image deleted successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(function() {
+                        window.location.href = 'manageAds.php';
+                    });
+                </script>";
+            } else {
+                echo "<script>
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete the image! Permission denied.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>";
+            }
+        } else {
+            echo "<script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'File is not writable. Check permissions.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>";
+        }
     } else {
-        echo "<script>alert('File not found!');</script>";
+        echo "<script>
+            Swal.fire({
+                title: 'Error!',
+                text: 'File not found: " . htmlspecialchars($fileToDelete, ENT_QUOTES, 'UTF-8') . "',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>";
     }
 }
 
@@ -28,15 +73,45 @@ if (isset($_POST['upload'])) {
         // Validate file type
         if (in_array($fileType, ['jpg', 'jpeg', 'png', 'webp'])) {
             if (move_uploaded_file($_FILES['newImage']['tmp_name'], $targetFile)) {
-                echo "<script>alert('Image uploaded successfully!');</script>";
+                echo "<script>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Image uploaded successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(function() {
+                        window.location.href = 'manageAds.php';
+                    });
+                </script>";
             } else {
-                echo "<script>alert('Error uploading file!');</script>";
+                echo "<script>
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error uploading file!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>";
             }
         } else {
-            echo "<script>alert('Invalid file type! Only JPG, JPEG, PNG, and WEBP are allowed.');</script>";
+            echo "<script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Invalid file type! Only JPG, JPEG, PNG, and WEBP are allowed.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>";
         }
     } else {
-        echo "<script>alert('No file selected or an error occurred!');</script>";
+        echo "<script>
+            Swal.fire({
+                title: 'Error!',
+                text: 'No file selected or an error occurred!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>";
     }
 }
 ?>
@@ -299,7 +374,9 @@ if (isset($_POST['upload'])) {
         }
 
         .upload-label input[type="file"] {
-            display: none;
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
         }
 
         .upload-button {
@@ -345,13 +422,17 @@ if (isset($_POST['upload'])) {
                 $files = array_diff(scandir($adsFolder), ['.', '..']);
                 foreach ($files as $file) {
                     $filePath = $adsFolder . $file;
-                    echo "<tr>
-                            <td>$file</td>
-                            <td><img src='$filePath' alt='$file' style='width: 100px; height: auto;'></td>
-                            <td>
-                                <button type='submit' name='delete' value='$file' style='background-color: #DC3545; color: white; border: none; padding: 5px 10px; border-radius: 5px;'>Delete</button>
-                            </td>
-                          </tr>";
+                    // Check if it's actually an image file
+                    $fileExtension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                        echo "<tr>
+                                <td>$file</td>
+                                <td><img src='$filePath' alt='$file' style='width: 100px; height: auto;'></td>
+                                <td>
+                                    <button type='button' onclick='confirmDelete(\"$file\")' style='background-color: #DC3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;'>Delete</button>
+                                </td>
+                              </tr>";
+                    }
                 }
                 ?>
             </table>
@@ -367,6 +448,34 @@ if (isset($_POST['upload'])) {
             } else {
                 uploadButton.disabled = true;
             }
+        }
+
+        function confirmDelete(fileName) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `Do you want to delete ${fileName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#DC3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create a hidden form to submit the delete request
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.style.display = 'none';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'delete';
+                    input.value = fileName;
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
         }
     </script>
 </body>

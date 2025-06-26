@@ -20,13 +20,9 @@ if (!function_exists('getBasePath')) {
 <head>
 <meta charset="utf-8">
 <link href="<?php echo getBasePath(); ?>css/footerStyle.css" rel="stylesheet" />
-
 </head>
 <body>
   <div class="wrapper">
-
-      
-
     <div class="push"></div>
   </div>
   <footer class="footer">
