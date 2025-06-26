@@ -1,69 +1,87 @@
 <?php
-  session_start();
-  include "../header/adminHeader.php" ?>
-<?php require_once('../config.php'); 
+session_start();
+include "../header/adminHeader.php";
+require_once('../config.php');
+
 if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  if (PHP_VERSION < 6) {
-    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-  }
+    function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") {
+        if (PHP_VERSION < 6) {
+            $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+        }
 
-  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+        $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
 
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
+        switch ($theType) {
+            case "text":
+                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+                break;
+            case "long":
+            case "int":
+                $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+                break;
+            case "double":
+                $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
+                break;
+            case "date":
+                $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+                break;
+            case "defined":
+                $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+                break;
+        }
+        return $theValue;
+    }
 }
+
+$searchTerm = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit']) && !empty($_POST['searchBox'])) {
+        $searchTerm = trim($_POST['searchBox']);
+        $query_rsStudent = "SELECT * FROM student WHERE STUDENT_ID LIKE '%" . mysqli_real_escape_string($con, $searchTerm) . "%'";
+    } else {
+        $query_rsStudent = "SELECT * FROM student"; // Show all if search is empty or 'Show All' clicked
+    }
+} else {
+    $query_rsStudent = "SELECT * FROM student"; // First time loading the page
 }
 
-$query_rsStudent = "SELECT * FROM student";
 $rsStudent = mysqli_query($con, $query_rsStudent) or die(mysqli_error($con));
-$row_rsStudent = mysqli_fetch_assoc($rsStudent);
+$row_rsStudent = null;
 $totalRows_rsStudent = mysqli_num_rows($rsStudent);
+
+if ($totalRows_rsStudent > 0) {
+    $row_rsStudent = mysqli_fetch_assoc($rsStudent);
+}
+
 ?>
+
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
-<style>
-	
-  body {
-            background-image: url("../../image/bg5.jpeg");
+    <meta charset="utf-8">
+    <title>Student Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+    <style>
+        body {
+            background-image: url("../../image/admin.png");
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: 100% 100%;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             margin: 0;
-            padding-top: 90px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding: 0;
         }
 
         .container {
-            background-color: white;
+            width: 96%; 
+            margin: 10px auto;
+            background-color: #fff;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
 
         h2 {
             display: flex;
@@ -77,6 +95,7 @@ $totalRows_rsStudent = mysqli_num_rows($rsStudent);
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .h2-ct {
             display: flex;
             align-items: center;
@@ -89,14 +108,15 @@ $totalRows_rsStudent = mysqli_num_rows($rsStudent);
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-         
+
         i {
             margin-right: 10px;
         }
+
         .button-container {
             display: flex;
-            justify-content: center; /* Center the buttons horizontally */
-            align-items: center; /* Center the buttons vertically */
+            justify-content: center;
+            align-items: center;
         }
 
         .nav-links {
@@ -110,10 +130,10 @@ $totalRows_rsStudent = mysqli_num_rows($rsStudent);
             color: #fff;
             font-size: 18px;
             width: 100%;
-			padding: 10px;
+            padding: 10px;
             border: 1px solid #4CAF50;
             transition: background-color 0.3s;
-			text-align: center;
+            text-align: center;
         }
 
         .nav-links a.student {
@@ -131,212 +151,265 @@ $totalRows_rsStudent = mysqli_num_rows($rsStudent);
         .nav-links a.student:hover {
             background-color: #45a049;
         }
-		.nav-links a.parent:hover {
+
+        .nav-links a.parent:hover {
             background-color: #0098E2;
         }
-		.nav-links a.teacher:hover {
+
+        .nav-links a.teacher:hover {
             background-color: #E05900;
         }
 
-        #form2 {
+        .search-section {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             margin-top: 20px;
+            gap: 10px;
         }
 
-        input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 65%;
-            box-sizing: border-box;
+        .show-all-form {
+            margin: 0;
         }
 
-        input[type="submit"] {
-            padding: 8px;
+        .show-all-button {
             background-color: #4CAF50;
             color: white;
+            padding: 8px 16px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 30%;
         }
 
-        input[type="submit"]:hover {
+        .show-all-button:hover {
             background-color: #45a049;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        .search-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 0;
         }
 
-        table, th, td {
+        .search-input {
+            padding: 8px;
             border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        .search-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #45a049;
+        }
+
+
+        table {
+            margin-top: 20px;
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            background-color: #fff;
+            font-size: 10px;
+            border: 1px solid black; /* outer border */
         }
 
         th, td {
-            padding: 12px;
+            padding: 4px;
             text-align: center;
+            word-wrap: break-word;
+            border: 1px solid black; /* cell borders */
         }
 
         th {
-            background-color: #14BD59  ;
+            background-color: #14BD59;
             color: white;
+            font-size: 10px;
         }
-		.tr-hover:hover {
-    		background-color: #f5f5f5;
-		}
 
-      /* Button styling */
-    .proceed-payment-button {
-      all: unset;
-      width: 50px;
-      height: 30px;
-      font-size: 16px;
-      color: #f0f0f0;
-      cursor: pointer;
-      z-index: 1;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      position: relative;
-      margin: 20px; /* Center the button horizontally within its container */
-    }
+        .tr-hover:hover {
+            background-color: #f5f5f5;
+        }
 
-    .proceed-payment-button::after,
-    .proceed-payment-button::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      z-index: -99999;
-      transition: all .4s;
-    }
+        .proceed-payment-button {
+            all: unset;
+            width: 50px;
+            height: 30px;
+            font-size: 16px;
+            color: #f0f0f0;
+            cursor: pointer;
+            z-index: 1;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            position: relative;
+            margin: 20px;
+        }
 
-    .proceed-payment-button::before {
-      transform: translate(0%, 0%);
-      width: 100%;
-      height: 100%;
-      background: #233858;
-      border-radius: 10px;
-      background-color: #14BD59  ;
-    }
+        .proceed-payment-button::after,
+        .proceed-payment-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: -99999;
+            transition: all .4s;
+        }
 
-    .proceed-payment-button::after {
-      transform: translate(10px, 10px);
-      width: 35px;
-      height: 35px;
-      background: #ffffff15;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border-radius: 50px;
-    }
+        .proceed-payment-button::before {
+            transform: translate(0%, 0%);
+            width: 100%;
+            height: 100%;
+            background: #233858;
+            border-radius: 10px;
+            background-color: #14BD59;
+        }
 
-    .proceed-payment-button:hover::before {
-      transform: translate(5%, 20%);
-      width: 110%;
-      height: 110%;
-    }
+        .proceed-payment-button::after {
+            transform: translate(10px, 10px);
+            width: 35px;
+            height: 35px;
+            background: #ffffff15;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 50px;
+        }
 
-    .proceed-payment-button:hover::after {
-      border-radius: 10px;
-      transform: translate(0, 0);
-      width: 100%;
-      height: 100%;
-    }
+        .proceed-payment-button:hover::before {
+            transform: translate(5%, 20%);
+            width: 110%;
+            height: 110%;
+        }
 
-    .proceed-payment-button:active::after {
-      transition: 0s;
-      transform: translate(0, 5%);
-    }
-</style>
-<meta charset="utf-8">
-<title>Student Report</title>
+        .proceed-payment-button:hover::after {
+            border-radius: 10px;
+            transform: translate(0, 0);
+            width: 100%;
+            height: 100%;
+        }
+
+        .proceed-payment-button:active::after {
+            transition: 0s;
+            transform: translate(0, 5%);
+        }
+
+        @media print {
+
+          body * {
+            visibility: hidden; /* Hide everything */
+          }
+
+          .container, .container * {
+            visibility: visible; /* Only show container */
+          }
+
+          .container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            box-shadow: none; /* Optional: remove shadow */
+            border: none; /* Optional: remove border */
+          }
+        }
+    </style>
 </head>
 
 <body>
-
 <div class="container">
-	<form id="form1" name="form1" method="post">
-	   <h2>
-            <i class="fas fa-chart-bar"></i> FULL REPORT
-        </h2>
-        <h2 class="h2-ct">
-             STUDENT
-        </h2>
-  			<div class="nav-links">
-				<a href="studentFullReport.php" class="student"><b>STUDENT</b></a>
-				<a href="parentFullReport.php" class="parent"><b>PARENT</b></a>
-				<a href="teacherFullReport.php" class="teacher"><b>TEACHER</b></a>
-			</div>
-	</form>
-
-<form id="form2" name="form2" method="post">
-  <p style="font-size: 25px;"><b></b></p>
-  <p>
-    <input name="searchBox" type="text" id="searchBox" placeholder="Search by student id">
-    <input name="submit" type="submit" id="submit" formaction="studentSearchReport.php" value="Search">
-  </p>
-</form>
-<form id="form3" name="form3" method="post">
-  <table>
-    <tbody>
-      <tr>
-        <th>ID</th>
-        <th>NAME</th>
-        <th>GENDER</th>
-        <th>DOB</th>
-        <th>POB</th>
-        <th>RELIGION</th>
-        <th>RACE</th>
-        <th>NATIONALITY</th>
-        <th>ADDRESS</th>
-        <th>DISEASE</th>
-        <th>DISABILITY</th>
-        <th>STATUS</th>
-        <th>PASSWORD</th>
-      </tr>
-		<?php do { ?>
-      <tr class="tr-hover">
-        <td><?php echo $row_rsStudent['STUDENT_ID']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_NAME']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_GENDER']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DOB']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_POB']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_RELIGION']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_RACE']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_NATIONALITY']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_ADDRESS']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DISEASE']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_DISABILITY']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_STATUS']; ?></td>
-        <td><?php echo $row_rsStudent['STUDENT_PWD']; ?></td>
-      </tr>
-		<?php } while ($row_rsStudent = mysqli_fetch_assoc($rsStudent)); ?>
-    </tbody>
-  </table>
+    <form id="form1" name="form1" method="post">
+        <h2><i class="fas fa-chart-bar"></i> FULL REPORT</h2>
+        <h2 class="h2-ct">STUDENT</h2>
+        <div class="nav-links">
+            <a href="studentFullReport.php" class="student"><b>STUDENT</b></a>
+            <a href="parentFullReport.php" class="parent"><b>PARENT</b></a>
+            <a href="teacherFullReport.php" class="teacher"><b>TEACHER</b></a>
+        </div>
     </form>
-<div class="button-container">
-  <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
-    <i class="fas fa-arrow-left"></i> Back
-  </button>
-  <button type="button" class="proceed-payment-button" onclick="window.print()">
-    <i class="fas fa-arrow-left"></i> 🖨 Print
-  </button>
-  </div>
 
+    <div class="search-section">
+        <!-- Show All Button on the left -->
+        <form method="post" class="show-all-form">
+            <input name="showall" type="submit" value="Show All" class="show-all-button">
+        </form>
+
+        <!-- Search Form on the right -->
+        <form id="form2" name="form2" method="post" class="search-form">
+            <input name="searchBox" type="text" id="searchBox" placeholder="Search by student id" class="search-input">
+            <input name="submit" type="submit" value="Search" class="search-button">
+        </form>
+    </div>
+
+    <form id="form3" name="form3" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>GENDER</th>
+                    <th>DOB</th>
+                    <th>POB</th>
+                    <th>RELIGION</th>
+                    <th>RACE</th>
+                    <th>NATIONALITY</th>
+                    <th>ADDRESS</th>
+                    <th>DISEASE</th>
+                    <th>DISABILITY</th>
+                    <th>STATUS</th>
+                    <th>PASSWORD</th>
+                </tr>
+                <?php if ($totalRows_rsStudent > 0): ?>
+                    <?php do { ?>
+                        <tr class="tr-hover">
+                            <td><?php echo $row_rsStudent['STUDENT_ID']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_NAME']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_GENDER']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_DOB']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_POB']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_RELIGION']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_RACE']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_NATIONALITY']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_ADDRESS']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_DISEASE']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_DISABILITY']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_STATUS']; ?></td>
+                            <td><?php echo $row_rsStudent['STUDENT_PWD']; ?></td>
+                        </tr>
+                    <?php } while ($row_rsStudent = mysqli_fetch_assoc($rsStudent)); ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="13" style="color: red; font-weight: bold;">No record found</td>
+                    </tr>
+                <?php endif; ?>
+
+            </tbody>
+        </table>
+    </form>
+
+    <div class="button-container">
+        <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button type="button" class="proceed-payment-button" onclick="window.print()">
+            <i class="fas fa-arrow-left"></i> 🖨 Print
+        </button>
+    </div>
+</div>
 </body>
 </html>
-<?php
-mysqli_free_result($rsStudent);
-?>
+<?php mysqli_free_result($rsStudent);?>
+<?php include "../header/footer.php" ?>
