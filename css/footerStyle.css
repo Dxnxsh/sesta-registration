@@ -2,14 +2,25 @@ html, body {
   height: 100%;
   margin: 0;
 }
-.content {
-  padding: 20px;
-  min-height: 100%;
-  margin: 0 auto -50px;
+
+body {
+  display: flex;
+  flex-direction: column;
 }
-.footer,
+
+.wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .push {
+  flex-grow: 1;
+}
+
+.footer {
   height: 50px;
+  margin-top: auto;
 }
 
 * {
