@@ -299,7 +299,9 @@ if (isset($_POST['upload'])) {
         }
 
         .upload-label input[type="file"] {
-            display: none;
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
         }
 
         .upload-button {
