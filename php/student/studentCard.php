@@ -200,7 +200,13 @@ if (!isset($_SESSION['valid'])) {
                     <div class="card-inner">
                         <!-- Front Side -->
                         <div class="card-face card-front">
-                        <img src="data:image/jpeg;base64,<?php echo base64_encode($res_Face); ?>" class="student-photo" alt="Student Face">
+                        <?php if (!empty($res_Face)): ?>
+                            <img src="<?php echo $res_Face; ?>" class="student-photo" alt="Student Face">
+                        <?php else: ?>
+                            <div class="student-photo" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #666;">
+                                No Photo
+                            </div>
+                        <?php endif; ?>
                             <div class="front-bottom">
                                 <div class="text front-name"><?php echo $res_Name; ?></div>
                                 <div style="margin-top: 10px;">
