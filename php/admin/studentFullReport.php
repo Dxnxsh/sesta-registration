@@ -336,7 +336,7 @@ if ($totalRows_rsStudent > 0) {
 <body>
 <div class="container">
     <form id="form1" name="form1" method="post">
-        <h2><i class="fas fa-chart-bar"></i> FULL REPORT</h2>
+        <h2>FULL REPORT</h2>
         <h2 class="h2-ct">STUDENT</h2>
         <div class="nav-links">
             <a href="studentFullReport.php" class="student"><b>STUDENT</b></a>
