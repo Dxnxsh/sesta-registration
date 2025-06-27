@@ -17,10 +17,11 @@ if (!isset($_SESSION['adminID'])) {
     <title>System Summary</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-image: url("../../image/bg5.jpeg");
+            background-image: url("../../image/admin.png");
             background-repeat: no-repeat;
-            background-size: cover;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            font-family: "Poppins", sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -28,7 +29,8 @@ if (!isset($_SESSION['adminID'])) {
         .container {
             width: 50%;
             margin-top: 30px;
-            margin-left: 320px;
+            margin-left: auto;
+            margin-right: auto;
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 20px;
@@ -39,7 +41,6 @@ if (!isset($_SESSION['adminID'])) {
         table {
             border-collapse: separate;
             border-spacing: 10px;
-            /* Adjust the spacing between cells */
             width: 100%;
         }
 
