@@ -51,8 +51,6 @@ h2 {
 #subject-outline-header {
   text-align: center;
   color: white;
-  position: relative;
-  z-index: 2;
 }
 
 i {
