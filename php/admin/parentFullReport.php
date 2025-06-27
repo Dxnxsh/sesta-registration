@@ -1,10 +1,10 @@
 <?php
-  session_start();
-  include "../header/adminHeader.php" ?>
-<?php require_once('../config.php'); 
+session_start();
+include "../header/adminHeader.php";
+require_once('../config.php');
+
 if (!function_exists("GetSQLValueString")) {
-    function GetSQLValueString($value, $type, $definedValue = "", $notDefinedValue = "") 
-    {
+    function GetSQLValueString($value, $type, $definedValue = "", $notDefinedValue = "") {
         if (PHP_VERSION < 6) {
             $value = get_magic_quotes_gpc() ? stripslashes($value) : $value;
         }
@@ -13,59 +13,70 @@ if (!function_exists("GetSQLValueString")) {
 
         switch ($type) {
             case "text":
-                $value = ($value != "") ? "'" . $value . "'" : "NULL";
-                break;    
+                $value = ($value != "") ? "'" . $value . "'" : "NULL"; break;
             case "long":
             case "int":
-                $value = ($value != "") ? intval($value) : "NULL";
-                break;
+                $value = ($value != "") ? intval($value) : "NULL"; break;
             case "double":
-                $value = ($value != "") ? doubleval($value) : "NULL";
-                break;
+                $value = ($value != "") ? doubleval($value) : "NULL"; break;
             case "date":
-                $value = ($value != "") ? "'" . $value . "'" : "NULL";
-                break;
+                $value = ($value != "") ? "'" . $value . "'" : "NULL"; break;
             case "defined":
-                $value = ($value != "") ? $definedValue : $notDefinedValue;
-                break;
+                $value = ($value != "") ? $definedValue : $notDefinedValue; break;
         }
         return $value;
     }
 }
-$query_rsParent = "SELECT * FROM parent";
+
+$searchTerm = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit']) && !empty($_POST['searchBox'])) {
+        $searchTerm = trim($_POST['searchBox']);
+        $query_rsParent = "SELECT * FROM parent WHERE PARENT_ID LIKE '%" . mysqli_real_escape_string($con, $searchTerm) . "%'";
+    } else {
+        $query_rsParent = "SELECT * FROM parent"; // Show all
+    }
+} else {
+    $query_rsParent = "SELECT * FROM parent";
+}
+
 $rsParent = mysqli_query($con, $query_rsParent) or die(mysqli_error($con));
-$row_rsParent = mysqli_fetch_assoc($rsParent);
+$row_rsParent = null;
 $totalRows_rsParent = mysqli_num_rows($rsParent);
+if ($totalRows_rsParent > 0) {
+    $row_rsParent = mysqli_fetch_assoc($rsParent);
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
+
+<!doctype html>
+<html>
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
     <meta charset="utf-8">
-    <title>Parent Report</title>
+    <title>Parent Full Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
     <style>
         body {
-            background-image: url("../../image/bg5.jpeg");
+            background-image: url("../../image/admin.png");
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: 100% 100%;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             margin: 0;
-            padding-top: 90px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding: 0;
         }
 
         .container {
-            background-color: white;
+            width: 96%; 
+            margin: 30px auto;
+            background-color: #fff;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-       h2 {
+
+        h2 {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -82,7 +93,7 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(to right, #3a7bd5 0%, #3a6073  51%, #3a7bd5  100%);
+            background-image: linear-gradient(to right, #c21500 0%, #ffc500  51%, #c21500  100%);
             font-size: 30px;
             color: white;
             text-align: center;
@@ -91,14 +102,10 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-
-        i {
-            margin-right: 10px;
-        }
         .button-container {
             display: flex;
-            justify-content: center; /* Center the buttons horizontally */
-            align-items: center; /* Center the buttons vertically */
+            justify-content: center;
+            align-items: center;
         }
 
         .nav-links {
@@ -112,180 +119,239 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
             color: #fff;
             font-size: 18px;
             width: 100%;
-			padding: 10px;
-            border: 1px solid #4CAF50;
+            padding: 10px;
             transition: background-color 0.3s;
-			text-align: center;
-        }
-
-        .nav-links a.student {
-            background-color: #4CAF50;
-        }
-
-        .nav-links a.parent {
-            background-color: #008CBA;
-        }
-
-        .nav-links a.teacher {
-            background-color: #FF6600;
-        }
-
-        .nav-links a.student:hover {
-            background-color: #45a049;
-        }
-		.nav-links a.parent:hover {
-            background-color: #0098E2;
-        }
-		.nav-links a.teacher:hover {
-            background-color: #E05900;
-        }
-
-        #form2 {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 60%;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            padding: 8px;
-            background-color: #1484BD ;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 30%;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #1C48C7;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-
-        th, td {
-            padding: 12px;
             text-align: center;
         }
 
-        th {
-            background-color: #1484BD ;
-            color: white;
+        .nav-links a.student {
+            background-color: #008CBA;
         }
-		.tr-hover:hover {
-    		background-color: #f5f5f5;
-		}
- /* Button styling */
-    .proceed-payment-button {
-      all: unset;
-      width: 50px;
-      height: 30px;
-      font-size: 16px;
-      color: #f0f0f0;
-      cursor: pointer;
-      z-index: 1;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      position: relative;
-      margin: 20px; /* Center the button horizontally within its container */
-    }
 
-    .proceed-payment-button::after,
-    .proceed-payment-button::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      z-index: -99999;
-      transition: all .4s;
-    }
+        .nav-links a.parent {
+            background-color:  #FF6600;
+        }
 
-    .proceed-payment-button::before {
-      transform: translate(0%, 0%);
-      width: 100%;
-      height: 100%;
-      background: #233858;
-      border-radius: 10px;
-      background-color: #1484BD ;
-    }
+        .nav-links a.teacher {
+            background-color: #4CAF50;
+        }
 
-    .proceed-payment-button::after {
-      transform: translate(10px, 10px);
-      width: 35px;
-      height: 35px;
-      background: #ffffff15;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border-radius: 50px;
-    }
+        .nav-links a.student:hover {
+            background-color: #0098E2;
+        }
 
-    .proceed-payment-button:hover::before {
-      transform: translate(5%, 20%);
-      width: 110%;
-      height: 110%;
-    }
+        .nav-links a.parent:hover {
+            background-color: #E05900;
+        }
 
-    .proceed-payment-button:hover::after {
-      border-radius: 10px;
-      transform: translate(0, 0);
-      width: 100%;
-      height: 100%;
-    }
+        .nav-links a.teacher:hover {
+            background-color: #45a049;
+        }
 
-    .proceed-payment-button:active::after {
-      transition: 0s;
-      transform: translate(0, 5%);
-    }
+        .search-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .show-all-form {
+            margin: 0;
+        }
+
+        .show-all-button {
+            background-color: #FF6600;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .show-all-button:hover {
+            background-color: #E05900;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+
+        .search-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        .search-button {
+            background-color: #FF6600;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #E05900;
+        }
+
+
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            border: 1px solid grey;
+        }
+
+        th, td {
+            padding: 4px;
+            text-align: center;
+            word-wrap: break-word;
+            border: 1px solid grey; /* cell borders */
+        }
+
+        th {
+            background-color: #FF6600;
+            color: white;
+            font-size: 10px;
+        }
+
+        .tr-hover:hover {
+            background-color: #f5f5f5;
+        }
+
+        .proceed-payment-button {
+            all: unset;
+            width: 50px;
+            height: 30px;
+            font-size: 16px;
+            color: #f0f0f0;
+            cursor: pointer;
+            z-index: 1;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            position: relative;
+            margin: 20px;
+        }
+
+        .proceed-payment-button::after,
+        .proceed-payment-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: -99999;
+            transition: all .4s;
+        }
+
+        .proceed-payment-button::before {
+            transform: translate(0%, 0%);
+            width: 100%;
+            height: 100%;
+            background: #233858;
+            border-radius: 10px;
+            background-color: #FF6600;
+        }
+
+        .proceed-payment-button::after {
+            transform: translate(10px, 10px);
+            width: 35px;
+            height: 35px;
+            background: #ffffff15;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 50px;
+        }
+
+        .proceed-payment-button:hover::before {
+            transform: translate(5%, 20%);
+            width: 110%;
+            height: 110%;
+        }
+
+        .proceed-payment-button:hover::after {
+            border-radius: 10px;
+            transform: translate(0, 0);
+            width: 100%;
+            height: 100%;
+        }
+
+        .proceed-payment-button:active::after {
+            transition: 0s;
+            transform: translate(0, 5%);
+        }
+
+        @media print {
+
+            body {
+                visibility: hidden; /* Hide everything */
+            }
+
+            .container, .container * {
+                visibility: visible; /* Only show container */
+                margin: 0;
+                padding: 0;
+            }
+
+            .search-section * {
+                display: none !important;
+            }
+
+            .button-container * {
+                display: none !important;
+            }
+
+            
+            .nav-links * {
+                visibility: hidden;
+            }
+
+            .container {
+                width: 100%;
+                box-shadow: none; /* Optional: remove shadow */
+                border: none; /* Optional: remove border */
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-		<form id="form1" name="form1" method="post">
-			<h2>
-            <i class="fas fa-chart-bar"></i> FULL REPORT
-        </h2>
-        <h2 class="h2-ct">
-             PARENT
-        </h2>
-			<div class="nav-links">
-				<a href="studentFullReport.php" class="student"><b>STUDENT</b></a>
-				<a href="parentFullReport.php" class="parent"><b>PARENT</b></a>
-				<a href="teacherFullReport.php" class="teacher"><b>TEACHER</b></a>
-			</div>
-		</form>
-        <form id="form2" name="form2" method="post">
-            <p style="font-size: 25px;"><b></b></p>
-            <p>
-                <input name="searchBox" type="text" id="searchBox" placeholder="Search Parent ID">
-                <input name="submit" type="submit" id="submit" formaction="parentSearchReport.php" value="Search">
-            </p>
+<div class="container">
+    <form id="form1" name="form1" method="post">
+        <h2><i class="fas fa-chart-bar"></i> FULL REPORT</h2>
+        <h2 class="h2-ct">PARENT</h2>
+        <div class="nav-links">
+            <a href="studentFullReport.php" class="student"><b>STUDENT</b></a>
+            <a href="parentFullReport.php" class="parent"><b>PARENT</b></a>
+            <a href="teacherFullReport.php" class="teacher"><b>TEACHER</b></a>
+        </div>
+    </form>
+
+    <div class="search-section">
+        <!-- Show All Button on the left -->
+        <form method="post" class="show-all-form">
+            <input name="showall" type="submit" value="Show All" class="show-all-button">
         </form>
-<form id="form3" name="form3" method="post">
+
+        <!-- Search Form on the right -->
+        <form id="form2" name="form2" method="post" class="search-form">
+            <input name="searchBox" type="text" id="searchBox" placeholder="Search by student id" class="search-input">
+            <input name="submit" type="submit" value="Search" class="search-button">
+        </form>
+    </div>
+
+    <form id="form3" name="form3" method="post">
         <table>
             <tr>
                 <th>ID</th>
@@ -295,29 +361,33 @@ $totalRows_rsParent = mysqli_num_rows($rsParent);
                 <th>JOB</th>
                 <th>MONTHLY INCOME</th>
             </tr>
-            <?php do { ?>
-    <tr class="tr-hover">
-        <td><?php echo $row_rsParent['PARENT_ID']; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_NAME']) ? $row_rsParent['PARENT_NAME'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_GENDER']) ? $row_rsParent['PARENT_GENDER'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_PHONENUM']) ? $row_rsParent['PARENT_PHONENUM'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_JOB']) ? $row_rsParent['PARENT_JOB'] : ''; ?></td>
-        <td><?php echo isset($row_rsParent['PARENT_MONTHLY_INCOME']) ? $row_rsParent['PARENT_MONTHLY_INCOME'] : ''; ?></td>
-    </tr>
-<?php } while ($row_rsParent = mysqli_fetch_assoc($rsParent)); ?>
-
+            <?php if ($totalRows_rsParent > 0): ?>
+                <?php do { ?>
+                    <tr class="tr-hover">
+                        <td><?php echo $row_rsParent['PARENT_ID']; ?></td>
+                        <td><?php echo $row_rsParent['PARENT_NAME']; ?></td>
+                        <td><?php echo $row_rsParent['PARENT_GENDER']; ?></td>
+                        <td><?php echo $row_rsParent['PARENT_PHONENUM']; ?></td>
+                        <td><?php echo $row_rsParent['PARENT_JOB']; ?></td>
+                        <td><?php echo $row_rsParent['PARENT_MONTHLY_INCOME']; ?></td>
+                    </tr>
+                <?php } while ($row_rsParent = mysqli_fetch_assoc($rsParent)); ?>
+            <?php else: ?>
+                <tr><td colspan="6" style="color: red; font-weight: bold;">No record found</td></tr>
+            <?php endif; ?>
         </table>
-        </form>
-        <p>&nbsp;</p>
-        <div class="button-container">
-  <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
-    <i class="fas fa-arrow-left"></i> Back
-  </button>
-  <button type="button" class="proceed-payment-button" onclick="window.print()">
-    <i class="fas fa-arrow-left"></i> 🖨 Print
-  </button>
-  </div>
+    </form>
+
+    <div class="button-container">
+        <button type="button" class="proceed-payment-button" onclick="window.location.href = 'Admin_home.php';">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button type="button" class="proceed-payment-button" onclick="window.print()">
+            <i class="fas fa-arrow-left"></i> 🖨 Print
+        </button>
+    </div>
+</div>
+</body>
 </html>
-<?php
-mysqli_free_result($rsParent);
-?>
+<?php mysqli_free_result($rsParent);?>
+<?php include "../header/footer.php" ?>

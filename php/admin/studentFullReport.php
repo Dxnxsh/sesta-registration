@@ -59,7 +59,7 @@ if ($totalRows_rsStudent > 0) {
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Student Report</title>
+    <title>Student Full Report</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
     <style>
         body {
@@ -74,7 +74,7 @@ if ($totalRows_rsStudent > 0) {
 
         .container {
             width: 96%; 
-            margin: 10px auto;
+            margin: 30px auto;
             background-color: #fff;
             padding: 20px;
             border: 1px solid #ccc;
@@ -100,17 +100,13 @@ if ($totalRows_rsStudent > 0) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(to right, #34e89e 0%, #0f3443  51%, #34e89e  100%);
+            background-image: linear-gradient(to right, #3a6073 0%, #3a7bd5  51%, #3a6073  100%);
             font-size: 30px;
             color: white;
             text-align: center;
             padding: 10px 20px;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        i {
-            margin-right: 10px;
         }
 
         .button-container {
@@ -131,33 +127,32 @@ if ($totalRows_rsStudent > 0) {
             font-size: 18px;
             width: 100%;
             padding: 10px;
-            border: 1px solid #4CAF50;
             transition: background-color 0.3s;
             text-align: center;
         }
 
         .nav-links a.student {
-            background-color: #4CAF50;
-        }
-
-        .nav-links a.parent {
             background-color: #008CBA;
         }
 
+        .nav-links a.parent {
+            background-color:  #FF6600;
+        }
+
         .nav-links a.teacher {
-            background-color: #FF6600;
+            background-color: #4CAF50;
         }
 
         .nav-links a.student:hover {
-            background-color: #45a049;
-        }
-
-        .nav-links a.parent:hover {
             background-color: #0098E2;
         }
 
-        .nav-links a.teacher:hover {
+        .nav-links a.parent:hover {
             background-color: #E05900;
+        }
+
+        .nav-links a.teacher:hover {
+            background-color: #45a049;
         }
 
         .search-section {
@@ -173,7 +168,7 @@ if ($totalRows_rsStudent > 0) {
         }
 
         .show-all-button {
-            background-color: #4CAF50;
+            background-color: #1484BD;
             color: white;
             padding: 8px 16px;
             border: none;
@@ -182,12 +177,11 @@ if ($totalRows_rsStudent > 0) {
         }
 
         .show-all-button:hover {
-            background-color: #45a049;
+            background-color: #0098E2;
         }
 
         .search-form {
             display: flex;
-            gap: 10px;
             align-items: center;
             margin: 0;
         }
@@ -200,7 +194,7 @@ if ($totalRows_rsStudent > 0) {
         }
 
         .search-button {
-            background-color: #4CAF50;
+            background-color: #1484BD;
             color: white;
             padding: 8px 16px;
             border: none;
@@ -209,29 +203,27 @@ if ($totalRows_rsStudent > 0) {
         }
 
         .search-button:hover {
-            background-color: #45a049;
+            background-color: #0098E2;
         }
 
 
         table {
             margin-top: 20px;
             width: 100%;
-            table-layout: fixed;
             border-collapse: collapse;
-            background-color: #fff;
             font-size: 10px;
-            border: 1px solid black; /* outer border */
+            border: 1px solid grey;
         }
 
         th, td {
             padding: 4px;
             text-align: center;
             word-wrap: break-word;
-            border: 1px solid black; /* cell borders */
+            border: 1px solid grey; /* cell borders */
         }
 
         th {
-            background-color: #14BD59;
+            background-color: #1484BD;
             color: white;
             font-size: 10px;
         }
@@ -276,7 +268,7 @@ if ($totalRows_rsStudent > 0) {
             height: 100%;
             background: #233858;
             border-radius: 10px;
-            background-color: #14BD59;
+            background-color: #1484BD;
         }
 
         .proceed-payment-button::after {
@@ -309,22 +301,34 @@ if ($totalRows_rsStudent > 0) {
 
         @media print {
 
-          body * {
-            visibility: hidden; /* Hide everything */
-          }
+            body {
+                visibility: hidden; /* Hide everything */
+            }
 
-          .container, .container * {
-            visibility: visible; /* Only show container */
-          }
+            .container, .container * {
+                visibility: visible; /* Only show container */
+                margin: 0;
+                padding: 0;
+            }
 
-          .container {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            box-shadow: none; /* Optional: remove shadow */
-            border: none; /* Optional: remove border */
-          }
+            .search-section * {
+                display: none !important;
+            }
+
+            .button-container * {
+                display: none !important;
+            }
+
+            
+            .nav-links * {
+                visibility: hidden;
+            }
+
+            .container {
+                width: 100%;
+                box-shadow: none; /* Optional: remove shadow */
+                border: none; /* Optional: remove border */
+            }
         }
     </style>
 </head>
