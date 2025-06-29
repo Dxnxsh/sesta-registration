@@ -87,4 +87,3 @@ if (!isset($_SESSION['adminID'])) {
 </body>
 
 </html>
-<?php include "../header/footer.php" ?>
