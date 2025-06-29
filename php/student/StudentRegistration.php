@@ -92,10 +92,11 @@ if (isset($_POST['submit'])) {
 
 
 </head>
+
 <body>
 	<div class="container">
 		<form name="studentRegister" method="post" id="studentRegister">
-			<h1><img src="(../../image/bg11.jpeg" alt="Search Icon" width="50" height="45" class="img-icon">
+			<h1><img src="../../image/icon/student.png" alt="Search Icon" width="50" height="45" class="img-icon">
 				Student Registration</h1>
 			<div class="container2">
 				<div style="display: block;">
