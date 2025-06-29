@@ -256,16 +256,28 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
 
                         // Handle the response from the server
                         if (data.success) {
-                            Swal.fire({
-                                title: 'Class Record Updated',
-                                text: 'The new class record has been updated successfully.',
-                                icon: 'success',
-                                confirmButtonColor: '#4caf50',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
+                            if (data.error.includes('No changes were made to the class information')) {
+                                Swal.fire({
+                                    title: 'No Changes Made',
+                                    text: data.error,
+                                    icon: 'info',
+                                    confirmButtonColor: '#4caf50',
+                                }).then(() => {
+                                    // Redirect to the class list page
                                     window.location.href = 'adminClass.php';
-                                }
-                            });
+                                });
+                            } else {
+                                // Show success message
+                                Swal.fire({
+                                    title: 'Class Record Updated',
+                                    text: 'The new class record has been updated successfully.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#4caf50',
+                                }).then(() => {
+                                    // Redirect to the class list page
+                                    window.location.href = 'adminClass.php';
+                                });
+                            }
                         } else {
                             // Check if it's a teacher assignment error
                             if (data.error && data.error.includes('Teacher is already assigned')) {

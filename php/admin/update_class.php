@@ -18,7 +18,7 @@ $classCode = $_POST['cCode'];
 if ($teacherID !== NULL) {
     $checkTeacherQuery = "SELECT CLASS_CODE FROM class WHERE TEACHER_ID = '$teacherID' AND CLASS_CODE != '$classCode'";
     $checkResult = mysqli_query($con, $checkTeacherQuery);
-    
+
     if (mysqli_num_rows($checkResult) > 0) {
         echo json_encode(['success' => false, 'error' => 'Teacher is already assigned to another class. Each teacher can only be assigned to one class.']);
         exit();
@@ -33,7 +33,13 @@ $updateQuery = "UPDATE `class` SET `CLASS_NAME`='$name', `CLASS_LEVEL`='$level',
 error_log($updateQuery);
 
 if (mysqli_query($con, $updateQuery)) {
-    echo json_encode(['success' => true]);
+    $affected_rows = mysqli_affected_rows($con);
+
+    if ($affected_rows > 0) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => true, 'error' => 'No changes were made to the class information']);
+    }
 } else {
     $error = mysqli_error($con);
     if (strpos($error, 'unique_teacher') !== false) {
@@ -42,4 +48,3 @@ if (mysqli_query($con, $updateQuery)) {
         echo json_encode(['success' => false, 'error' => $error]);
     }
 }
-?>
