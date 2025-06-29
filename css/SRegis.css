@@ -1,6 +1,5 @@
 /* CSS Document */
 body {
-    background-image: url("../image/admin.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
@@ -11,6 +10,11 @@ body {
 .body-teacher {
 	background-image: url("../image/teacher.png");
 }
+
+.body-student {
+	background-image: url("../image/bg11.jpeg");
+}
+
 h1, h2 {
     text-align: center;
     color: #333;
