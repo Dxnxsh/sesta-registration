@@ -279,9 +279,8 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
 </head>
 <body>
     <div class="container">
-        <h1>View Billing</h1>
         <form id="form2" name="form2" method="get">
-            <h1>Student Information</h1>
+            <h1>View Billing</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="STUDENT_ID">STUDENT ID</option>
