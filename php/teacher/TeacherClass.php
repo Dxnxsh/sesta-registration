@@ -99,9 +99,9 @@ if (isset($_SESSION['validTC'])) {
                     <th>DOB</th>
                     <th>GUARDIAN CONTACT NUMBER</th>
                     <th>EMAIL</th>
-                    <th></th>
                 </tr>
             </thead>
+
             <tbody>
                 <?php
                 if (isset($row_rsClass) && !empty($row_rsClass['CLASS_CODE'])) {
