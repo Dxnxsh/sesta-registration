@@ -78,12 +78,10 @@ li {
 }
 
 .header {
-    margin-top: 30px;
-    margin-right: 40px;
-    margin-left: 180px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
-
-
 
 .button a {
     display: inline-block;
