@@ -207,7 +207,7 @@ if (!isset($_SESSION['adminID'])) {
 		],
 		chart: {
 			type: 'bar',
-			height: 350,
+			height: 400,
 			toolbar: {
 				show: false,
 			},
