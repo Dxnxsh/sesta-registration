@@ -53,8 +53,7 @@ if (isset($_SESSION['validTC'])) {
 </head>
 
 <body>
-
-<h1>CLASS INFORMATION </h1>
+    <h1>Assigned Class</h1>
     <div class="container">
         <h2>CLASS <?php echo htmlspecialchars($className ?? 'N/A'); ?></h2>
         <table>
@@ -84,14 +83,11 @@ if (isset($_SESSION['validTC'])) {
                 </tr>
                 <?php endif; ?>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
-    </div>
 
-    <p>&nbsp;</p>
+        <br><br>
 
-    <div class="container2">
         <h2>LIST OF STUDENTS IN YOUR CLASS</h2>
         <table>
             <thead>
@@ -108,7 +104,6 @@ if (isset($_SESSION['validTC'])) {
             </thead>
             <tbody>
                 <?php
-                // Check if class data exists before querying students
                 if (isset($row_rsClass) && !empty($row_rsClass['CLASS_CODE'])) {
                     $selectData2 = "SELECT * FROM student
                     JOIN class ON class.CLASS_CODE = student.CLASS_CODE
@@ -117,64 +112,32 @@ if (isset($_SESSION['validTC'])) {
 
                     $queryClass2 = mysqli_query($con, $selectData2) or die(mysqli_error($con));
 
-                // Check if any records exist
-                if (mysqli_num_rows($queryClass2) > 0) {
-                    // Fetch and process the results
-                    if ($row_rsClass2 = mysqli_fetch_assoc($queryClass2)) {
-                        // Process data from the "teacher" and "class" tables
-                        $stid = $row_rsClass2['STUDENT_ID'];
-                        $stname = $row_rsClass2['STUDENT_NAME'];
-                        $stgend = $row_rsClass2['STUDENT_GENDER'];
-                        $strel = $row_rsClass2['STUDENT_RELIGION'];
-                        $stdob = $row_rsClass2['STUDENT_DOB'];
-                        $stpar = $row_rsClass2['PARENT_NAME'];
-                        $stctc = $row_rsClass2['PARENT_PHONENUM'];
-                        $email = $row_rsClass2['STUDENT_EMAIL'];
-                    }
-
-                    // Reset the pointer for the next fetch
-                    mysqli_data_seek($queryClass2, 0);
-
-                    while ($row_rsClass_rsStudent = mysqli_fetch_assoc($queryClass2)) {
-                        ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_ID'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_NAME'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_GENDER'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_RELIGION'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_DOB'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['PARENT_PHONENUM'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_EMAIL'] ?? ''); ?></td>
-                        </tr>
-                        <?php
+                    if (mysqli_num_rows($queryClass2) > 0) {
+                        while ($row_rsClass_rsStudent = mysqli_fetch_assoc($queryClass2)) {
+                ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_ID'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_NAME'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_GENDER'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_RELIGION'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_DOB'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['PARENT_PHONENUM'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($row_rsClass_rsStudent['STUDENT_EMAIL'] ?? ''); ?></td>
+                            </tr>
+                <?php
+                        }
+                    } else {
+                        echo '<tr><td colspan="7" style="text-align: center; padding: 20px;">No students found in this class.</td></tr>';
                     }
                 } else {
-                    // Display message when no students found
-                    ?>
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px;">No students found in this class.</td>
-                    </tr>
-                    <?php
-                }
-                } else {
-                    // Display message when no class data found
-                    ?>
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px;">No class assigned to this teacher.</td>
-                    </tr>
-                    <?php
+                    echo '<tr><td colspan="7" style="text-align: center; padding: 20px;">No class assigned to this teacher.</td></tr>';
                 }
                 ?>
             </tbody>
         </table>
-        <button class="back-button" onclick="goBack()">Go Back</button>
-    </div>
 
-    <script>
-        function goBack() {
-            window.history.back();
-        }
-    </script>
+        <button class="back-button" onclick="window.location.href = '../student/teacher_home.php';">Go Back</button>
+    </div>
 </body>
 
 </html>

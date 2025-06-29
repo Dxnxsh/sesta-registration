@@ -19,8 +19,6 @@ header {
 
 h1 {
     color: #ffffff;
-	margin: 50px 0 10px 0;
-	font-size: 40px;
 	text-align: center;
 }
 
@@ -48,18 +46,21 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    text-align: center;
 }
 
-th, td {
-    padding: 12px;
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
+    align-content: center;
 }
 
 th {
-    background-color: #333;
-    color: #fff;
+    background-color: #04AA6D;
+    color: white;
+    text-align: center;
 }
 .back-button {
     background-color: #4285f4; /* Google Blue */
