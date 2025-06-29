@@ -119,16 +119,6 @@ if (!$result) {
             background-color: #45a049;
         }
 
-        .container2 {
-            width: 80%;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -168,22 +158,19 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
 }
 ?>
 	<div class="container">
-         <h1>View Billing</h1>
-         <form action="" method="get">
-        <p>
-            <select name="searchOption" id="searchOption">
-                <option value="name">Search by Name</option>
-                <option value="ic">Search by IC</option>
-            </select>
-            <input name="searchBox" type="text" id="searchBox" placeholder="Enter search term">
-            <input name="submit" type="submit" id="submit" formaction="TeacherBilling.php" value="Search">
-        </p>
-    </form>
+        <h1>View Billing</h1>
+        <form action="" method="get">
+            <p>
+                <select name="searchOption" id="searchOption">
+                    <option value="name">Search by Name</option>
+                    <option value="ic">Search by IC</option>
+                </select>
+                <input name="searchBox" type="text" id="searchBox" placeholder="Enter search term">
+                <input name="submit" type="submit" id="submit" formaction="TeacherBilling.php" value="Search">
+            </p>
+        </form>
 		
-	</div>
-
-	<div class="container2">
-	  <table width="90%" border="1" cellspacing="5">
+        <table width="90%" border="1" cellspacing="5">
 	    <tbody>
 			<tr class="tr-color">
 	        <td width="13%">PAYMENT ID</td>
@@ -261,7 +248,6 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                 ?>
         </tbody>
       </table>
-		
 	</div>
 </body>
 </html>
