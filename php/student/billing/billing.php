@@ -25,12 +25,11 @@
 
 
     .container {
-      max-width: 1000px;
+      width: 60%;
       margin: 20px auto;
       background-color: #ffffff;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
       border-radius: 3px;
-      overflow: hidden;
       padding-left: 30px;
       padding-right: 30px;
     }
