@@ -288,7 +288,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">
-                <a class="reset-button" href="studentList.php">Show All</a>
+                <a class="reset-button" href="TeacherBilling.php">Show All</a>
             </div>
         </form>
 
