@@ -105,6 +105,12 @@ function loadAsset($type, $path)
               </a>
             </li>
             <li class="list">
+              <a href="<?php echo getBasePath(); ?>php/admin/manageAds.php" class="nav-link">
+                <i class='bx bxs-file icon'></i>
+                <span class="link">Advertisement</span>
+              </a>
+            </li>
+            <li class="list">
               <a href="<?php echo getBasePath(); ?>php/admin/AdminbackupSummary.php" class="nav-link">
                 <i class='bx bxs-pie-chart-alt-2 icon'></i>
                 <span class="link">System Summary</span>
