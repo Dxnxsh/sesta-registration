@@ -24,7 +24,7 @@
 
 
 	<div class="header">
-      <h1 style="color: #FFFFFF">Teacher Profile</h1>
+      <h1>Teacher Profile</h1>
 	</div>
 	<div class="box">
 	<div class="container">
