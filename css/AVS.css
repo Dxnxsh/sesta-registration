@@ -111,24 +111,21 @@ button {
 .back-button:hover {
   background-color: #357ae8;
 }
-.table-wrapper {
-  margin: 20px;
-}
 
 .fl-table {
-  	width: 100%;
-  	margin-top: 20px;
+  width: 100%;
+  margin-top: 20px;
 	margin-bottom: 10px;
 	background-color: #ffffff;
-  	border-collapse: separate;
-    border-spacing: 10px;
+  border-collapse: separate;
+  border-spacing: 10px;
 	border: none;
 }
 
 .fl-table th, .fl-table td {
-  	border: 1px solid #dddddd;
-  	padding: 8px;
-  	text-align: left;
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: left;
 	border-collapse: separate;
 	border-spacing: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
@@ -136,10 +133,11 @@ button {
 .fl-table tr{
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	border: 2px solid #ddd;
-    border-radius: 10px;
+  border-radius: 10px;
 }
 .fl-table th {
-  	background-color:#00BF63;
+  width: 30%;
+  background-color:#00BF63;
 	color: white;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
