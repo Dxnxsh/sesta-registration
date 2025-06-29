@@ -131,7 +131,7 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     <link rel="stylesheet" type="text/css" href="../../css/SRegis.css" />
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Student Update details</title>
+    <title>Update Student Details</title>
 
     <?php if (isset($_SESSION['message'])): ?>
     <script>

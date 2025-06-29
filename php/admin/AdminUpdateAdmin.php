@@ -34,7 +34,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
 
 <head>
     <meta charset="utf-8">
-    <title>Update admin data</title>
+    <title>Update Admin Details</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <style>
@@ -121,7 +121,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
 
     
     <div class="container">
-        <h2>Register New Admin</h2>
+        <h2>Update Admin Details</h2>
         <form action="" name="adminform" method="POST" id="adminform">
     <p>
             
