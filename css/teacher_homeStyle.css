@@ -25,7 +25,7 @@ li {
 .box {
     display: flex; /* Use flexbox for the box container */
 	width: 70%;
-    margin-left: 160px;
+    margin: 20px auto;
 	padding-top: 30px;
     padding-bottom: 30px;
     justify-content: center;
