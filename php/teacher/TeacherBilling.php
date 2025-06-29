@@ -331,6 +331,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                 ?>
             </tbody>
         </table>
+        <div class='manage-buttons'><a class='back-button' href='teacher_home.php'>Go Back</a></div>
     </div>
 </body>
 </html>
