@@ -280,13 +280,17 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
 <body>
     <div class="container">
         <h1>View Billing</h1>
-        <form method="get">
-            <select name="searchOption">
-                <option value="name">Search by Name</option>
-                <option value="ic">Search by IC</option>
-            </select>
-            <input type="text" name="searchBox" placeholder="Enter search term">
-            <input type="submit" name="submit" value="Search">
+        <form id="form2" name="form2" method="get">
+            <h1>Student Information</h1>
+            <div class="search-container">
+                <div class="selectSearch"><select name="searchType" id="searchType">
+                        <option value="STUDENT_ID">STUDENT ID</option>
+                        <option value="STUDENT_NAME">STUDENT NAME</option>
+                    </select></div>
+                <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
+                <input name="submit" type="submit" id="submit" value="Search">
+                <a class="reset-button" href="studentList.php">Show All</a>
+            </div>
         </form>
 
         <table>
