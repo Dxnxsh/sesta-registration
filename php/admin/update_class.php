@@ -36,7 +36,7 @@ if (mysqli_query($con, $updateQuery)) {
     $affected_rows = mysqli_affected_rows($con);
 
     if ($affected_rows > 0) {
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'error'=> '']);
     } else {
         echo json_encode(['success' => true, 'error' => 'No changes were made to the class information']);
     }
