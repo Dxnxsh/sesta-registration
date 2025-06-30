@@ -310,7 +310,7 @@ $query = mysqli_query($con, $select);
                         <td>" . $result["STUDENT_LEVEL"] . "</td>
                         <td>" . $result["STUDENT_EMAIL"] . "</td>
     
-                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='teacherViewStud.php?id=" . $result["STUDENT_ID"] . "'>VIEW</a></td>
+                        <td class='manage-buttons'><a class='view-button' href='teacherViewStud.php?id=" . $result["STUDENT_ID"] . "'>VIEW</a></td>
     
                         </tr>
 
