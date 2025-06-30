@@ -103,7 +103,7 @@ if (isset($_GET['id'])) {
             <tr>
               <th>Address</th>
               <td>
-                <input type="text" id="address" name="address" value="<?php echo (!empty($address) ? $address : 'Not available'); ?>" disabled><br>
+                <?php echo (!empty($address) ? nl2br(htmlspecialchars($address)) : 'Not available'); ?>
               </td>
             </tr>
           </tbody>
