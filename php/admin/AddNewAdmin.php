@@ -16,6 +16,7 @@ if (!isset($_SESSION['adminID'])) {
     <title>Insert New Class Record</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/button.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,53 +57,16 @@ if (!isset($_SESSION['adminID'])) {
             padding: 8px;
             box-sizing: border-box;
         }
-
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        button {
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            color: #fff;
-        }
-
-        button[type="reset"] {
-            background-color: #FF0004;
-        }
-
-        button[type="button"] {
-            background-color: #4caf50;
-        }
-
-        .back-button {
-            background-color: #4285f4;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        .back-button:hover {
-            background-color: #357ae8;
-        }
     </style>
 </head>
 
 <body>
 
-    
+
     <div class="container">
         <h2>Register New Admin</h2>
         <form action="" name="adminform" method="POST" id="adminform">
-    <p>
+            <p>
                 <label for="id">Admin ID:</label>
                 <input type="text" name="adminId" id="adminId" placeholder="Enter ID" required>
 
@@ -121,19 +85,19 @@ if (!isset($_SESSION['adminID'])) {
                 <label for="passwd">Re-Enter Password:</label>
                 <input type="text" name="pwd2" id="pwd2" required>
 
-            
 
 
             </p>
             <div class="buttons">
+                <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
                 <button type="reset">Reset</button>
+                <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="adminform">Insert</button>
             </div>
         </form>
-        <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
 
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
