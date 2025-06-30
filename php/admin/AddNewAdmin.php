@@ -62,12 +62,20 @@ if (!isset($_SESSION['adminID'])) {
             justify-content: space-between;
         }
 
-        button {
+        button,
+        .back-button {
             padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             color: #fff;
+            width: 100%;
+            /* Ensures all buttons including .back-button have the same width */
+        }
+
+        .buttons>* {
+            flex: 1;
+            margin: 0 5px;
         }
 
         button[type="reset"] {
@@ -81,13 +89,10 @@ if (!isset($_SESSION['adminID'])) {
         .back-button {
             background-color: #4285f4;
             color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            /* width: 100%; moved to button, .back-button above */
+            /* Remove margin-top and margin-bottom for alignment */
+            margin: 0;
             font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 5px;
         }
 
         .back-button:hover {
@@ -98,11 +103,11 @@ if (!isset($_SESSION['adminID'])) {
 
 <body>
 
-    
+
     <div class="container">
         <h2>Register New Admin</h2>
         <form action="" name="adminform" method="POST" id="adminform">
-    <p>
+            <p>
                 <label for="id">Admin ID:</label>
                 <input type="text" name="adminId" id="adminId" placeholder="Enter ID" required>
 
@@ -121,19 +126,19 @@ if (!isset($_SESSION['adminID'])) {
                 <label for="passwd">Re-Enter Password:</label>
                 <input type="text" name="pwd2" id="pwd2" required>
 
-            
 
 
             </p>
             <div class="buttons">
+                <a href="adminList.php" style="flex:1; margin:0 5px;"><input class="back-button" type="button"
+                        value="BACK"></a>
                 <button type="reset">Reset</button>
                 <button type="button" id="save" name="submit" value="adminform">Insert</button>
             </div>
         </form>
-        <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
 
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
