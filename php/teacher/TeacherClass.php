@@ -86,6 +86,8 @@ if (isset($_SESSION['validTC'])) {
             <tbody></tbody>
         </table>
 
+        <br>
+
         <h2>LIST OF STUDENTS IN YOUR CLASS</h2>
         <table>
             <thead>
