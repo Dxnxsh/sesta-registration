@@ -60,7 +60,11 @@ if (!isset($_SESSION['adminID'])) {
         .buttons {
             display: flex;
             gap: 1rem;
-            /* Responsive spacing between buttons */
+            align-items: center;
+        }
+
+        .buttons .spacer {
+            flex: 2;
         }
 
         button,
@@ -73,7 +77,7 @@ if (!isset($_SESSION['adminID'])) {
             width: 100%;
         }
 
-        .buttons > * {
+        .buttons > *:not(.spacer) {
             flex: 1 1 0;
             min-width: 0;
         }
@@ -89,8 +93,6 @@ if (!isset($_SESSION['adminID'])) {
         .back-button {
             background-color: #4285f4;
             color: #fff;
-            /* width: 100%; moved to button, .back-button above */
-            /* Remove margin-top and margin-bottom for alignment */
             margin: 0;
             font-size: 16px;
         }
@@ -130,9 +132,9 @@ if (!isset($_SESSION['adminID'])) {
 
             </p>
             <div class="buttons">
-                <a href="adminList.php" style="flex:1; margin:0 5px;"><input class="back-button" type="button"
-                        value="BACK"></a>
+                <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
                 <button type="reset">Reset</button>
+                <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="adminform">Insert</button>
             </div>
         </form>
