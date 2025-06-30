@@ -68,15 +68,15 @@ if (isset($_SESSION['validTC'])) {
                     <th>ID</th>
                 </tr>
                 <?php if (isset($row_rsClass) && $row_rsClass): ?>
-                <tr>
-                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CODE'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_LEVEL'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_BLOCK'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_FLOOR'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['CLASS_CAT'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['TEACHER_NAME'] ?? ''); ?></th>
-                    <th><?php echo htmlspecialchars($row_rsClass['TEACHER_ID'] ?? ''); ?></th>
-                </tr>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row_rsClass['CLASS_CODE'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['CLASS_LEVEL'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['CLASS_BLOCK'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['CLASS_FLOOR'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['CLASS_CAT'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['TEACHER_NAME'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row_rsClass['TEACHER_ID'] ?? ''); ?></td>
+                    </tr>
                 <?php else: ?>
                 <tr>
                     <td colspan="7" style="text-align: center; padding: 20px;">No class information found for this teacher.</td>
