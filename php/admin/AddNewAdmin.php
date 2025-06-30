@@ -16,6 +16,7 @@ if (!isset($_SESSION['adminID'])) {
     <title>Insert New Class Record</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/button.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,50 +56,6 @@ if (!isset($_SESSION['adminID'])) {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .buttons .spacer {
-            flex: 2;
-        }
-
-        button,
-        .back-button {
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            color: #fff;
-            width: 100%;
-        }
-
-        .buttons > *:not(.spacer) {
-            flex: 1 1 0;
-            min-width: 0;
-        }
-
-        button[type="reset"] {
-            background-color: #FF0004;
-        }
-
-        button[type="button"] {
-            background-color: #4caf50;
-        }
-
-        .back-button {
-            background-color: #4285f4;
-            color: #fff;
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .back-button:hover {
-            background-color: #357ae8;
         }
     </style>
 </head>

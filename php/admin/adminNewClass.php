@@ -11,7 +11,7 @@ $queryClassCategory = mysqli_query($con, $selectClassCategory);
 
 $selectClassTeacher = "SELECT TEACHER_ID, TEACHER_NAME FROM teacher
                       WHERE NOT EXISTS (SELECT 1 FROM class WHERE class.TEACHER_ID = teacher.TEACHER_ID)";
-$queryClassTeacher = mysqli_query($con, $selectClassTeacher); 
+$queryClassTeacher = mysqli_query($con, $selectClassTeacher);
 
 // Check if the query result is empty
 if (mysqli_num_rows($queryClassTeacher) == 0) {
@@ -41,6 +41,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
     <title>Insert New Class Record</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/button.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,53 +82,16 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
             padding: 8px;
             box-sizing: border-box;
         }
-
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        button {
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            color: #fff;
-        }
-
-        button[type="reset"] {
-            background-color: #FF0004;
-        }
-
-        button[type="button"] {
-            background-color: #4caf50;
-        }
-
-        .back-button {
-            background-color: #4285f4;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        .back-button:hover {
-            background-color: #357ae8;
-        }
     </style>
 </head>
 
 <body>
 
-    
+
     <div class="container">
         <h2>Insert New Class Record</h2>
         <form action="" name="classForm" method="POST" id="classForm">
-    <p>
+            <p>
                 <label for="code">Code:</label>
                 <input type="text" name="code" id="code" required>
 
@@ -179,24 +143,24 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
 
             </p>
             <div class="buttons">
+                <a href="adminClass.php"><input class="back-button" type="button" value="BACK"></a>
                 <button type="reset">Reset</button>
+                <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="classForm">Insert</button>
             </div>
         </form>
-        <a href="adminClass.php"><input class="back-button" type="button" value="BACK"></a>
-
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-        $(document).ready(function () {
-            $('#level').change(function () {
+        $(document).ready(function() {
+            $('#level').change(function() {
                 // Get the selected value
                 var selectedLevel = $(this).val();
 
                 // Show/hide options based on the selected level
                 if (selectedLevel === 'Form 1') {
-                    $('#category').val('Main Stream');  // Automatically set the value to 'Arus Perdana'
+                    $('#category').val('Main Stream'); // Automatically set the value to 'Arus Perdana'
                     $('.form1-option').show();
                     $('.form4-option').hide();
                 } else if (selectedLevel === 'Form 4') {
@@ -210,145 +174,146 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
         });
 
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('classForm');
-        const saveButton = document.getElementById('save');
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('classForm');
+            const saveButton = document.getElementById('save');
 
-        saveButton.addEventListener('click', function (event) {
-            event.preventDefault();
+            saveButton.addEventListener('click', function(event) {
+                event.preventDefault();
 
-            // Form validation
-            const code = document.getElementById('code').value.trim();
-            const name = document.getElementById('name').value.trim();
-            const level = document.getElementById('level').value;
-            const block = document.getElementById('block').value;
-            const floor = document.getElementById('floor').value;
-            const category = document.getElementById('category').value;
-            const teacherID = document.querySelector('select[name="teacherID"]').value;
+                // Form validation
+                const code = document.getElementById('code').value.trim();
+                const name = document.getElementById('name').value.trim();
+                const level = document.getElementById('level').value;
+                const block = document.getElementById('block').value;
+                const floor = document.getElementById('floor').value;
+                const category = document.getElementById('category').value;
+                const teacherID = document.querySelector('select[name="teacherID"]').value;
 
-            // Check for empty fields
-            if (!code) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please enter a class code.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!name) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please enter a class name.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!level) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please select a study level.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!block) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please select a block.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!floor) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please select a floor.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!category) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please select a category.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-
-            if (!teacherID) {
-                Swal.fire({
-                    title: 'Incomplete Form',
-                    text: 'Please select a teacher.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
-                return;
-            }
-            
-            // Gather form data
-            const formData = new FormData(form);
-
-            // Submit form data using AJAX
-            fetch('insert_class.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response from the server
-                if (data.success) {
+                // Check for empty fields
+                if (!code) {
                     Swal.fire({
-                        title: 'Class Record Inserted',
-                        text: 'The new class record has been inserted successfully.',
-                        icon: 'success',
-                        confirmButtonColor: '#4caf50',
-                    }).then((result) => {
-                        if (result.isConfirmed) {                        window.location.href = 'adminClass.php';
-                        }
+                        title: 'Incomplete Form',
+                        text: 'Please enter a class code.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
                     });
-                } else {
-                    // Check if it's a teacher assignment error
-                    if (data.error && data.error.includes('Teacher is already assigned')) {
-                        Swal.fire({
-                            title: 'Teacher Assignment Error',
-                            text: data.error,
-                            icon: 'error',
-                            confirmButtonColor: '#FF0004',
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Class Code Exist',
-                            text: 'Class code already exist, Please try another code.',
-                            icon: 'error',
-                            confirmButtonColor: '#FF0004',
-                        });
-                    }
+                    return;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Unexpected Error',
-                    text: 'An unexpected error occurred. Please try again or contact the administrator.',
-                    icon: 'error',
-                    confirmButtonColor: '#FF0004',
-                });
+
+                if (!name) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please enter a class name.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                if (!level) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please select a study level.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                if (!block) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please select a block.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                if (!floor) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please select a floor.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                if (!category) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please select a category.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                if (!teacherID) {
+                    Swal.fire({
+                        title: 'Incomplete Form',
+                        text: 'Please select a teacher.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF0004',
+                    });
+                    return;
+                }
+
+                // Gather form data
+                const formData = new FormData(form);
+
+                // Submit form data using AJAX
+                fetch('insert_class.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Class Record Inserted',
+                                text: 'The new class record has been inserted successfully.',
+                                icon: 'success',
+                                confirmButtonColor: '#4caf50',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = 'adminClass.php';
+                                }
+                            });
+                        } else {
+                            // Check if it's a teacher assignment error
+                            if (data.error && data.error.includes('Teacher is already assigned')) {
+                                Swal.fire({
+                                    title: 'Teacher Assignment Error',
+                                    text: data.error,
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF0004',
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Class Code Exist',
+                                    text: 'Class code already exist, Please try another code.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF0004',
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Unexpected Error',
+                            text: 'An unexpected error occurred. Please try again or contact the administrator.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF0004',
+                        });
+                    });
             });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>
