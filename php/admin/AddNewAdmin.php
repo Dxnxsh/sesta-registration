@@ -59,7 +59,8 @@ if (!isset($_SESSION['adminID'])) {
 
         .buttons {
             display: flex;
-            justify-content: space-between;
+            gap: 1rem;
+            /* Responsive spacing between buttons */
         }
 
         button,
@@ -70,12 +71,11 @@ if (!isset($_SESSION['adminID'])) {
             cursor: pointer;
             color: #fff;
             width: 100%;
-            /* Ensures all buttons including .back-button have the same width */
         }
 
-        .buttons>* {
-            flex: 1;
-            margin: 0 5px;
+        .buttons > * {
+            flex: 1 1 0;
+            min-width: 0;
         }
 
         button[type="reset"] {
