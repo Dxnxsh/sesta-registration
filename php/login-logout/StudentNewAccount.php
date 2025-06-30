@@ -1,3 +1,4 @@
+<?php include "../header/header.php" ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Register Student</title>
+    <title>Sign Up Student</title>
 </head>
 
 <body
@@ -79,7 +80,7 @@
 
                 <input type="submit" class="btn" name="submit" value="Register" required>
                 <div class="links">
-                    Already a member? <a href="login.php">Sign In</a>
+                    Already a member? <a href="login.php" style="text-decoration: underline;">Sign In</a>
                 </div>
             </form>
         </div>
@@ -153,5 +154,5 @@
         };
     </script>
 <?php endif; ?>
-
 </html>
+<?php include "../header/footer.php" ?>

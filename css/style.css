@@ -42,13 +42,13 @@ body{
 }
 .form-box{
     width: 450px;
-    margin: 0px 10px;
+    margin: 0 auto;
 }
 .form-box header{
+    align-self: center;
     font-size: 25px;
     font-weight: 600;
     padding-bottom: 10px;
-    border-bottom: 1px solid #e6e6e6;
     margin-bottom: 10px;
 }
 .form-box form .field{
@@ -85,7 +85,8 @@ body{
     width: 100%;
 }
 .links{
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .home-sci
 {
