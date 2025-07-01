@@ -140,5 +140,5 @@
         };
     </script>
 <?php endif; ?>
-
 </html>
+<?php include "../header/footer.php" ?>
