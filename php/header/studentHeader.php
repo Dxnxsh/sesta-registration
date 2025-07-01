@@ -79,7 +79,7 @@ function loadAsset($type, $path)
                 <li class="list">
                   <a href="<?php echo getBasePath(); ?>php/student/billing/billing.php" class="nav-link">
                     <i class='bx bxs-dollar-circle icon'></i>
-                    <span class="link">Student Bill</span>
+                    <span class="link">Student Billing</span>
                   </a>
                 </li>
                 <li class="list">
