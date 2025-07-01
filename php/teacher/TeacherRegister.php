@@ -1,3 +1,4 @@
+<?php include "../header/header.php" ?>
 <?php
 session_start();
 
@@ -116,3 +117,4 @@ if (isset($_POST['submit'])) {
     </div>
 </body>
 </html>
+<?php include "../header/footer.php" ?>
