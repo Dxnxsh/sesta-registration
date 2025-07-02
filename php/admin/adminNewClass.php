@@ -143,7 +143,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
 
             </p>
             <div class="buttons">
-                <a href="adminClass.php"><input class="back-button" type="button" value="BACK"></a>
+                <a href="adminClass.php"><input class="back-button" type="button" value="Back"></a>
                 <button type="reset">Reset</button>
                 <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="classForm">Insert</button>

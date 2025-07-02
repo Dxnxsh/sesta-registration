@@ -352,7 +352,7 @@ if (isset($_POST['submit2'])) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='StudentList.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='StudentList.php'>Back</a></div>
 
     </div>
 

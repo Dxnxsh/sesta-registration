@@ -141,7 +141,7 @@ $rsStudent = $conn->query($query_rsStudent) or die($conn->error);
                 <?php } ?>
             </tbody>
         </table>
-        <button class="back-button" onclick="goBack()">Go Back</button>
+        <button class="back-button" onclick="goBack()">Back</button>
     </div>
 
     <script>

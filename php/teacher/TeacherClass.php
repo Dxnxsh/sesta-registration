@@ -136,7 +136,7 @@ if (isset($_SESSION['validTC'])) {
             </tbody>
         </table>
 
-        <button class="back-button" onclick="window.location.href = '../teacher/teacher_home.php';">Go Back</button>
+        <button class="back-button" onclick="window.location.href = '../teacher/teacher_home.php';">Back</button>
     </div>
 </body>
 

@@ -162,7 +162,7 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
             </div>
 
             <div class="button-container">
-                <a class="btn btn-back" href="TeacherList.php">Go Back</a>
+                <a class="btn btn-back" href="TeacherList.php">Back</a>
                 <button type="submit" name="update_teacher" class="btn btn-admin">Save</button>
             </div>
         </form>

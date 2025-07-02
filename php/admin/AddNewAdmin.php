@@ -89,7 +89,7 @@ if (!isset($_SESSION['adminID'])) {
 
             </p>
             <div class="buttons">
-                <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
+                <a href="adminList.php"><input class="back-button" type="button" value="Back"></a>
                 <button type="reset">Reset</button>
                 <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="adminform">Insert</button>

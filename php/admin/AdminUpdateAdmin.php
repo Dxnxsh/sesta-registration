@@ -146,7 +146,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
                 <button type="button" id="save" name="submit" value="adminform">Update</button>
             </div>
         </form>
-        <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
+        <a href="adminList.php"><input class="back-button" type="button" value="Back"></a>
 
     </div>
     

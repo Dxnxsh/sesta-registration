@@ -377,7 +377,7 @@ if (!$query) {
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='Admin_home.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='Admin_home.php'>Back</a></div>
 
     </div>
 

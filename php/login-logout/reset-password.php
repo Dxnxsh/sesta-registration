@@ -141,7 +141,7 @@
                             header("Location: login.php"); // Redirect to login.php
                             exit();
                         } else {
-                            echo "<a href='login.php'><button class='btn'>Go Back</button>";
+                            echo "<a href='login.php'><button class='btn'>Back</button>";
                         }
                     }
                 }
