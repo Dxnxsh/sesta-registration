@@ -16,25 +16,13 @@ if (!isset($_SESSION['adminID'])) {
     <title>Register New Admin</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/admin-common.css">
     <link rel="stylesheet" href="../../css/button.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url("../../image/admin.png");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100%;
-            margin: 0;
-        }
-
+        /* Page-specific styles for AddNewAdmin.php */
+        /* Override container for form pages - narrower width */
         .container {
             max-width: 600px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -45,17 +33,6 @@ if (!isset($_SESSION['adminID'])) {
         form {
             display: grid;
             gap: 10px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
         }
     </style>
 </head>

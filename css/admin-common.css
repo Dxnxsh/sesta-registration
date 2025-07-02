@@ -1,0 +1,306 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+/* Common Admin Styles */
+* {
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("../image/admin.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+/* Common Container Styles */
+.container {
+    width: 80%;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Common Button Styles */
+.button {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.button:hover {
+    background-color: #028A5A;
+}
+
+/* Common Form Styles */
+#form2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
+#searchBox {
+    margin-left: auto;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Common Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    align-content: center;
+}
+
+th {
+    background-color: #04AA6D;
+    color: white;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Common Button Elements */
+button {
+    padding: 8px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Common Manage Buttons */
+.manage-buttons a {
+    display: inline-block;
+    background-color: #04AA6D;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+    margin: 4px;
+    transition: background-color 0.3s;
+    width: 60%;
+}
+
+.manage-buttons a:hover {
+    background-color: #028A5A;
+}
+
+.manage-buttons a.view-button {
+    background-color: #007BFF;
+    width: fit-content;
+}
+
+.manage-buttons a.view-button:hover {
+    background-color: #0056b3;
+}
+
+.manage-buttons a.update-button {
+    background-color: #28A745;
+    width: fit-content;
+}
+
+.manage-buttons a.update-button:hover {
+    background-color: #1e7e34;
+}
+
+.manage-buttons a.delete-button {
+    background-color: #DC3545;
+    width: fit-content;
+}
+
+.manage-buttons a.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Reset Button Styles */
+a.reset-button {
+    background-color: #0072ffc2;
+    color: white;
+    border: none;
+    padding: 7px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+a.reset-button:hover {
+    background-color: #DC3545;
+    color: white;
+    border: none;
+    padding: 7px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+/* Common Header Styles */
+.header {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Common Main Content */
+main {
+    width: 100%;
+    padding: 20px;
+}
+
+/* Common Form Input Styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #04AA6D;
+    outline: none;
+    box-shadow: 0 0 5px rgba(4, 170, 109, 0.3);
+}
+
+/* Common Label Styles */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Common Form Group Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Common Alert/Message Styles */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+/* Common Card Styles */
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+/* Common Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    color: #04AA6D;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    margin: 0 2px;
+    border-radius: 4px;
+}
+
+.pagination a:hover {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #04AA6D;
+    color: white;
+    border-color: #04AA6D;
+}

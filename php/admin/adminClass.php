@@ -16,161 +16,23 @@ if (!isset($_SESSION['adminID'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Class Information</title>
+    <link rel="stylesheet" href="../../css/admin-common.css">
     <style>
-        body {
-            background-image: url("../../image/admin.png");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100%;
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 100px auto;
-            background-color: #fff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .button {
-            background-color: #04AA6D;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 15px;
-            margin: 10px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        #form2 {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            padding: 10px;
-        }
-
-        #searchBox {
-            margin-left: auto;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            align-content: center;
-        }
-
-        th {
-            background-color: #04AA6D;
-            color: white;
-            text-align: center;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        button {
-            padding: 8px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .manage-buttons a {
-            display: inline-block;
-            background-color: #04AA6D;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 14px;
-            border-radius: 4px;
-            margin: 4px;
-            transition: background-color 0.3s;
-            width: 60%;
-        }
-
-        a.reset-button {
-            background-color: #0072ffc2;
-            color: white;
-            border: none;
-            padding: 7px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 10px;
-            margin-left: 5px;
-        }
-
-        a.reset-button:hover  {
-            background-color: #DC3545;
-            color: white;
-            border: none;
-            padding: 7px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 10px;
-            margin-left: 5px;
-        }
-
-        .manage-buttons a.view-button {
-            background-color: #007BFF;
-            width: fit-content;
-        }
-
-        .manage-buttons a.update-button {
-            background-color: #28A745;
-            width: fit-content;
-        }
-
-        .manage-buttons a.delete-button {
-            background-color: #DC3545;
-            width: fit-content;
-        }
-
+        /* Page-specific styles for adminClass.php */
         .manage-buttons a.back-button {
             background-color: #007BFF;
             width: fit-content;
             margin-top: 30px;
         }
 
+        /* Custom hover animation for this page */
         @keyframes buttonHover {
             0% {
                 transform: translateY(0);
             }
-
             50% {
                 transform: translateY(-5px);
             }
-
             100% {
                 transform: translateY(0);
             }
@@ -181,6 +43,7 @@ if (!isset($_SESSION['adminID'])) {
             opacity: 0.9;
         }
 
+        /* Page-specific heading style */
         h1 {
             font-size: 40px;
             color: black;
@@ -188,6 +51,7 @@ if (!isset($_SESSION['adminID'])) {
             text-align: center;
         }
 
+        /* Custom search styling for this page */
         .search-container {
             position: relative;
             display: flex;
@@ -211,16 +75,15 @@ if (!isset($_SESSION['adminID'])) {
             cursor: pointer;
         }
 
-        /* Style the dropdown arrow */
         #searchType::after {
             content: '\25BC';
-            /* Unicode character for down arrow */
             position: absolute;
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
         }
 
+        /* Override common searchBox style for this page */
         #searchBox {
             width: fit-content;
             padding: 8px;
@@ -229,6 +92,7 @@ if (!isset($_SESSION['adminID'])) {
             background-color: aliceblue;
         }
 
+        /* Custom submit button for this page */
         #submit {
             background-color: #4CAF50;
             color: white;

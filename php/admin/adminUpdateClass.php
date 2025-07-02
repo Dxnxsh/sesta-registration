@@ -47,20 +47,13 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <link rel="stylesheet" href="../../css/button.css">
     <title>Assign Class</title>
+    <link rel="stylesheet" href="../../css/admin-common.css">
+    <link rel="stylesheet" href="../../css/button.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-        }
-
+        /* Page-specific styles for adminUpdateClass.php */
+        /* Override container for form pages - minimum width */
         .container {
             min-width: 30%;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -68,30 +61,19 @@ $queryClassTeacher = mysqli_query($con, $selectClassTeacher); ?>
             color: #333;
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
         input,
         select {
-            width: 100%;
-            padding: 8px;
             margin-bottom: 10px;
-            box-sizing: border-box;
         }
 
         p {
             text-align: center;
             margin-top: 20px;
         }
-
-
     </style>
 </head>
 
-<body
-    style="background-image: url('../../image/admin.png'); background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%">
+<body>
     <div class="container">
         <form id="form1" name="form1" method="POST">
             <h2>Update Class Detail</h2>
