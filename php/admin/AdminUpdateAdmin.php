@@ -37,6 +37,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
     <title>Update Admin Details</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/button.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,42 +79,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
             box-sizing: border-box;
         }
 
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
 
-        button {
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            color: #fff;
-        }
-
-        button[type="reset"] {
-            background-color: #FF0004;
-        }
-
-        button[type="button"] {
-            background-color: #4caf50;
-        }
-
-        .back-button {
-            background-color: #4285f4;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        .back-button:hover {
-            background-color: #357ae8;
-        }
     </style>
 </head>
 
@@ -142,11 +108,12 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
 
             </p>
             <div class="buttons">
+                <a href="adminList.php"><input class="back-button" type="button" value="Back"></a>
                 <button type="reset">Reset</button>
+                <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="adminform">Update</button>
             </div>
         </form>
-        <a href="adminList.php"><input class="back-button" type="button" value="Back"></a>
 
     </div>
     
