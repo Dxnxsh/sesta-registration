@@ -53,7 +53,7 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
         }
 
         .container {
-            max-width: 600px;
+            min-width: 30%;
             margin: 100px auto;
             padding: 20px;
             background-color: #fff;
@@ -317,3 +317,4 @@ if (mysqli_num_rows($queryClassTeacher) == 0) {
 </body>
 
 </html>
+<?php include "../header/footer.php" ?>
