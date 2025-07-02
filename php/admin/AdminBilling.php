@@ -56,7 +56,7 @@ $result = $con->query($sql);
                     paymentID: paymentID,
                     status: selectedStatus
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log('Response from server:', response);
 
                     // Trim the response to remove leading/trailing whitespaces
@@ -78,7 +78,7 @@ $result = $con->query($sql);
                         });
                     }
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error('AJAX error:', error);
                     alert('Error updating payment status');
                 }
@@ -97,6 +97,7 @@ $result = $con->query($sql);
             });
 
         }
+
         function downloadFile2(file_path) {
             const Toast = Swal.mixin({
                 toast: true,
@@ -135,7 +136,7 @@ $result = $con->query($sql);
         $studentInfo[$resultStud['STUDENT_ID']] = $resultStud['STUDENT_NAME'];
     }
     ?>
-    <div class="container">  
+    <div class="container">
         <h1>Manage Billings</h1>
         <form action="" method="get">
             <p><input name="searchBox" type="text" id="searchBox" placeholder="Search by student id">
@@ -177,7 +178,7 @@ $result = $con->query($sql);
 
                         // Check if the file path is not empty and the file exists
                         if (!empty($row['PAYMENT_RECEIPT']) && file_exists($file_path)) {
-                            ?>
+                ?>
                             <tr class="tr-hover">
                                 <td>
                                     <?php echo $res_paymentID ?>
@@ -195,14 +196,14 @@ $result = $con->query($sql);
                                     <?php echo $res_paymentAmount ?>
                                 </td>
                                 <td style="text-align: center; color: <?php
-                                if ($res_paymentStatus == 'UNPAID') {
-                                    echo 'red';
-                                } elseif ($res_paymentStatus == 'PENDING') {
-                                    echo 'orange';
-                                } else {
-                                    echo 'green';
-                                }
-                                ?>;">
+                                                                        if ($res_paymentStatus == 'UNPAID') {
+                                                                            echo 'red';
+                                                                        } elseif ($res_paymentStatus == 'PENDING') {
+                                                                            echo 'orange';
+                                                                        } else {
+                                                                            echo 'green';
+                                                                        }
+                                                                        ?>;">
                                     <?php echo $res_paymentStatus ?>
                                 </td>
                                 <td>
@@ -223,9 +224,9 @@ $result = $con->query($sql);
                                         onclick="downloadFile2('<?php echo $file_path; ?>')">Download</button></td>
 
                             </tr>
-                            <?php
+                        <?php
                         } else {
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <?php echo $res_paymentID ?>
@@ -243,14 +244,14 @@ $result = $con->query($sql);
                                     <?php echo $res_paymentAmount ?>
                                 </td>
                                 <td style="text-align: center; color: <?php
-                                if ($res_paymentStatus == 'UNPAID') {
-                                    echo 'red';
-                                } elseif ($res_paymentStatus == 'PENDING') {
-                                    echo 'yellow';
-                                } else {
-                                    echo 'green';
-                                }
-                                ?>;">
+                                                                        if ($res_paymentStatus == 'UNPAID') {
+                                                                            echo 'red';
+                                                                        } elseif ($res_paymentStatus == 'PENDING') {
+                                                                            echo 'yellow';
+                                                                        } else {
+                                                                            echo 'green';
+                                                                        }
+                                                                        ?>;">
                                     <?php echo $res_paymentStatus ?>
                                 </td>
                                 <td>
@@ -268,7 +269,7 @@ $result = $con->query($sql);
                                 <td width="6%"><button class="manage-buttons view-button" onclick="downloadFile()">Download</button>
                                 </td>
                             </tr>
-                            <?php
+                    <?php
                         }
                     }
                 } else {
@@ -276,12 +277,12 @@ $result = $con->query($sql);
                     <tr>
                         <td colspan="2">Student ID not found.</td>
                     </tr>
-                    <?php
+                <?php
                 }
                 ?>
             </tbody>
         </table>
-
+        <div class='manage-buttons'><a class='back-button' href='Admin_home.php'>Back</a></div>
     </div>
 </body>
 
