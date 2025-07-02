@@ -398,9 +398,7 @@ if (isset($_POST['upload'])) {
 
 <body>
     <div class="container">
-        <form id="form2" name="form2" method="get">
-            <h1>Manage Advertisement</h1>
-        </form>
+        <h1>Manage Advertisement</h1>
         <form id="form1" name="form1" method="post" enctype="multipart/form-data">
             <div class="upload-section">
                 <h2>Upload New Advertisement</h2>
