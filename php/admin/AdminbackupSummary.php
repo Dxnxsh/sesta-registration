@@ -39,6 +39,17 @@ if (!isset($_SESSION['adminID'])) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         table {
             border-collapse: separate;
             border-spacing: 10px;
@@ -288,7 +299,7 @@ if (!isset($_SESSION['adminID'])) {
                         <?php echo $rowCount ?> Student</td>
             </tr>
             <tr>
-                <th class="th-ct">From 1</th>
+                <th class="th-ct">Form 1</th>
                 <td><b>
                         <?php echo $rowCount6 ?> Student</td>
             </tr>
