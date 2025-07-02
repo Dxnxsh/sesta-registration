@@ -49,7 +49,7 @@ while ($row = mysqli_fetch_assoc($rsAdminClass)) {
         }
 
         .container {
-            max-width: 600px;
+            min-width: 30%;
             margin: 100px auto;
             padding: 20px;
             background-color: #fff;

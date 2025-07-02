@@ -102,6 +102,35 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Update Teacher details</title>
 
+    <style>
+        /* Radio button styling to keep labels and buttons on same line */
+        input[type="radio"] {
+            width: auto !important;
+            height: auto !important;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        input[type="radio"] + label {
+            display: inline !important;
+            margin-right: 20px;
+            font-weight: normal;
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .radio-group > b {
+            margin-right: 15px;
+        }
+    </style>
+
     <?php if (isset($_SESSION['message'])): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -136,20 +165,28 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
                         <input type="text" id="teacherName" value="<?php echo $names ?>" name="teacherName" required>
                     </b></p>
 
-                    <b><label>Gender : </label></b>
-                    <input type="radio" id="male" name="gender" value="Male" <?php echo ($teachgender == 'Male') ? 'checked' : ''; ?> required>
-                    <label for="male">Male</label>
-                    <input type="radio" id="female" name="gender" value="Female" <?php echo ($teachgender == 'Female') ? 'checked' : ''; ?> required>
-                    <label for="female">Female</label><br><br>
+                    <div class="radio-group">
+                        <b><label>Gender : </label></b>
+                        <div class="radio-item">
+                            <input type="radio" id="male" name="gender" value="Male" <?php echo ($teachgender == 'Male') ? 'checked' : ''; ?> required>
+                            <label for="male">Male</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="female" name="gender" value="Female" <?php echo ($teachgender == 'Female') ? 'checked' : ''; ?> required>
+                            <label for="female">Female</label>
+                        </div>
+                    </div>
 
-                    <b><label>Status : </label></b>
-                    <input type="radio" id="status" name="status" value="Single" <?php echo ($teachStat == 'Single') ? 'checked' : ''; ?> required>
-                    <label for="stat">Single</label>
-                    <input type="radio" id="statusM" name="status" value="Married" <?php echo ($teachStat == 'Married') ? 'checked' : ''; ?> required>
-                    <label for="stat2">Married</label><br><br>
+                    <div class="radio-group">
+                        <b><label>Status : </label></b>
+                        <input type="radio" id="status" name="status" value="Single" <?php echo ($teachStat == 'Single') ? 'checked' : ''; ?> required>
+                        <label for="status">Single</label>
+                        <input type="radio" id="statusM" name="status" value="Married" <?php echo ($teachStat == 'Married') ? 'checked' : ''; ?> required>
+                        <label for="statusM">Married</label>
+                    </div>
 
                     <b><label for="dob">Date of Birth :</label></b>
-                    <input type="date" id="dob" name="dob" value="<?= date('Y-m-d', strtotime($dobpredict)); ?>" required><br><br>
+                    <input type="date" id="dob" name="dob" value="<?= date('Y-m-d', strtotime($dobpredict)); ?>" required style="margin-left:0;"><br><br>
 
                     <b><label for="address">Address :</label></b>
                     <textarea id="address" name="address"><?php echo isset($teachAddress) ? $teachAddress : ''; ?></textarea><br>

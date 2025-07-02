@@ -134,6 +134,36 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Update Student Details</title>
 
+    <style>
+        /* Radio button styling to keep labels and buttons on same line */
+        input[type="radio"] {
+            width: auto !important;
+            height: auto !important;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        input[type="radio"] + label {
+            display: inline !important;
+            margin-right: 20px;
+            font-weight: normal;
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .radio-group > b,
+        .radio-group > label {
+            margin-right: 15px;
+        }
+    </style>
+
     <?php if (isset($_SESSION['message'])): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -165,31 +195,34 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
                     <h2>Student Information :</h2>
                     <br>
                     <p>
-                        <label><b>Education Level : </b></label>
-                        <input type="radio" id="form1" name="level" value="Form 1" <?php echo ($studLevel == '1') ? 'checked' : ''; ?> required>
-                        <label for="Form1">Form 1</label>
-                        <input type="radio" id="form4" name="level" value="Form 4" <?php echo ($studLevel == '4') ? 'checked' : ''; ?> required>
-                        <label for="Form4">Form 4</label>
-                        <br><br>
+                        <div class="radio-group">
+                            <label><b>Education Level : </b></label>
+                            <input type="radio" id="form1" name="level" value="Form 1" <?php echo ($studLevel == '1') ? 'checked' : ''; ?> required>
+                            <label for="form1">Form 1</label>
+                            <input type="radio" id="form4" name="level" value="Form 4" <?php echo ($studLevel == '4') ? 'checked' : ''; ?> required>
+                            <label for="form4">Form 4</label>
+                        </div>
                         <label for="studentName"><b>Student Name :</b></label>
                         <input type="text" id="studentName" value="<?php echo $studname ?>" name="studentName" required>
                     </p>
-                    <label><b>Gender : </b></label>
-                    <input type="radio" id="male" name="gender" value="Male" <?php echo ($studGender == 'Male') ? 'checked' : ''; ?> required>
-                    <label for="male">Male</label>
-                    <input type="radio" id="female" name="gender" value="Female" <?php echo ($studGender == 'Female') ? 'checked' : ''; ?> required>
-                    <label for="female">Female</label>
-                    <br>
-                    <br>
-                    <label><b>Status : </b></label>
-                    <input type="radio" id="status" name="status" value="Single" <?php echo ($studStatus == 'Single') ? 'checked' : ''; ?> required>
-                    <label for="stat">Single</label>
-                    <input type="radio" id="statusM" name="status" value="Married" <?php echo ($studStatus == 'Married') ? 'checked' : ''; ?> required>
-                    <label for="stat2">Married</label>
+                    <div class="radio-group">
+                        <label><b>Gender : </b></label>
+                        <input type="radio" id="male" name="gender" value="Male" <?php echo ($studGender == 'Male') ? 'checked' : ''; ?> required>
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" name="gender" value="Female" <?php echo ($studGender == 'Female') ? 'checked' : ''; ?> required>
+                        <label for="female">Female</label>
+                    </div>
+                    <div class="radio-group">
+                        <label><b>Status : </b></label>
+                        <input type="radio" id="status" name="status" value="Single" <?php echo ($studStatus == 'Single') ? 'checked' : ''; ?> required>
+                        <label for="status">Single</label>
+                        <input type="radio" id="statusM" name="status" value="Married" <?php echo ($studStatus == 'Married') ? 'checked' : ''; ?> required>
+                        <label for="statusM">Married</label>
+                    </div>
                     </p>
                     <p>
                         <label for="dob"><br><b>Date of Birth : </b></label>
-                        <input type="date" id="dob" name="dob" value="<?= date('Y-m-d', strtotime($dobpredict)); ?>" required>
+                        <input type="date" id="dob" name="dob" value="<?= date('Y-m-d', strtotime($dobpredict)); ?>" required style="margin-left:0;">
                     </p>
                     <p><br>
                         <label for="placeOfBirth"><b>Place of Birth :</b></label>
@@ -225,14 +258,16 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
                         <label for="parentName"><b>Name :</b></label>
                         <input type="text" id="parentName" name="parentName" value="<?php echo $parName ?>" required>
 
-                        <label><br><br><b>Gender :</b></label>
-                        <input type="radio" id="parentMale" name="parentGender" value="Male" <?php echo ($parGender == 'Male') ? 'checked' : ''; ?> required>
-                        <label for="parent1Male">Male</label>
-                        <input type="radio" id="parentFemale" name="parentGender" value="Female" <?php echo ($parGender == 'Female') ? 'checked' : ''; ?> required>
-                        <label for="parentFemale">Female</label>
+                        <br><br>
+                        <div class="radio-group">
+                            <label><b>Gender :</b></label>
+                            <input type="radio" id="parentMale" name="parentGender" value="Male" <?php echo ($parGender == 'Male') ? 'checked' : ''; ?> required>
+                            <label for="parentMale">Male</label>
+                            <input type="radio" id="parentFemale" name="parentGender" value="Female" <?php echo ($parGender == 'Female') ? 'checked' : ''; ?> required>
+                            <label for="parentFemale">Female</label>
+                        </div>
                     </p>
                     <p>&nbsp;</p>
-                    <p>
                         <label for="parent1IC"><b>No.KP (IC Number) :</b></label>
                         <input type="text" id="parentIC" name="parentIC" pattern="\d{12}" required value="<?php echo $parIC ?>">
                     </p>
