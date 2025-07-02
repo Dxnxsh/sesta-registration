@@ -40,7 +40,23 @@ if (!isset($_SESSION['valid'])) {
     </style>
     <script>
         $(document).ready(function() {
+            $('#blurredOverlayModal2').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $('#blurredOverlayModal2').modal('show');
+
+            // Handle clicking outside the modal
+            $('#blurredOverlayModal2').on('click', function(e) {
+                if (e.target === this) {
+                    window.location.href = 'billing.php';
+                }
+            });
+
+            // Handle backdrop click
+            $('#blurredOverlayModal2').on('hidden.bs.modal', function() {
+                window.location.href = 'billing.php';
+            });
         });
     </script>
 </head>
@@ -96,6 +112,7 @@ if (!isset($_SESSION['valid'])) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">PAYMENT RECEIPT</h5>
+                    <a href="billing.php" class="btn-close" aria-label="Close"></a>
                 </div>
 
                 <div class="modal-body">

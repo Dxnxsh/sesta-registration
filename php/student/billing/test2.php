@@ -106,7 +106,23 @@ if (!isset($_SESSION['valid'])) {
         });
 
         $(document).ready(function() {
+            $('#blurredOverlayModal2').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $('#blurredOverlayModal2').modal('show');
+
+            // Handle clicking outside the modal
+            $('#blurredOverlayModal2').on('click', function(e) {
+                if (e.target === this) {
+                    window.location.href = 'billing.php';
+                }
+            });
+
+            // Handle backdrop click
+            $('#blurredOverlayModal2').on('hidden.bs.modal', function() {
+                window.location.href = 'billing.php';
+            });
         });
     </script>
 </head>
