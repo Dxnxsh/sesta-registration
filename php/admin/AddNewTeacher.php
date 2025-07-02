@@ -5,7 +5,7 @@ if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
 }
 ?>
-
+<?php include "../header/adminHeader.php" ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -87,3 +87,4 @@ if (!isset($_SESSION['adminID'])) {
 </body>
 
 </html>
+<?php include "../header/footer.php" ?>
