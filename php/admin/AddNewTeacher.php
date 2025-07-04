@@ -73,7 +73,7 @@ if (!isset($_SESSION['adminID'])) {
             <header>Add New Teacher</header>
             <form action="" method="post">
                 <div class="field input">
-                    <label for="IC">New Teacher Ic</label>
+                    <label for="IC">New Teacher IC</label>
                     <input type="text" name="TeacherID" id="TeacherID" maxlength="12" autocomplete="off" pattern="\d{12}" required>
                 </div>
                 <div class="field">
