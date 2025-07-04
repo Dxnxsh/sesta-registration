@@ -203,7 +203,7 @@ $query = mysqli_query($con, $select);
                         <td>" . $result["CLASS_FLOOR"] . "</td>
                         <td>" . $result["CLASS_CAT"] . "</td>
                         <td>" . $result["TEACHER_ID"] . "</td>
-                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewClass.php?id=" . $result["CLASS_CODE"] . "'>VIEW</a></td>
+                        <td class='manage-buttons'><a class='view-button' href='adminViewClass.php?id=" . $result["CLASS_CODE"] . "'>VIEW</a></td>
                         <td class='manage-buttons'><a class='update-button' href='adminUpdateClass.php?id=" . $result["CLASS_CODE"] . "'>UPDATE</a></td>
                         <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["CLASS_CODE"] . "\")'>DELETE</a></td>
        

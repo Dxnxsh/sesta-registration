@@ -178,7 +178,7 @@ $query = mysqli_query($con, $select);
                         <td>" . $result["STUDENT_LEVEL"] . "</td>
                         <td>" . $result["STUDENT_EMAIL"] . "</td>
     
-                        <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewStudent.php?id=" . $result["STUDENT_ID"] . "'>VIEW</a></td>
+                        <td class='manage-buttons'><a class='view-button' href='adminViewStudent.php?id=" . $result["STUDENT_ID"] . "'>VIEW</a></td>
                         <td class='manage-buttons'><a class='update-button' href='adminUpdateStudent.php?id=" . $result["STUDENT_ID"] . "'>UPDATE</a></td>
                         <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["STUDENT_ID"] . "\")'>DELETE</a></td>
        

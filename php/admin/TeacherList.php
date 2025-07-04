@@ -227,7 +227,7 @@ if (!$query) {
                 <td>" . $result["TEACHER_PHONENUM"] . "</td>
                 <td>" . $result["TEACHER_EMAIL"] . "</td>
 
-                <td class='manage-buttons' style='text-align: justify'><a class='view-button' href='adminViewteacher.php?id=" . $result["TEACHER_ID"] . "'>VIEW</a></td>
+                <td class='manage-buttons'><a class='view-button' href='adminViewteacher.php?id=" . $result["TEACHER_ID"] . "'>VIEW</a></td>
                 <td class='manage-buttons'><a class='update-button' href='adminUpdateTeacher.php?id=" . $result["TEACHER_ID"] . "'>UPDATE</a></td>
                 <td class='manage-buttons'><a class='delete-button' onclick='confirmDelete(\"" . $result["TEACHER_ID"] . "\")'>DELETE</a></td>
 
