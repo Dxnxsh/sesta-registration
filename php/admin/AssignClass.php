@@ -16,7 +16,7 @@ if (!isset($_SESSION['adminID'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Class Information</title>
+    <title>Assign Student Class</title>
     <link rel="stylesheet" href="../../css/admin-common.css">
     <style>
         /* Page-specific styles for AssignClass.php */
@@ -177,7 +177,7 @@ if (isset($_POST['submit2'])) {
 
 <body>
     <div class="container">
-            <h1>Class Information</h1>
+            <h1>Assign Student Class</h1>
 
         <form id="form1" name="form1" method="post">
             <table width="163%">
@@ -207,7 +207,7 @@ if (isset($_POST['submit2'])) {
                         }
                         echo "</select>
                             </td>
-                            <td class='manage-buttons' style='text-align: justify'>
+                            <td class='manage-buttons' style='text-align: center'>
                                 <input class='button' type='submit' name='submit2[" . $result["STUDENT_ID"] . "]' value='Assign Students'>
                             </td>
                         </tr>";

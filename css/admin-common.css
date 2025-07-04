@@ -222,7 +222,6 @@ textarea:focus {
 /* Common Label Styles */
 label {
     display: block;
-    margin-bottom: 5px;
     font-weight: 500;
     color: #333;
 }

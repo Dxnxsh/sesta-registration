@@ -124,7 +124,7 @@ if (isset($_POST['upload'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Manage Advertisement</title>
+    <title>Advertisement Management</title>
     <link rel="stylesheet" href="../../css/admin-common.css">
     <style>
         /* Page-specific styles for manageAds.php */
@@ -160,46 +160,6 @@ if (isset($_POST['upload'])) {
             text-align: center;
         }
 
-        /* Custom search styling for this page */
-        .search-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-container img {
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        /* Override common searchBox style for this page */
-        #searchBox {
-            width: fit-content;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            background-color: aliceblue;
-        }
-
-        /* Custom submit button for this page */
-        #submit {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 7px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 10px;
-            margin-left: 5px;
-        }
-
-        #submit:hover {
-            background-color: #45a049;
-        }
-
         /* Unique advertisement upload styles */
         .upload-section {
             margin-top: 30px;
@@ -225,7 +185,7 @@ if (isset($_POST['upload'])) {
             justify-content: center;
         }
 
-        .upload-label {
+        .select-image {
             display: inline-block;
             background-color: #04AA6D;
             color: white;
@@ -236,11 +196,11 @@ if (isset($_POST['upload'])) {
             transition: background-color 0.3s ease;
         }
 
-        .upload-label:hover {
+        .select-image:hover {
             background-color: #028a57;
         }
 
-        .upload-label input[type="file"] {
+        .select-image input[type="file"] {
             position: absolute;
             left: -9999px;
             opacity: 0;
@@ -260,17 +220,44 @@ if (isset($_POST['upload'])) {
         .upload-button:hover {
             background-color: #0056b3;
         }
+        
+        td img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .preview-container {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #imagePreview {
+            display: none;
+            max-width: 200px;
+            max-height: 200px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>Manage Advertisement</h1>
+        <h1>Advertisement Management</h1>
         <form id="form1" name="form1" method="post" enctype="multipart/form-data">
             <div class="upload-section">
                 <h2>Upload New Advertisement</h2>
+                <div class="preview-container">
+                    <img id="imagePreview" src="" alt="Image Preview">
+                </div>
                 <div class="upload-container">
-                    <label for="newImage" class="upload-label">
+                    <label for="newImage" class="select-image">
                         <span>Select Image</span>
                         <input type="file" name="newImage" id="newImage" accept="image/*" required onchange="enableUploadButton()">
                     </label>
@@ -279,9 +266,9 @@ if (isset($_POST['upload'])) {
             </div>
             <table>
                 <tr>
-                    <th>File Name</th>
-                    <th>Image</th>
-                    <th>Actions</th>
+                    <th>FILE NAME</th>
+                    <th>IMAGE</th>
+                    <th>ACTION</th>
                 </tr>
                 <?php
                 $files = array_diff(scandir($adsFolder), ['.', '..']);
@@ -294,7 +281,7 @@ if (isset($_POST['upload'])) {
                                 <td>$file</td>
                                 <td><img src='$filePath' alt='$file' style='width: 100px; height: auto;'></td>
                                 <td>
-                                    <button type='button' onclick='confirmDelete(\"$file\")' style='background-color: #DC3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;'>Delete</button>
+                                    <button type='button' onclick='confirmDelete(\"$file\")' style='background-color: #DC3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;'>DELETE</button>
                                 </td>
                               </tr>";
                     }
@@ -310,9 +297,31 @@ if (isset($_POST['upload'])) {
             const fileInput = document.getElementById('newImage');
             if (fileInput.files.length > 0) {
                 uploadButton.disabled = false;
+                previewImage(fileInput.files[0]);
             } else {
                 uploadButton.disabled = true;
+                clearPreview();
             }
+        }
+
+        function previewImage(file) {
+            const preview = document.getElementById('imagePreview');
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                clearPreview();
+            }
+        }
+
+        function clearPreview() {
+            const preview = document.getElementById('imagePreview');
+            preview.src = '';
+            preview.style.display = 'none';
         }
 
         function confirmDelete(fileName) {

@@ -15,7 +15,7 @@ if (!isset($_SESSION['adminID'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Admin List</title>
+    <title>Admin Management</title>
     <link rel="stylesheet" href="../../css/admin-common.css">
     <style>
         /* Page-specific styles for adminList.php */
@@ -132,7 +132,7 @@ $query = mysqli_query($con, $select);
 <body>
     <div class="container">
     <form id="form2" name="form2" method="get">
-            <h1>Registered Admin</h1>
+            <h1>Admin Management</h1>
             <div class="search-container">
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search admin id">
                 <input name="submit" type="submit" id="submit" value="Search">

@@ -46,7 +46,7 @@ if (!$query) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <title>Teacher List</title>
+    <title>Teacher Management</title>
     <link rel="stylesheet" href="../../css/admin-common.css">
     <style>
         /* Page-specific styles for TeacherList.php */
@@ -184,7 +184,7 @@ if (!$query) {
         ?>
         
         <form id="form2" name="form2" method="get">
-            <h1>Teacher List</h1>
+            <h1>Teacher Management</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
                         <option value="TEACHER_ID">Teacher ID</option>

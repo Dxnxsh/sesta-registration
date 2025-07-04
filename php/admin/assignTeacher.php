@@ -368,7 +368,9 @@ if (isset($_POST['submit2'])) {
                     <th>NAME</th>
                     <th>ID</th>
                     <th>LEVEL</th>
-                    <th colspan="6">MANAGE</th>
+                    <th>CATEGORY</th>
+                    <th>TEACHER</th>
+                    <th>MANAGE</th>
                 </tr>
                 <?php
                 $num = mysqli_num_rows($query);
@@ -391,7 +393,7 @@ if (isset($_POST['submit2'])) {
                         }
                         echo "</select>
                             </td>
-                            <td class='manage-buttons' style='text-align: justify'>
+                            <td class='manage-buttons' style='text-align: center'>
                                 <input class='button' type='submit' name='submit2[" . $result["CLASS_CODE"] . "]' value='Assign Teachers'>
                             </td>
                         </tr>";
