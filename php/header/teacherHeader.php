@@ -81,13 +81,13 @@ function loadAsset($type, $path)
             </li>
             <li class="list">
               <a href="<?php echo getBasePath(); ?>php/teacher/studentList.php" class="nav-link">
-                <i class='bx bxs-user-square icon'></i>
+                <i class='bxr bxs-user-square icon'></i>
                 <span class="link">Student Profile</span>
               </a>
             </li>
             <li class="list">
               <a href="<?php echo getBasePath(); ?>php/teacher/TeacherBilling.php" class="nav-link">
-                <i class='bx bxs-print-dolar icon'></i>
+                <i class='bxr bxs-print-dolar icon'></i>
                 <span class="link">Student Billing</span>
               </a>
             </li>
