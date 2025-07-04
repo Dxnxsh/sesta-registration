@@ -144,8 +144,8 @@ $query = mysqli_query($con, $select);
             <h1>Student Management</h1>
             <div class="search-container">
                 <div class="selectSearch"><select name="searchType" id="searchType">
-                        <option value="STUDENT_ID">STUDENT ID</option>
-                        <option value="STUDENT_NAME">STUDENT NAME</option>
+                        <option value="STUDENT_ID">Student ID</option>
+                        <option value="STUDENT_NAME">Student Name</option>
                     </select></div>
                 <input name="searchBox" type="text" id="searchBox" placeholder="Search...">
                 <input name="submit" type="submit" id="submit" value="Search">

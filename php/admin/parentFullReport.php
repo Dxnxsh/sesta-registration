@@ -336,7 +336,7 @@ if ($totalRows_rsParent > 0) {
 
     <div class="search-container">
         <form id="form2" name="form2" method="post" style="display: flex; align-items: center;">
-            <input name="searchBox" type="text" id="searchBox" placeholder="Search by parent id" value="<?php echo isset($_POST['searchBox']) ? htmlspecialchars($_POST['searchBox']) : ''; ?>">
+            <input name="searchBox" type="text" id="searchBox" placeholder="Search by Parent ID" value="<?php echo isset($_POST['searchBox']) ? htmlspecialchars($_POST['searchBox']) : ''; ?>">
             <input name="submit" type="submit" id="submit" value="Search">
             <a class="reset-button" href="parentFullReport.php">Show All</a>
         </form>
