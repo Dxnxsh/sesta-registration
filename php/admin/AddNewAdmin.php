@@ -55,7 +55,7 @@ if (!isset($_SESSION['adminID'])) {
 
             <div class="input">
                 <label for="name">Fullname:</label>
-                <input type="text" name="fname" id="fname" placeholder="Enter admin Name" required>
+                <input type="text" name="fname" id="fname" placeholder="Enter admin fullname" required>
             </div>
 
             <div class="input">
