@@ -1,5 +1,6 @@
 <?php
 include_once '../config/email_config.php';
+include "../header/header.php"
 
 ?>
 <html>
@@ -11,23 +12,10 @@ include_once '../config/email_config.php';
     </head>
 <body style= "background-image: url(../../image/bg11.jpeg); background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%">
 
-        <div class="container-fluid">
+        <div class="container-fluid" style="margin: 15%;">
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-</br> 
-
                     <?php
                     $error = ""; // Initialize $error as an empty string
                     include('../config.php');
@@ -119,3 +107,4 @@ $output .= '<p><a href="' . $base_url . '/php/login-logout/reset-password.php?ke
         </div>
     </body>
 </html>
+<?php include "../header/footer.php" ?>

@@ -36,7 +36,7 @@ function loadAsset($type, $path)
 
 <body>
   <header>
-    <nav>
+    <nav style="display: flex;">
       <div class="logo">
         <img src="<?php echo getBasePath(); ?>image/icon/logoSESTA2.png" width="200">
       </div>
