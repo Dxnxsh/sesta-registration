@@ -41,7 +41,7 @@ function loadAsset($type, $path)
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="<?php echo getBasePath(); ?>php/header/headerStyle.css" rel="stylesheet" />
-  <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
@@ -81,13 +81,13 @@ function loadAsset($type, $path)
             </li>
             <li class="list">
               <a href="<?php echo getBasePath(); ?>php/teacher/studentList.php" class="nav-link">
-                <i class='bxr bxs-user-square icon'></i>
+                <i class='bx  bxs-user-square icon'></i> 
                 <span class="link">Student Profile</span>
               </a>
             </li>
             <li class="list">
               <a href="<?php echo getBasePath(); ?>php/teacher/TeacherBilling.php" class="nav-link">
-                <i class='bxr bxs-print-dolar icon'></i>
+                <i class='bx  bxs-print-dollar icon'></i> 
                 <span class="link">Student Billing</span>
               </a>
             </li>
