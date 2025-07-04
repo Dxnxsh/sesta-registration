@@ -25,12 +25,15 @@ if (!isset($_SESSION['valid'])) {
         }
 
         body {
-            background-image: url("../image/student.jpeg");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100%;
+            padding: 0;
             margin: 0;
-            padding:0;
+            font-family: 'Poppins', sans-serif;
+            background: url("../../image/student.jpeg") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
         }
 
         header {
