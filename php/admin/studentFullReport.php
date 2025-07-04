@@ -155,57 +155,53 @@ if ($totalRows_rsStudent > 0) {
             background-color: #45a049;
         }
 
-        .search-section {
+        .search-container {
+            position: relative;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: flex-end;
             margin-top: 20px;
-            gap: 10px;
         }
-
-        .show-all-form {
-            margin: 0;
-        }
-
-        .show-all-button {
-            background-color: #1484BD;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .show-all-button:hover {
-            background-color: #0098E2;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            margin: 0;
-        }
-
-        .search-input {
+        #searchBox {
+            width: fit-content;
             padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 250px;
-        }
-
-        .search-button {
-            background-color: #1484BD;
-            color: white;
-            padding: 8px 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            background-color: aliceblue;
+        }
+        #submit {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 7px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
             cursor: pointer;
+            border-radius: 10px;
+            margin-left: 5px;
         }
-
-        .search-button:hover {
-            background-color: #0098E2;
+        #submit:hover {
+            background-color: #0056b3;
         }
-
+        .reset-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 7px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+        .reset-button:hover {
+            background-color: #0056b3;
+        }
+        .search-section, .search-form, .show-all-form, .show-all-button, .search-input, .search-button { display: none !important; }
 
         table {
             margin-top: 20px;
@@ -311,7 +307,7 @@ if ($totalRows_rsStudent > 0) {
                 padding: 0;
             }
 
-            .search-section * {
+            .search-container * {
                 display: none !important;
             }
 
@@ -345,16 +341,11 @@ if ($totalRows_rsStudent > 0) {
         </div>
     </form>
 
-    <div class="search-section">
-        <!-- Show All Button on the left -->
-        <form method="post" class="show-all-form">
-            <input name="showall" type="submit" value="Show All" class="show-all-button">
-        </form>
-
-        <!-- Search Form on the right -->
-        <form id="form2" name="form2" method="post" class="search-form">
-            <input name="searchBox" type="text" id="searchBox" placeholder="Search by student id" class="search-input">
-            <input name="submit" type="submit" value="Search" class="search-button">
+    <div class="search-container">
+        <form id="form2" name="form2" method="post" style="display: flex; align-items: center;">
+            <input name="searchBox" type="text" id="searchBox" placeholder="Search by student id" value="<?php echo isset($_POST['searchBox']) ? htmlspecialchars($_POST['searchBox']) : ''; ?>">
+            <input name="submit" type="submit" id="submit" value="Search">
+            <a class="reset-button" href="studentFullReport.php">Show All</a>
         </form>
     </div>
 
