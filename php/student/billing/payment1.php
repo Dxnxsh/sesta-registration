@@ -261,21 +261,22 @@
         <th style="text-align: center;">STATUS</th>
       </tr>
       <?php 
+        $hasUnpaid = false;
         while($result = mysqli_fetch_assoc($query2))
         {
             $res_type = $result['PAYMENT_TYPE'];
             $res_amount = $result['PAYMENT_AMOUNT'];
             $res_stts = $result['PAYMENT_STATUS'];
 
+            // Only show rows for UNPAID payments
+            if ($res_stts == "UNPAID") {
+              $hasUnpaid = true;
               // Check if the payment type is "SCHOOL FEES"
-               if ($res_type == "SCHOOL FEES") {
-              $res_type1 = $res_type;
-              $res_amount1 = $res_amount;
-              $res_stts1 = $res_stts;
-
-                // Check if the status is "UNPAID"
-                 if ($res_stts1 == "UNPAID") {
-                ?>
+              if ($res_type == "SCHOOL FEES") {
+                $res_type1 = $res_type;
+                $res_amount1 = $res_amount;
+                $res_stts1 = $res_stts;
+              ?>
                 <tr class="amount-row">
                     <td class="button-cell">
                       <button type="button" class="proceed-payment-button" style="width: 210px;" onclick="confirmPay1()">
@@ -286,18 +287,14 @@
                     <td style="text-align: center;"><b><?php echo $res_amount1 ?></td>
                     <td style="text-align: center; color: <?php echo $res_stts1 == 'UNPAID' ? 'red' : ''; ?>"><b><?php echo $res_stts1 ?></td>
                 </tr>
-                <?php 
-                }
-               }
+              <?php 
+              }
               // Check if the payment type is "DORMITORY FEES"
               if ($res_type == "DORMITORY FEES") {
-              $res_type2 = $res_type;
-              $res_amount2 = $res_amount;
-              $res_stts2 = $res_stts;
-
-              // Check if the status is "UNPAID"
-              if ($res_stts2 == "UNPAID") {
-                ?>
+                $res_type2 = $res_type;
+                $res_amount2 = $res_amount;
+                $res_stts2 = $res_stts;
+              ?>
                 <tr class="amount-row">
                     <td class="button-cell">
                       <button type="button" class="proceed-payment-button" style="width: 210px;" onclick="confirmPay2()">
@@ -308,18 +305,14 @@
                     <td style="text-align: center;"><b><?php echo $res_amount2 ?></td>
                     <td style="text-align: center; color: <?php echo $res_stts2 == 'UNPAID' ? 'red' : ''; ?>"><b><?php echo $res_stts2 ?></td>
                 </tr>
-                <?php 
-                }
+              <?php 
               }
               // Check if the payment type is "PIBG FEES"
               if ($res_type == "PIBG FEES") {
-              $res_type3 = $res_type;
-              $res_amount3 = $res_amount;
-              $res_stts3 = $res_stts;
-
-              // Check if the status is "UNPAID"
-              if ($res_stts3 == "UNPAID") {
-                ?>
+                $res_type3 = $res_type;
+                $res_amount3 = $res_amount;
+                $res_stts3 = $res_stts;
+              ?>
                 <tr class="amount-row">
                     <td class="button-cell">
                       <button type="button" class="proceed-payment-button" style="width: 210px;" onclick="confirmPay3()">
@@ -330,10 +323,13 @@
                     <td style="text-align: center;"><b><?php echo $res_amount3 ?></td>
                     <td style="text-align: center; color: <?php echo $res_stts3 == 'UNPAID' ? 'red' : ''; ?>"><b><?php echo $res_stts3 ?></td>
                 </tr>
-                <?php 
-                }
+              <?php 
               }
-        }  
+            }
+        }
+        if (!$hasUnpaid) {
+          echo '<tr><td colspan="5" style="text-align:center; color:grey;"><b>All bill already paid</b></td></tr>';
+        }
     ?> 
     </table>
     <div class="button-container">
