@@ -3,6 +3,35 @@ session_start();
 include("../config.php");
 if (!isset($_SESSION['adminID'])) {
     header("Location: ../login-logout/login.php");
+    exit();
+}
+
+$id = $_SESSION['adminID'];
+$query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$id");
+
+while ($result = mysqli_fetch_assoc($query)) {
+    $res_id = $result['ADMIN_ID'];
+}
+
+$error = '';
+if (isset($_POST['submit'])) {
+    $TeachID = $_POST['TeacherID'];
+
+    //verifying the unique Teacher iD
+    $verify_query = mysqli_query($con, "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID='$TeachID'");
+
+    if (mysqli_num_rows($verify_query) != 0) {
+        $error = "Teacher already registered!";
+    } else {
+        $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
+
+        if ($insert_query) {
+            header("Location: noti/noti_AddTeach.php");
+            exit();
+        } else {
+            $error = "Error occurred: " . mysqli_error($con);
+        }
+    }
 }
 ?>
 <?php include "../header/adminHeader.php" ?>
@@ -23,51 +52,17 @@ if (!isset($_SESSION['adminID'])) {
     <div class="container-sign">
         <div class="box form-box">
             <?php
-            include("../config.php");
-
-            $id = $_SESSION['adminID'];
-            $query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$id");
-
-            while ($result = mysqli_fetch_assoc($query)) {
-                $res_id = $result['ADMIN_ID'];
-            }
-
-            if (isset($_POST['submit'])) {
-                $TeachID = $_POST['TeacherID'];
-
-                //verifying the unique Teacher iD
-
-                $verify_query = mysqli_query($con, "SELECT TEACHER_ID FROM teacher WHERE TEACHER_ID='$TeachID'");
-
-                if (mysqli_num_rows($verify_query) != 0) {
-                    echo "<script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Registration Failed',
-                                text: 'Teacher already registered!',
-                                confirmButtonText: 'OK'
-                            });
+            if (!empty($error)) {
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Registration Failed',
+                            text: '$error',
+                            confirmButtonText: 'OK'
                         });
-                    </script>";
-                } else {
-                    $insert_query = mysqli_query($con, "INSERT INTO `teacher` (`TEACHER_ID`, `ADMIN_ID`) VALUES ('$TeachID', '$res_id')");
-
-                    if ($insert_query) {
-                        header("Location: noti/noti_AddTeach.php");
-                    } else {
-                        echo "<script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Database Error',
-                                    text: 'Error occurred: " . mysqli_error($con) . "',
-                                    confirmButtonText: 'OK'
-                                });
-                            });
-                        </script>";
-                    }
-                }
+                    });
+                </script>";
             }
             ?>
             <header>Add New Teacher</header>
