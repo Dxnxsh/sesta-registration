@@ -193,21 +193,57 @@
 
             <div class="carousel-container">
                 <div class="carousel-track">
-                    <div class="carousel-slide">
-                        <a href="https://abaro.com.my/" target="_blank">
-                            <img src="..\..\image\ads\ad1.webp">
-                        </a>
-                    </div>
-                    <div class="carousel-slide">
-                        <a href="https://www.apple.com/my-edu/store" target="_blank">
-                            <img src="..\..\image\ads\ad2.webp">
-                        </a>
-                    </div>
-                    <div class="carousel-slide">
-                        <a href="https://mphonline.com/" target="_blank">
-                            <img src="..\..\image\ads\ad3.webp">
-                        </a>
-                    </div>
+                    <?php
+                    // Define the ads directory path
+                    $adsDir = '../../image/ads/';
+
+                    // Get all image files from the ads directory
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    $imageFiles = [];
+
+                    if (is_dir($adsDir)) {
+                        $files = scandir($adsDir);
+                        foreach ($files as $file) {
+                            if ($file != '.' && $file != '..') {
+                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                if (in_array($extension, $allowedExtensions)) {
+                                    $imageFiles[] = $file;
+                                }
+                            }
+                        }
+                    }
+
+                    // Sort files for consistent order
+                    sort($imageFiles);
+
+                    // Default ad links - you can modify these or make them dynamic too
+                    $adLinks = [
+                        'https://abaro.com.my/',
+                        'https://www.apple.com/my-edu/store',
+                        'https://mphonline.com/',
+                        '#', // Default link for additional images
+                    ];
+
+                    // Display carousel slides for each image
+                    if (!empty($imageFiles)) {
+                        foreach ($imageFiles as $index => $imageFile) {
+                            $imagePath = $adsDir . $imageFile;
+                            $adLink = isset($adLinks[$index]) ? $adLinks[$index] : '#';
+                            echo '<div class="carousel-slide">';
+                            echo '<a href="' . htmlspecialchars($adLink) . '" target="_blank">';
+                            echo '<img src="' . htmlspecialchars($imagePath) . '" alt="Advertisement ' . ($index + 1) . '">';
+                            echo '</a>';
+                            echo '</div>';
+                        }
+                    } else {
+                        // Fallback if no images found
+                        echo '<div class="carousel-slide">';
+                        echo '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: #f3f4f6; color: #6b7280;">';
+                        echo '<p>No advertisements available</p>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                    ?>
                 </div>
 
                 <button class="carousel-control prev">&lt;</button>

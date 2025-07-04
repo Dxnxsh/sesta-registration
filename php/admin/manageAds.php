@@ -64,19 +64,41 @@ if (isset($_POST['delete'])) {
     }
 }
 
+// Function to get the next ad number
+function getNextAdNumber($adsFolder) {
+    $maxNumber = 0;
+    $files = array_diff(scandir($adsFolder), ['.', '..']);
+
+    foreach ($files as $file) {
+        // Check if filename matches pattern ad{number}.{extension}
+        if (preg_match('/^ad(\d+)\./i', $file, $matches)) {
+            $number = intval($matches[1]);
+            if ($number > $maxNumber) {
+                $maxNumber = $number;
+            }
+        }
+    }
+
+    return $maxNumber + 1;
+}
+
 // Handle image upload
 if (isset($_POST['upload'])) {
     if (isset($_FILES['newImage']) && $_FILES['newImage']['error'] == 0) {
-        $targetFile = $adsFolder . basename($_FILES['newImage']['name']);
-        $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+        $originalFileType = strtolower(pathinfo($_FILES['newImage']['name'], PATHINFO_EXTENSION));
 
         // Validate file type
-        if (in_array($fileType, ['jpg', 'jpeg', 'png', 'webp'])) {
+        if (in_array($originalFileType, ['jpg', 'jpeg', 'png', 'webp'])) {
+            // Generate new filename with next ad number
+            $nextAdNumber = getNextAdNumber($adsFolder);
+            $newFileName = "ad" . $nextAdNumber . "." . $originalFileType;
+            $targetFile = $adsFolder . $newFileName;
+
             if (move_uploaded_file($_FILES['newImage']['tmp_name'], $targetFile)) {
                 echo "<script>
                     Swal.fire({
                         title: 'Success!',
-                        text: 'Image uploaded successfully!',
+                        text: 'Image uploaded successfully as $newFileName!',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(function() {
