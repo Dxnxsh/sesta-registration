@@ -73,12 +73,12 @@
                 <div class="buttonMid">
                     <li>
                         <a href="studentList.php">
-						<img src="../../image/icon/updateStudent.png" alt="View Student">
+						<img src="../../image/icon/studentProfile.png" alt="View Student">
                         </a>
                     </li>  
                 </div>				<li>
 					<a href="TeacherBilling.php">
-						<img src="../../image/icon/studentBill.png" alt="Student Bill">
+						<img src="../../image/icon/monitorBill.png" alt="Student Bill">
 					  </a>
 				</li>
 			</ul>
