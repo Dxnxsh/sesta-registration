@@ -328,7 +328,7 @@
             }
         }
         if (!$hasUnpaid) {
-          echo '<tr><td colspan="5" style="text-align:center; color:grey;"><b>All bill already paid</b></td></tr>';
+          echo '<tr><td colspan="5" style="text-align:center; color:grey;"><b>All bills have already been paid</b></td></tr>';
         }
     ?> 
     </table>
