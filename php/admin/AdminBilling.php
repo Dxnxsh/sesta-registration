@@ -183,7 +183,7 @@ if (!isset($_SESSION['adminID'])) {
         <form id="form2" name="form2" method="get">
             <h1>Billing Management</h1>
             <div class="search-container">
-                <input name="searchBox" type="text" id="searchBox" placeholder="Search by Student ID..." value="<?php echo isset($_GET['searchBox']) ? htmlspecialchars($_GET['searchBox']) : ''; ?>">
+                <input name="searchBox" type="text" id="searchBox" placeholder="Search by Student ID" value="<?php echo isset($_GET['searchBox']) ? htmlspecialchars($_GET['searchBox']) : ''; ?>">
                 <input name="submit" type="submit" id="submit" value="Search">
                 <a class="reset-button" href="AdminBilling.php">Show All</a>
             </div>

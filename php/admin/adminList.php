@@ -134,7 +134,7 @@ $query = mysqli_query($con, $select);
     <form id="form2" name="form2" method="get">
             <h1>Admin Management</h1>
             <div class="search-container">
-                <input name="searchBox" type="text" id="searchBox" placeholder="Search admin id">
+                <input name="searchBox" type="text" id="searchBox" placeholder="Search by Admin ID">
                 <input name="submit" type="submit" id="submit" value="Search">
                 <a class="reset-button" href="adminList.php">Show All</a>
             </div>
