@@ -80,7 +80,7 @@
 
             <!-- Student Login Form -->
             <div id="student-form" class="box form-box">
-                <header>Login Student</header>
+                <header style="align-self: normal;">Login Student</header>
                 <form id="studentLoginForm" action="loginVerify.php" method="post">
                     <input type="hidden" name="role" value="student">
                     <div class="field input">
