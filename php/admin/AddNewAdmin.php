@@ -13,28 +13,16 @@ if (!isset($_SESSION['adminID'])) {
 
 <head>
     <meta charset="utf-8">
-    <title>Insert New Class Record</title>
+    <title>Register New Admin</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="../../css/admin-common.css">
     <link rel="stylesheet" href="../../css/button.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url("../../image/admin.png");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100%;
-            margin: 0;
-        }
-
+        /* Page-specific styles for AddNewAdmin.php */
+        /* Override container for form pages - narrower width */
         .container {
             max-width: 600px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -46,50 +34,46 @@ if (!isset($_SESSION['adminID'])) {
             display: grid;
             gap: 10px;
         }
-
-        label {
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
     </style>
 </head>
 
 <body>
 
 
-    <div class="container">
+    <div class="container form-box">
         <h2>Register New Admin</h2>
         <form action="" name="adminform" method="POST" id="adminform">
-            <p>
+            <div class="input">
                 <label for="id">Admin ID:</label>
                 <input type="text" name="adminId" id="adminId" placeholder="Enter ID" required>
+            </div>
 
+            <div class="input">
                 <label for="name">Username:</label>
                 <input type="text" name="uname" id="uname" placeholder="Enter admin Name" required>
+            </div>
 
+            <div class="input">
                 <label for="name">Fullname:</label>
                 <input type="text" name="fname" id="fname" placeholder="Enter admin Name" required>
+            </div>
 
+            <div class="input">
                 <label for="passwd">Contact Number:</label>
                 <input type="text" name="phone" id="phone" required>
+            </div>
 
+            <div class="input">
                 <label for="passwd">Password:</label>
                 <input type="text" name="pwd" id="pwd" required>
+            </div>
 
+            <div class="input">
                 <label for="passwd">Re-Enter Password:</label>
                 <input type="text" name="pwd2" id="pwd2" required>
-
-
-
-            </p>
+            </div>
             <div class="buttons">
-                <a href="adminList.php"><input class="back-button" type="button" value="BACK"></a>
+                <a href="adminList.php"><input class="back-button" type="button" value="Back"></a>
                 <button type="reset">Reset</button>
                 <div class="spacer"></div>
                 <button type="button" id="save" name="submit" value="adminform">Insert</button>

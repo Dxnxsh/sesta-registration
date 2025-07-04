@@ -96,7 +96,7 @@ if (isset($_GET['id'])) {
       </div>
       <br>
       <div class="back-container">
-        <a class="back-button" href="StudentList.php">Go Back</a>
+        <a class="back-button" href="StudentList.php">Back</a>
       </div>
     </form>
   </div>

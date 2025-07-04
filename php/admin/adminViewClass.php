@@ -111,7 +111,7 @@ if (isset($_GET['id'])) {
         </table>
       </div>
       <br>
-      <a class='back-button' href='adminClass.php'>Go Back</a>
+      <a class='back-button' href='adminClass.php'>Back</a>
     </form>
   </div>
 </body>

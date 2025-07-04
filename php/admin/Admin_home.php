@@ -202,6 +202,7 @@ if (!isset($_SESSION['adminID'])) {
 	const barChartOptions = {
 		series: [
 			{
+				name: 'Total Count',
 				data: [<?php echo $rowCount ?>, <?php echo $rowCount2 ?>, <?php echo $rowCount3 ?>,],
 			},
 		],

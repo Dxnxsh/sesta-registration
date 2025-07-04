@@ -329,7 +329,7 @@ $query = mysqli_query($con, $select);
                 ?>
             </table>
         </form>
-        <div class='manage-buttons'><a class='back-button' href='teacher_home.php'>Go Back</a></div>
+        <div class='manage-buttons'><a class='back-button' href='teacher_home.php'>Back</a></div>
 
     </div>
 
