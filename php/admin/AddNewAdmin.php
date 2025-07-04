@@ -60,7 +60,7 @@ if (!isset($_SESSION['adminID'])) {
 
             <div class="input">
                 <label for="passwd">Contact Number:</label>
-                <input type="text" name="phone" id="phone" required>
+                <input type="text" name="phone" id="phone" placeholder="Enter admin contact no." required>
             </div>
 
             <div class="input">
