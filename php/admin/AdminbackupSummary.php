@@ -40,14 +40,9 @@ if (!isset($_SESSION['adminID'])) {
         }
 
         .logo {
-            text-align: center;
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
-        }
-
-        .logo img {
-            height: auto;
-            display: block;
-            margin: 0 auto;
         }
 
         table {
