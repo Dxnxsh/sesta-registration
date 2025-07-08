@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.col-md-4, .col-md-6, .col-lg-4 {
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px) {
+  .col-md-4 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+  }
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+@media (min-width: 992px) {
+  .col-lg-4 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+  }
+}
+.text-center {
+  text-align: center;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.history-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 0;
+  object-fit: cover;
+  box-shadow: 0 6px 25px rgba(255,235,167,.35);
+  display: block;
+  margin: 0 auto;
+}
+h3 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+}
+p {
+  letter-spacing: 1px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+p span {
+  letter-spacing: 1px;
+  color: #ffeba7;
+  font-size: 20px;
+  font-weight: 700;
+}
+body {
+  background: url('../html/backgroundstu2.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.profile-section {
+  position: relative;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 100px 0;
+  background: none;
+}
+.profile-section h3 {
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+.profile-section p {
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #fff;
+}
+.profile-section p span {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #ffeba7;
+}
+.profile-section img {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 240px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 967px) {
+  .profile-section h3 {
+    font-size: 13vw;
+  }
+}
+
+/* Add profile page styles here when needed */
+.profile-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+.profile-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.profile-header h3 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+.profile-section-title p {
+  margin: 2rem 0 1rem 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffeba7;
+  letter-spacing: 1px;
+}
+.principal-image img {
+  display: block;
+  margin: 30px auto 20px auto;
+  max-width: 60%;
+  height: auto;
+  border-radius: 0;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+.principal-message p {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+.history-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px 32px;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+}
+.history-gallery-item {
+  flex: 0 0 calc(33.333% - 32px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+.history-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 0;
+  object-fit: cover;
+  box-shadow: 0 6px 25px rgba(255,235,167,.35);
+  display: block;
+  margin: 0 auto;
+}
+.school-history-description p {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 2rem;
+}
+@media (max-width: 900px) {
+  .history-image, .principal-image img {
+    width: 140px;
+    height: 140px;
+  }
+  .history-gallery {
+    gap: 12px 8px;
+    max-width: 420px;
+  }
+  .history-gallery-item {
+    flex: 0 0 calc(33.333% - 8px);
+  }
+}
+@media (max-width: 600px) {
+  .profile-header h3 {
+    font-size: 1.5rem;
+  }
+  .profile-section-title p {
+    font-size: 1.1rem;
+  }
+  .principal-message p, .school-history-description p {
+    font-size: 13px;
+  }
+  .history-image, .principal-image img {
+    width: 90px;
+    height: 90px;
+  }
+  .history-gallery {
+    flex-direction: column;
+    gap: 10px 0;
+    max-width: 100%;
+  }
+  .history-gallery-item {
+    flex: 1 1 100%;
+  }
+}

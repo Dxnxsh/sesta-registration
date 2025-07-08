@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+body {
+  background: url('../html/backgroundstu2.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Add curriculum page styles here when needed */
+.curriculum-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+.curriculum-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.curriculum-header h3 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+.curriculum-section-title p {
+  margin: 2rem 0 1rem 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffeba7;
+  letter-spacing: 1px;
+}
+.curriculum-carta img {
+  margin: 30px auto 20px auto;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  display: block;
+}
+.curriculum-org-chart-desc p {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+.curriculum-exam-link p {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 2rem;
+}
+.curriculum-exam-link a {
+  color: #ffeba7;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.curriculum-exam-link a:hover {
+  color: #1976d2;
+}
+.text-center {
+  text-align: center;
+}
+@media (max-width: 700px) {
+  .curriculum-carta img {
+    max-width: 100%;
+  }
+  .curriculum-header h3 {
+    font-size: 1.5rem;
+  }
+  .curriculum-section-title p {
+    font-size: 1.1rem;
+  }
+  .curriculum-org-chart-desc p, .curriculum-exam-link p {
+    font-size: 13px;
+  }
+  .curriculum-exam-link a {
+    font-size: 1rem;
+  }
+}

@@ -112,14 +112,14 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="home-content">
-        <img src="../../image/logo.png" alt="School Logo" style="max-width: 500px; height: auto;">
-        <h3>HELLO, WELCOME TO</h3>
-        <h1>SEKOLAH MENENGAH SAINS TAPAH</h1>
-        <h3>SCHOOL REGISTRATION SYSTEM</h3>
-        <h3><span class="text"></span></h3>
+        <div class="home-content">
+            <img src="../../image/logo.png" alt="School Logo" style="max-width: 500px; height: auto;">
+            <h3>HELLO, WELCOME TO</h3>
+            <h1>SEKOLAH MENENGAH SAINS TAPAH</h1>
+            <h3>SCHOOL REGISTRATION SYSTEM</h3>
+            <h3><span class="text"></span></h3>
+        </div>
     </div>
 
     <video autoplay loop muted play-inline class="background-clip">

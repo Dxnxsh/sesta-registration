@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+body {
+  background: url('../html/backgroundstu2.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.hem-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.hem-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.hem-header h3 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+
+.hem-section-title p {
+  margin: 2rem 0 1rem 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffeba7;
+  letter-spacing: 1px;
+}
+
+.hem-management-list p,
+.hem-committee p,
+.hem-exam-link p {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin: 1rem 0;
+}
+
+.hem-exam-link a {
+  color: #ffeba7;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.hem-exam-link a:hover {
+  color: #1976d2;
+}
+
+/* Management Table */
+.hem-management-table-wrapper {
+  width: 100%;
+  margin: 0 auto 2rem auto;
+  overflow-x: auto;
+}
+.hem-management-table {
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  font-size: 16px;
+}
+.hem-management-table th,
+.hem-management-table td {
+  border: 1px solid #ffeba7;
+  padding: 10px 14px;
+  text-align: left;
+}
+.hem-management-table th {
+  background: rgba(255,255,255,0.08);
+  color: #ffeba7;
+  font-weight: 700;
+  text-align: center;
+}
+.hem-management-table td {
+  background: rgba(0,0,0,0.10);
+}
+
+/* House Table Section - 2x2 Grid */
+.hem-house-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.hem-house-table-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.hem-house-table {
+  width: 80%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.02);
+  color: #fff;
+}
+
+.hem-house-table th,
+.hem-house-table td {
+  border: 1px solid #ffeba7;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.hem-house-table td[bgcolor] {
+  color: #fff;
+  font-weight: 900;
+}
+
+/* Utility */
+.text-center {
+  text-align: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .hem-house-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .hem-house-table {
+    width: 90%;
+  }
+
+  .hem-management-table {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .hem-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .hem-section-title p {
+    font-size: 1.1rem;
+  }
+
+  .hem-management-list p,
+  .hem-committee p,
+  .hem-exam-link p {
+    font-size: 13px;
+  }
+
+  .hem-exam-link a {
+    font-size: 1rem;
+  }
+
+  .hem-management-table th,
+  .hem-management-table td {
+    font-size: 13px;
+    padding: 7px 6px;
+  }
+}

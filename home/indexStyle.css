@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+body {
+  background: url('../html/backgroundstu2.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Add HOME page styles here when needed */
+.home-nav-link {
+  display: inline-block;
+  margin: 0 18px;
+  font-size: 1.2rem;
+  color: #1976d2;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+.home-nav-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 3px;
+  background: #1976d2;
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+.home-nav-link:hover {
+  color: #1976d2;
+}
+.home-nav-link:hover::before {
+  width: 100%;
+  background: #1976d2;
+}
+
+.welcome-row {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.welcome-header {
+  width: 100%;
+  text-align: center;
+}
+.welcome-title {
+  color: #fff;
+  font-size: 8vw;
+  line-height: 1;
+  font-weight: 1500;
+  font-family: 'Poppins', 'Arial Black', 'Arial', sans-serif;
+  margin: 0 0 2.5rem 0;
+  text-shadow: 1px 0 0 #fff, 0 1px 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+.welcome-links-container {
+  width: 100%;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.welcome-links {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 700;
+  color: #ffeba7;
+  margin: 0;
+}
+.home-link {
+  margin-left: 15px;
+  margin-right: 15px;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffeba7;
+  transition: color 0.2s;
+  font-size: 1.3em;
+}
+.home-link:hover {
+  color: #1976d2;
+  text-shadow: 0 0 8px #1976d2, 0 0 2px #fff;
+}
+.home-login-btn {
+  display: inline-block;
+  margin-top: 50px;
+  padding: 16px 48px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+  border: none;
+  border-radius: 32px;
+  box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.18);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+.home-login-btn:hover {
+  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+  box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.28);
+  transform: translateY(-2px) scale(1.04);
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .welcome-title {
+    font-size: 2.5rem;
+  }
+  .welcome-links {
+    font-size: 1rem;
+  }
+  .home-link {
+    margin-left: 8px;
+    margin-right: 8px;
+    font-size: 1em;
+  }
+  .home-login-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+}
