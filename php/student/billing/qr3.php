@@ -96,7 +96,7 @@ if (!isset($_SESSION['valid'])) {
             $res_ParentMonthlyIncome = $resultParent['PARENT_MONTHLY_INCOME'];
 
             // Check if parent monthly income is less than 1000
-            if ($res_ParentMonthlyIncome < 1000) {
+            if ($res_ParentMonthlyIncome < 2000) {
                 // Apply a 20% discount
                 $discountedIncome = $res_amount3 * 0.7;
             } else {
