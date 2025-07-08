@@ -11,31 +11,36 @@ $teacherId = $_SESSION['validTC'];
 $sql = "";
 
 if (isset($_GET['submit'])) {
-    $searchOption = isset($_GET['searchOption']) ? $_GET['searchOption'] : '';
+    $searchOption = isset($_GET['searchType']) ? $_GET['searchType'] : '';
     $searchTerm = isset($_GET['searchBox']) ? $_GET['searchBox'] : '';
 
     if (!empty($searchTerm)) {
-        if ($searchOption == 'name') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_NAME LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
-        } elseif ($searchOption == 'ic') {
-            $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND student.STUDENT_ID LIKE '%$searchTerm%' AND STUDENT_NAME IS NOT NULL";
+        $searchTerm = mysqli_real_escape_string($con, $searchTerm);
+        if ($searchOption == 'STUDENT_NAME') {
+            $sql = "SELECT p.*, s.STUDENT_NAME, s.STUDENT_ID FROM payment p
+                    INNER JOIN student s ON p.STUDENT_ID = s.STUDENT_ID
+                    INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
+                    WHERE c.TEACHER_ID = '$teacherId' AND s.STUDENT_NAME LIKE '%$searchTerm%' AND s.STUDENT_NAME IS NOT NULL";
+        } elseif ($searchOption == 'STUDENT_ID') {
+            $sql = "SELECT p.*, s.STUDENT_NAME, s.STUDENT_ID FROM payment p
+                    INNER JOIN student s ON p.STUDENT_ID = s.STUDENT_ID
+                    INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
+                    WHERE c.TEACHER_ID = '$teacherId' AND s.STUDENT_ID LIKE '%$searchTerm%' AND s.STUDENT_NAME IS NOT NULL";
         }
     }
 }
 
 if (empty($sql)) {
-    $sql = "SELECT * FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID INNER JOIN class ON student.CLASS_CODE = class.CLASS_CODE WHERE class.TEACHER_ID = '$teacherId' AND STUDENT_NAME IS NOT NULL";
+    $sql = "SELECT p.*, s.STUDENT_NAME, s.STUDENT_ID FROM payment p
+            INNER JOIN student s ON p.STUDENT_ID = s.STUDENT_ID
+            INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
+            WHERE c.TEACHER_ID = '$teacherId' AND s.STUDENT_NAME IS NOT NULL
+            ORDER BY p.PAYMENT_ID DESC LIMIT 1000";
 }
 
 $result = $con->query($sql);
 if (!$result) {
     die("Error in SQL query: " . $con->error);
-}
-
-$queryParent = mysqli_query($con, "SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
-$studentInfo = [];
-while ($resultStud = mysqli_fetch_assoc($queryParent)) {
-    $studentInfo[$resultStud['STUDENT_ID']] = $resultStud['STUDENT_NAME'];
 }
 ?>
 
@@ -313,8 +318,7 @@ while ($resultStud = mysqli_fetch_assoc($queryParent)) {
                         $res_paymentID = $row['PAYMENT_ID'];
                         $res_paymentStatus = $row['PAYMENT_STATUS'];
                         $res_StudId = $row['STUDENT_ID'];
-
-                        $res_StudName = $studentInfo[$res_StudId] ?? "Unknown";
+                        $res_StudName = $row['STUDENT_NAME'] ?? "Unknown";
 
                         echo "<tr>",
                              "<td>$res_paymentID</td>",
