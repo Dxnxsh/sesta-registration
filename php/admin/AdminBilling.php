@@ -150,30 +150,34 @@ if (!isset($_SESSION['adminID'])) {
     <?php
     include("../config.php");
 
-    // Handle search form submission
+    // Handle search form submission with proper escaping
     $searchCondition = "";
     $searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'STUDENT_ID';
 
     if (isset($_GET['searchBox']) && !empty($_GET['searchBox'])) {
-        $searchValue = $_GET['searchBox'];
+        $searchValue = mysqli_real_escape_string($con, $_GET['searchBox']);
         if ($searchType === 'STUDENT_ID') {
-            $searchCondition = "WHERE STUDENT_ID LIKE '%$searchValue%'";
+            $searchCondition = "WHERE p.STUDENT_ID LIKE '%$searchValue%'";
         } elseif ($searchType === 'PAYMENT_TYPE') {
-            $searchCondition = "WHERE PAYMENT_TYPE LIKE '%$searchValue%'";
+            $searchCondition = "WHERE p.PAYMENT_TYPE LIKE '%$searchValue%'";
         } elseif ($searchType === 'PAYMENT_STATUS') {
-            $searchCondition = "WHERE PAYMENT_STATUS LIKE '%$searchValue%'";
+            $searchCondition = "WHERE p.PAYMENT_STATUS LIKE '%$searchValue%'";
         }
     }
 
-    $sql = "SELECT * FROM payment $searchCondition";
-    $result = $con->query($sql);
+    // Optimized query: Join payment with student to get student names directly
+    // Add ORDER BY for consistent results and optional LIMIT for performance
+    $sql = "SELECT p.*, s.STUDENT_NAME FROM payment p
+            LEFT JOIN student s ON p.STUDENT_ID = s.STUDENT_ID
+            $searchCondition
+            ORDER BY p.PAYMENT_ID DESC";
 
-    // Get student information for display
-    $queryParent = mysqli_query($con, "SELECT payment.*, student.* FROM payment INNER JOIN student ON payment.STUDENT_ID = student.STUDENT_ID");
-    $studentInfo = array();
-    while ($resultStud = mysqli_fetch_assoc($queryParent)) {
-        $studentInfo[$resultStud['STUDENT_ID']] = $resultStud['STUDENT_NAME'];
+    // Add LIMIT only when no search is performed to prevent loading too many records
+    if (empty($searchCondition)) {
+        $sql .= " LIMIT 1000"; // Limit to 1000 records for performance
     }
+
+    $result = $con->query($sql);
     ?>
 </head>
 </head>
@@ -213,12 +217,7 @@ if (!isset($_SESSION['adminID'])) {
                         $res_paymentID = $row['PAYMENT_ID'];
                         $res_paymentStatus = $row['PAYMENT_STATUS'];
                         $res_StudId = $row['STUDENT_ID'];
-
-                        if (array_key_exists($res_StudId, $studentInfo)) {
-                            $res_StudName = $studentInfo[$res_StudId];
-                        } else {
-                            $res_StudName = "Unknown";
-                        }
+                        $res_StudName = $row['STUDENT_NAME'] ?? "Unknown";
 
                         $statusColor = 'red';
                         if ($res_paymentStatus == 'PENDING') {
