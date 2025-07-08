@@ -191,7 +191,10 @@ main{
 {
     max-width: 600px;
     margin-left: 700px;
-    margin-top: -440px;
+    margin-top: -550px;
+}
+.home-content img {
+    margin-left: -25px;
 }
 .home-content h3{
     font-size: 32px;

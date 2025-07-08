@@ -115,6 +115,7 @@
     </div>
 
     <div class="home-content">
+        <img src="../../image/logo.png" alt="School Logo" style="max-width: 500px; height: auto;">
         <h3>HELLO, WELCOME TO</h3>
         <h1>SEKOLAH MENENGAH SAINS TAPAH</h1>
         <h3>SCHOOL REGISTRATION SYSTEM</h3>
@@ -122,7 +123,7 @@
     </div>
 
     <video autoplay loop muted play-inline class="background-clip">
-        <source src="../../image/bg1.mp4" type="video/mp4">
+        <source src="../../image/videoBG.mp4" type="video/mp4">
     </video>
 
 
