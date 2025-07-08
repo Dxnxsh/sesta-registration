@@ -226,7 +226,7 @@ if (isset($_POST['confirmed']) && $_POST['confirmed'] === '1') {
                     </p>
                     <p><br>
                         <label for="placeOfBirth"><b>Place of Birth :</b></label>
-                        <input type="text" id="placeOfBirth" name="placeOfBirth" value="<?php echo $studDOB ?>" required>
+                        <input type="text" id="placeOfBirth" name="placeOfBirth" value="<?php echo $studPOB ?>" required>
 
                         <label for="religion"><br><b>Religion :</b></label>
                         <input type="text" id="religion" name="religion" value="<?php echo $studReligion ?>" required>
