@@ -14,10 +14,10 @@ $pswd = $_POST['pwd'];
 $oldID = $_POST['old_id'];
 
 // Update the admin's data in the database
-$updateQuery = "UPDATE admin SET  
-    `ADMIN_NAME`='$fullname', 
-    `ADMIN_PHONE`='$phoneN', 
-    `ADMIN_PWD`='$pswd' 
+$updateQuery = "UPDATE admin SET
+    `ADMIN_NAME`='$fullname',
+    `ADMIN_PHONE`='$phoneN',
+    `ADMIN_PWD`='$pswd'
     WHERE `ADMIN_ID`='$oldID'";
 
 if (mysqli_query($con, $updateQuery)) {

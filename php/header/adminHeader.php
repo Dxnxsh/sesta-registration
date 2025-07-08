@@ -1,7 +1,7 @@
 <?php
 include(__DIR__ . '/../config.php');
-$id = $_SESSION['adminID'];
-$query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$id");
+$header_admin_id = $_SESSION['adminID'];
+$query = mysqli_query($con, "SELECT*FROM admin WHERE ADMIN_ID=$header_admin_id");
 while ($result = mysqli_fetch_assoc($query)) {
   $res_Name = $result['ADMIN_USERNAME'];
 }
