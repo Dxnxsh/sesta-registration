@@ -9,7 +9,7 @@ if (!isset($_SESSION['adminID'])) {
 if (isset($_GET['id'])) {
   $stud_id = $_GET['id'];
   $selectClassStudent = "SELECT * FROM student s
-  INNER JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
+  LEFT JOIN class c ON s.CLASS_CODE = c.CLASS_CODE
   WHERE s.STUDENT_ID = '$stud_id'";
   $queryClassStudent = mysqli_query($con, $selectClassStudent);
 
