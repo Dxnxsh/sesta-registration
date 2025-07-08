@@ -114,7 +114,7 @@
         </div>
 
         <div class="home-content">
-            <img src="../../image/logo.png" alt="School Logo" style="max-width: 500px; height: auto;">
+            <img src="../../image/logo.png" alt="School Logo" style="max-width: 500px; height: auto; margin-left: -4%;">
             <h3>HELLO, WELCOME TO</h3>
             <h1>SEKOLAH MENENGAH SAINS TAPAH</h1>
             <h3>SCHOOL REGISTRATION SYSTEM</h3>
