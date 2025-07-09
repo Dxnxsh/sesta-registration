@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="..\..\chatbox\index-vXR3yhj7.css">
     <div style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
         <script src="https://static.elfsight.com/platform/platform.js" async></script>
-        <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
+        <div class="elfsight-app-0de7a5c2-41bf-489b-acc1-4cdc92431666" data-elfsight-app-lazy></div>
     </div>
     <div id="root"></div>
     <div class="wrapper">
@@ -107,7 +107,8 @@
                 <button class="home-sci" onclick="showForm('teacher')">TEACHER</button>
                 <p>&nbsp;</p>
                 <button class="home-sci" onclick="showForm('admin')">ADMIN</button>
-                <p>&nbsp;</p>                <div class="links">
+                <p>&nbsp;</p>
+                <div class="links">
                     Don't have account? <a href="StudentNewAccount.php">Sign Up Now</a>
                 </div>
             </div>
