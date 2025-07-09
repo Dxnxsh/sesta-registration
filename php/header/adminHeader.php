@@ -72,7 +72,8 @@ function loadAsset($type, $path)
                 <i class='bx bxs-home icon'></i>
                 <span class="link">Home</span>
               </a>
-            </li>            <li class="list">
+            </li>
+            <li class="list">
               <a href="<?php echo getBasePath(); ?>php/admin/adminClass.php" class="nav-link">
                 <i class='bx bxs-chalkboard icon'></i>
                 <span class="link">Class</span>
@@ -156,8 +157,9 @@ function loadAsset($type, $path)
     </script>
   </header>
   <div style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
+    <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
-    <div class="elfsight-app-34c1fc02-7809-4a7b-b810-871487813e1f" data-elfsight-app-lazy></div>
+    <div class="elfsight-app-0de7a5c2-41bf-489b-acc1-4cdc92431666" data-elfsight-app-lazy></div>
   </div>
   <div id="root"></div>
   <link href="<?php echo getBasePath(); ?>chatbox/index-vXR3yhj7.css" rel="stylesheet">
