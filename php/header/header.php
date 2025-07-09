@@ -44,7 +44,7 @@ function loadAsset($type, $path)
 
     <section class="overlay"></section>
   </header>
-  <div style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
+  <div class="wa" style="position: fixed; bottom: 16px; right: 70px; z-index: 50;">
     <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
     <div class="elfsight-app-0de7a5c2-41bf-489b-acc1-4cdc92431666" data-elfsight-app-lazy></div>
